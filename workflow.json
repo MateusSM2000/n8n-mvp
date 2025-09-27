@@ -1,0 +1,114 @@
+{
+  "name": "Agendamento WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "whatsapp-webhook",
+        "options": {}
+      },
+      "name": "Webhook IN",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "whatsapp-webhook"
+    },
+    {
+      "parameters": {
+        "from": "={{$json[\"From\"]}}",
+        "to": "={{$json[\"To\"]}}",
+        "body": "Olá! Recebi sua mensagem: {{$json[\"Body\"]}}. Quer agendar horário? Responda com: Nome, AAAA-MM-DD HH:MM"
+      },
+      "name": "Responder WhatsApp",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [550, 300],
+      "credentials": {
+        "twilioApi": "MinhaContaTwilio"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const msg = $json[\"Body\"];\nif (msg.includes(\",\")) {\n  const parts = msg.split(\",\");\n  return [{json: {nome: parts[0].trim(), data: parts[1].trim()}}];\n}\nreturn items;"
+      },
+      "name": "Extrair Nome/Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [550, 500]
+    },
+    {
+      "parameters": {
+        "calendar": "primary",
+        "start": "={{$json[\"data\"]}}",
+        "end": "={{$json[\"data\"]}}",
+        "title": "Consulta com {{$json[\"nome\"]}}"
+      },
+      "name": "Criar Evento Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [800, 500],
+      "credentials": {
+        "googleApi": "MinhaContaGoogle"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json[\"From\"]}}",
+        "to": "={{$json[\"To\"]}}",
+        "body": "Agendamento criado com sucesso ✅\n{{$json[\"nome\"]}} em {{$json[\"data\"]}}"
+      },
+      "name": "Confirmar WhatsApp",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1050, 500],
+      "credentials": {
+        "twilioApi": "MinhaContaTwilio"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook IN": {
+      "main": [
+        [
+          {
+            "node": "Responder WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Extrair Nome/Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Nome/Data": {
+      "main": [
+        [
+          {
+            "node": "Criar Evento Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Evento Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Confirmar WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

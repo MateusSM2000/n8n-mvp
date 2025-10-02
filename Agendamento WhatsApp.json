@@ -3,68 +3,101 @@
   "nodes": [
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "whatsapp-webhook",
         "options": {}
       },
       "name": "Webhook IN",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300],
-      "webhookId": "whatsapp-webhook"
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "whatsapp-webhook",
+      "id": "6965fbe4-1c95-476f-b11d-88d67250721f"
     },
     {
       "parameters": {
-        "from": "={{$json[\"From\"]}}",
-        "to": "={{$json[\"To\"]}}",
-        "body": "Olá! Recebi sua mensagem: {{$json[\"Body\"]}}. Quer agendar horário? Responda com: Nome, AAAA-MM-DD HH:MM"
+        "from": "={{ $json.body.To }}",
+        "to": "={{ $json.body.From }}",
+        "message": "=teste produção",
+        "options": {}
       },
       "name": "Responder WhatsApp",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [550, 300],
+      "position": [
+        304,
+        0
+      ],
+      "id": "988c3c6a-c825-4264-a900-f67ee21d9c80",
       "credentials": {
-        "twilioApi": "MinhaContaTwilio"
+        "twilioApi": {
+          "id": "qdV6dlAQEAjvSRGE",
+          "name": "Twilio account"
+        }
       }
     },
     {
       "parameters": {
-        "functionCode": "const msg = $json[\"Body\"];\nif (msg.includes(\",\")) {\n  const parts = msg.split(\",\");\n  return [{json: {nome: parts[0].trim(), data: parts[1].trim()}}];\n}\nreturn items;"
+        "functionCode": "const msg = $json[\"body\"];\nif (msg.includes(\",\")) {\n  const parts = msg.split(\",\");\n  return [{nome: parts[0].trim(), data: parts[1].trim()}];\n}\nreturn items;"
       },
       "name": "Extrair Nome/Data",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [550, 500]
+      "position": [
+        304,
+        208
+      ],
+      "id": "22105a88-0a22-496c-8d42-db82d17d15ec"
     },
     {
       "parameters": {
         "calendar": "primary",
         "start": "={{$json[\"data\"]}}",
         "end": "={{$json[\"data\"]}}",
-        "title": "Consulta com {{$json[\"nome\"]}}"
+        "additionalFields": {}
       },
       "name": "Criar Evento Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
-      "position": [800, 500],
+      "position": [
+        544,
+        208
+      ],
+      "id": "939ac069-74d3-4e44-a0da-b7abbf9c2474",
       "credentials": {
-        "googleApi": "MinhaContaGoogle"
+        "googleCalendarOAuth2Api": {
+          "id": "Pda15CRoAL8yqlH6",
+          "name": "Google Calendar account"
+        }
       }
     },
     {
       "parameters": {
-        "from": "={{$json[\"From\"]}}",
-        "to": "={{$json[\"To\"]}}",
-        "body": "Agendamento criado com sucesso ✅\n{{$json[\"nome\"]}} em {{$json[\"data\"]}}"
+        "from": "={{ $('Webhook IN').item.json.body.To }}",
+        "to": "={{ $('Webhook IN').item.json.body.From }}",
+        "message": "=Confirmado para a data {{ $json.start.dateTime }}\n\nObrigado",
+        "options": {}
       },
       "name": "Confirmar WhatsApp",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [1050, 500],
+      "position": [
+        800,
+        208
+      ],
+      "id": "ea54c6f4-fd88-47f2-9d57-6d437128e9dc",
       "credentials": {
-        "twilioApi": "MinhaContaTwilio"
+        "twilioApi": {
+          "id": "qdV6dlAQEAjvSRGE",
+          "name": "Twilio account"
+        }
       }
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook IN": {
       "main": [
@@ -110,5 +143,16 @@
         ]
       ]
     }
-  }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "81828fae-1e4a-4e8c-ab75-4532008689e3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a37f4c52f7201ac163c49fcf46795e4637bae450cdf4fb3e5f0f048f263aa4f"
+  },
+  "id": "IFjAvuy7IuQktmp5",
+  "tags": []
 }

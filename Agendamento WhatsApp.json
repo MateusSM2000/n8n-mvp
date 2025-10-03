@@ -4,155 +4,270 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "whatsapp-webhook",
-        "options": {}
+        "path": "whatsapp-webhook"
       },
       "name": "Webhook IN",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        0,
-        0
-      ],
-      "webhookId": "whatsapp-webhook",
-      "id": "6965fbe4-1c95-476f-b11d-88d67250721f"
+      "position": [0, 0],
+      "webhookId": "whatsapp-webhook"
     },
     {
       "parameters": {
-        "from": "={{ $json.body.To }}",
-        "to": "={{ $json.body.From }}",
-        "message": "=teste produção",
-        "options": {}
+        "functionCode": "const msg = $json.body.Body?.trim().toLowerCase();\n\nif (msg === '1' || msg.includes('agendar')) {\n  return [{json: {acao: 'agendar'}}];\n}\nif (msg === '2' || msg.includes('duvida') || msg.includes('faq')) {\n  return [{json: {acao: 'duvidas'}}];\n}\nif (msg === '3' || msg.includes('cancel')) {\n  return [{json: {acao: 'cancelar'}}];\n}\n\nreturn [{json: {acao: 'menu'}}];"
       },
-      "name": "Responder WhatsApp",
+      "name": "Decidir Ação",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [300, 0]
+    },
+    {
+      "parameters": {
+        "from": "={{$json.body.To}}",
+        "to": "={{$json.body.From}}",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento"
+      },
+      "name": "Enviar Menu",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [
-        304,
-        0
-      ],
-      "id": "988c3c6a-c825-4264-a900-f67ee21d9c80",
+      "position": [600, -200],
       "credentials": {
-        "twilioApi": {
-          "id": "qdV6dlAQEAjvSRGE",
-          "name": "Twilio account"
-        }
+        "twilioApi": "Twilio account"
       }
     },
     {
       "parameters": {
-        "functionCode": "const msg = $json[\"body\"];\nif (msg.includes(\",\")) {\n  const parts = msg.split(\",\");\n  return [{nome: parts[0].trim(), data: parts[1].trim()}];\n}\nreturn items;"
+        "from": "={{$json.body.To}}",
+        "to": "={{$json.body.From}}",
+        "message": "Por favor, envie no formato:\nNome, AAAA-MM-DD HH:MM"
+      },
+      "name": "Pedir Nome/Data",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [600, 0],
+      "credentials": {
+        "twilioApi": "Twilio account"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const msg = $json.body.Body;\nif (msg.includes(',')) {\n  const parts = msg.split(',');\n  return [{json: {nome: parts[0].trim(), data: parts[1].trim(), phone: $json.body.From}}];\n}\nreturn items;"
       },
       "name": "Extrair Nome/Data",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [
-        304,
-        208
-      ],
-      "id": "22105a88-0a22-496c-8d42-db82d17d15ec"
+      "position": [900, 0]
     },
     {
       "parameters": {
         "calendar": "primary",
         "start": "={{$json[\"data\"]}}",
         "end": "={{$json[\"data\"]}}",
-        "additionalFields": {}
+        "title": "Consulta com {{$json[\"nome\"]}}"
       },
       "name": "Criar Evento Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
-      "position": [
-        544,
-        208
-      ],
-      "id": "939ac069-74d3-4e44-a0da-b7abbf9c2474",
+      "position": [1150, 0],
       "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "Pda15CRoAL8yqlH6",
-          "name": "Google Calendar account"
-        }
+        "googleCalendarOAuth2Api": "Google Calendar account"
       }
     },
     {
       "parameters": {
-        "from": "={{ $('Webhook IN').item.json.body.To }}",
-        "to": "={{ $('Webhook IN').item.json.body.From }}",
-        "message": "=Confirmado para a data {{ $json.start.dateTime }}\n\nObrigado",
-        "options": {}
+        "from": "={{$json.body.To}}",
+        "to": "={{$json.body.From}}",
+        "message": "Agendamento confirmado ✅\n{{$json[\"nome\"]}} em {{$json[\"data\"]}}"
       },
-      "name": "Confirmar WhatsApp",
+      "name": "Confirmar Agendamento",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [
-        800,
-        208
-      ],
-      "id": "ea54c6f4-fd88-47f2-9d57-6d437128e9dc",
+      "position": [1400, 0],
       "credentials": {
-        "twilioApi": {
-          "id": "qdV6dlAQEAjvSRGE",
-          "name": "Twilio account"
+        "twilioApi": "Twilio account"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.body.To}}",
+        "to": "={{$json.body.From}}",
+        "message": "FAQ da empresa:\n- Horário: seg a sex, 08h às 18h\n- Planos aceitos: Unimed, Amil\n- Endereço: Rua Exemplo, 123\n\nSe precisar de mais detalhes, digite 'humano'."
+      },
+      "name": "Responder Dúvidas",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [600, 200],
+      "credentials": {
+        "twilioApi": "Twilio account"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.body.To}}",
+        "to": "={{$json.body.From}}",
+        "message": "Envie o Nome e Data do agendamento que deseja cancelar (formato: Nome, AAAA-MM-DD HH:MM)"
+      },
+      "name": "Pedir Cancelamento",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [600, 400],
+      "credentials": {
+        "twilioApi": "Twilio account"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const msg = $json.body.Body;\nif (msg.includes(',')) {\n  const parts = msg.split(',');\n  return [{json: {nome: parts[0].trim(), data: parts[1].trim(), phone: $json.body.From}}];\n}\nreturn items;"
+      },
+      "name": "Extrair Nome/Data Cancelar",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "calendar": "primary",
+        "options": {
+          "returnAll": true
         }
+      },
+      "name": "Listar Eventos Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [1150, 400],
+      "credentials": {
+        "googleCalendarOAuth2Api": "Google Calendar account"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const nome = $json.nome;\nconst data = $json.data;\n\nconst evento = items[0].json.items.find(e => {\n  return e.summary.includes(nome) && e.start.dateTime.includes(data);\n});\n\nif (evento) {\n  return [{json: {eventoId: evento.id, nome, data, phone: $json.phone}}];\n}\n\nreturn [{json: {erro: true}}];"
+      },
+      "name": "Encontrar Evento",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1400, 400]
+    },
+    {
+      "parameters": {
+        "calendar": "primary",
+        "eventId": "={{$json[\"eventoId\"]}}"
+      },
+      "name": "Deletar Evento Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [1650, 400],
+      "credentials": {
+        "googleCalendarOAuth2Api": "Google Calendar account"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.phone}}",
+        "to": "={{$json.phone}}",
+        "message": "Agendamento cancelado ❌\n{{$json[\"nome\"]}} em {{$json[\"data\"]}}"
+      },
+      "name": "Confirmar Cancelamento",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1900, 400],
+      "credentials": {
+        "twilioApi": "Twilio account"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.body.To}}",
+        "to": "={{$json.body.From}}",
+        "message": "Não encontrei esse agendamento. Verifique nome/data e tente novamente."
+      },
+      "name": "Erro Cancelamento",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1900, 600],
+      "credentials": {
+        "twilioApi": "Twilio account"
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        }
+      },
+      "name": "Cron Lembrete",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [0, 800]
+    },
+    {
+      "parameters": {
+        "calendar": "primary",
+        "options": {
+          "returnAll": true
+        }
+      },
+      "name": "Listar Eventos p/ Lembrete",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [300, 800],
+      "credentials": {
+        "googleCalendarOAuth2Api": "Google Calendar account"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const now = new Date();\nconst umDia = 24 * 60 * 60 * 1000;\nconst lembretes = [];\n\nfor (const e of $json.items) {\n  if (!e.start?.dateTime) continue;\n  const eventTime = new Date(e.start.dateTime);\n  const diff = eventTime - now;\n\n  if (diff > 0 && diff < umDia) {\n    lembretes.push({json: {nome: e.summary, data: e.start.dateTime, phone: e.description || ''}});\n  }\n}\n\nreturn lembretes;"
+      },
+      "name": "Filtrar Eventos 24h",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [600, 800]
+    },
+    {
+      "parameters": {
+        "from": "={{$json.phone}}",
+        "to": "={{$json.phone}}",
+        "message": "📅 Olá! Lembrete: você tem um agendamento amanhã às {{$json.data}}"
+      },
+      "name": "Enviar Lembrete WhatsApp",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [900, 800],
+      "credentials": {
+        "twilioApi": "Twilio account"
       }
     }
   ],
-  "pinData": {},
   "connections": {
-    "Webhook IN": {
+    "Webhook IN": {"main": [[{"node":"Decidir Ação","type":"main","index":0}]]},
+    "Decidir Ação": {
       "main": [
-        [
-          {
-            "node": "Responder WhatsApp",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{"node":"Enviar Menu","type":"main","index":0}],
+        [{"node":"Pedir Nome/Data","type":"main","index":0}],
+        [{"node":"Responder Dúvidas","type":"main","index":0}],
+        [{"node":"Pedir Cancelamento","type":"main","index":0}]
       ]
     },
-    "Responder WhatsApp": {
+    "Pedir Nome/Data": {"main":[[{"node":"Extrair Nome/Data","type":"main","index":0}]]},
+    "Extrair Nome/Data": {"main":[[{"node":"Criar Evento Google Calendar","type":"main","index":0}]]},
+    "Criar Evento Google Calendar": {"main":[[{"node":"Confirmar Agendamento","type":"main","index":0}]]},
+    "Pedir Cancelamento": {"main":[[{"node":"Extrair Nome/Data Cancelar","type":"main","index":0}]]},
+    "Extrair Nome/Data Cancelar": {"main":[[{"node":"Listar Eventos Google Calendar","type":"main","index":0}]]},
+    "Listar Eventos Google Calendar": {"main":[[{"node":"Encontrar Evento","type":"main","index":0}]]},
+    "Encontrar Evento": {
       "main": [
-        [
-          {
-            "node": "Extrair Nome/Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{"node":"Deletar Evento Google Calendar","type":"main","index":0}],
+        [{"node":"Erro Cancelamento","type":"main","index":0}]
       ]
     },
-    "Extrair Nome/Data": {
-      "main": [
-        [
-          {
-            "node": "Criar Evento Google Calendar",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Criar Evento Google Calendar": {
-      "main": [
-        [
-          {
-            "node": "Confirmar WhatsApp",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
-  "active": true,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "81828fae-1e4a-4e8c-ab75-4532008689e3",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "8a37f4c52f7201ac163c49fcf46795e4637bae450cdf4fb3e5f0f048f263aa4f"
-  },
-  "id": "IFjAvuy7IuQktmp5",
-  "tags": []
+    "Deletar Evento Google Calendar": {"main":[[{"node":"Confirmar Cancelamento","type":"main","index":0}]]},
+    "Cron Lembrete": {"main":[[{"node":"Listar Eventos p/ Lembrete","type":"main","index":0}]]},
+    "Listar Eventos p/ Lembrete": {"main":[[{"node":"Filtrar Eventos 24h","type":"main","index":0}]]},
+    "Filtrar Eventos 24h": {"main":[[{"node":"Enviar Lembrete WhatsApp","type":"main","index":0}]]}
+  }
 }

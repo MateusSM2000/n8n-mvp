@@ -1,5 +1,5 @@
 {
-  "name": "Agendamento Completo com Estado",
+  "name": "Agendamento Completo com MySQL",
   "nodes": [
     {
       "parameters": {
@@ -23,28 +23,14 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "CREATE TABLE IF NOT EXISTS conversas (id INTEGER PRIMARY KEY AUTOINCREMENT, telefone TEXT UNIQUE, estado TEXT, nome TEXT, data TEXT);"
-      },
-      "name": "Criar Tabela (se não existir)",
-      "type": "n8n-nodes-base.sqlite",
-      "typeVersion": 1,
-      "position": [500, -200],
-      "credentials": {
-        "sqlite": "SQLite Local"
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT * FROM conversas WHERE telefone = {{ $json[\"telefone\"] }};"
+        "query": "SELECT * FROM conversas WHERE telefone='{{$json.telefone}}';"
       },
       "name": "Buscar Estado",
-      "type": "n8n-nodes-base.sqlite",
+      "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [500, 0],
       "credentials": {
-        "sqlite": "SQLite Local"
+        "mySql": "MySQL Local"
       }
     },
     {
@@ -52,7 +38,7 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json[\"rows\"][0]}}",
+              "value1": "={{$json[\"data\"]}}",
               "operation": "isEmpty"
             }
           ]
@@ -65,15 +51,14 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO conversas (telefone, estado) VALUES ({{ $json[\"telefone\"] }}, 'menu');"
+        "query": "INSERT INTO conversas (telefone, estado) VALUES ('{{$json.telefone}}','menu');"
       },
       "name": "Criar Novo Usuário",
-      "type": "n8n-nodes-base.sqlite",
+      "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [1000, -150],
       "credentials": {
-        "sqlite": "SQLite Local"
+        "mySql": "MySQL Local"
       }
     },
     {
@@ -92,7 +77,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const rows=$json.rows;if(!rows||rows.length===0)return[{json:{estado:'menu'}}];return[{json:{estado:rows[0].estado,telefone:rows[0].telefone,mensagem:$json.mensagem,to:$json.to}}];"
+        "functionCode": "return [{json:{estado: $json.data?.[0]?.estado || 'menu', telefone: $json.telefone, mensagem: $json.mensagem, to: $json.to}}];"
       },
       "name": "Extrair Estado Atual",
       "type": "n8n-nodes-base.function",
@@ -125,15 +110,14 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE conversas SET estado='esperando_nome_data' WHERE telefone={{$json.telefone}};"
+        "query": "UPDATE conversas SET estado='esperando_nome_data' WHERE telefone='{{$json.telefone}}';"
       },
       "name": "Atualizar Estado Esperando Nome/Data",
-      "type": "n8n-nodes-base.sqlite",
+      "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [1750, -150],
       "credentials": {
-        "sqlite": "SQLite Local"
+        "mySql": "MySQL Local"
       }
     },
     {
@@ -191,28 +175,26 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE conversas SET estado='menu' WHERE telefone={{$json.telefone}};"
+        "query": "UPDATE conversas SET estado='menu' WHERE telefone='{{$json.telefone}}';"
       },
       "name": "Voltar ao Menu (Após Agendar)",
-      "type": "n8n-nodes-base.sqlite",
+      "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [2250, 150],
       "credentials": {
-        "sqlite": "SQLite Local"
+        "mySql": "MySQL Local"
       }
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE conversas SET estado='esperando_cancelamento' WHERE telefone={{$json.telefone}};"
+        "query": "UPDATE conversas SET estado='esperando_cancelamento' WHERE telefone='{{$json.telefone}}';"
       },
       "name": "Atualizar Estado Esperando Cancelamento",
-      "type": "n8n-nodes-base.sqlite",
+      "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [1750, 50],
       "credentials": {
-        "sqlite": "SQLite Local"
+        "mySql": "MySQL Local"
       }
     },
     {
@@ -225,55 +207,6 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [2000, 50],
-      "credentials": {
-        "twilioApi": "Twilio account"
-      }
-    },
-    {
-      "parameters": {
-        "calendar": "primary",
-        "options": { "returnAll": true }
-      },
-      "name": "Listar Eventos Calendar",
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1,
-      "position": [1750, 350],
-      "credentials": {
-        "googleCalendarOAuth2Api": "Google Calendar account"
-      }
-    },
-    {
-      "parameters": {
-        "functionCode": "const nome=$json.nome;const data=$json.data;const evento=$json.items.find(e=>e.summary.includes(nome)&&e.start.dateTime.includes(data));if(evento)return[{json:{eventoId:evento.id,telefone:$json.telefone,to:$json.to,nome,data}}];return[];"
-      },
-      "name": "Encontrar Evento",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [2000, 350]
-    },
-    {
-      "parameters": {
-        "calendar": "primary",
-        "eventId": "={{$json.eventoId}}"
-      },
-      "name": "Deletar Evento Google Calendar",
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1,
-      "position": [2250, 350],
-      "credentials": {
-        "googleCalendarOAuth2Api": "Google Calendar account"
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{$json.to}}",
-        "to": "={{$json.telefone}}",
-        "message": "❌ Agendamento cancelado!\n{{$json.nome}} em {{$json.data}}"
-      },
-      "name": "Confirmar Cancelamento",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [2500, 350],
       "credentials": {
         "twilioApi": "Twilio account"
       }
@@ -294,8 +227,7 @@
     "Switch Estado Atual": {
       "main": [
         [{ "node": "Interpretar Escolha no Menu", "type": "main", "index": 0 }],
-        [{ "node": "Extrair Nome/Data", "type": "main", "index": 0 }],
-        [{ "node": "Listar Eventos Calendar", "type": "main", "index": 0 }]
+        [{ "node": "Extrair Nome/Data", "type": "main", "index": 0 }]
       ]
     },
     "Interpretar Escolha no Menu": {
@@ -308,9 +240,6 @@
     "Atualizar Estado Esperando Cancelamento": { "main": [[{ "node": "Pedir Cancelamento", "type": "main", "index": 0 }]] },
     "Extrair Nome/Data": { "main": [[{ "node": "Criar Evento Google Calendar", "type": "main", "index": 0 }]] },
     "Criar Evento Google Calendar": { "main": [[{ "node": "Confirmar Agendamento", "type": "main", "index": 0 }]] },
-    "Confirmar Agendamento": { "main": [[{ "node": "Voltar ao Menu (Após Agendar)", "type": "main", "index": 0 }]] },
-    "Listar Eventos Calendar": { "main": [[{ "node": "Encontrar Evento", "type": "main", "index": 0 }]] },
-    "Encontrar Evento": { "main": [[{ "node": "Deletar Evento Google Calendar", "type": "main", "index": 0 }]] },
-    "Deletar Evento Google Calendar": { "main": [[{ "node": "Confirmar Cancelamento", "type": "main", "index": 0 }]] }
+    "Confirmar Agendamento": { "main": [[{ "node": "Voltar ao Menu (Após Agendar)", "type": "main", "index": 0 }]] }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Agendamento WhatsApp",
+  "name": "Agendamento Completo com Estado",
   "nodes": [
     {
       "parameters": {
@@ -14,260 +14,303 @@
     },
     {
       "parameters": {
-        "functionCode": "const msg = $json.body.Body?.trim().toLowerCase();\n\nif (msg === '1' || msg.includes('agendar')) {\n  return [{json: {acao: 'agendar'}}];\n}\nif (msg === '2' || msg.includes('duvida') || msg.includes('faq')) {\n  return [{json: {acao: 'duvidas'}}];\n}\nif (msg === '3' || msg.includes('cancel')) {\n  return [{json: {acao: 'cancelar'}}];\n}\n\nreturn [{json: {acao: 'menu'}}];"
+        "functionCode": "return [{json:{telefone:$json.body.From, mensagem:$json.body.Body?.trim().toLowerCase(), to:$json.body.To}}];"
       },
-      "name": "Decidir Ação",
+      "name": "Extrair Dados WhatsApp",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [300, 0]
+      "position": [250, 0]
     },
     {
       "parameters": {
-        "from": "={{$json.body.To}}",
-        "to": "={{$json.body.From}}",
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS conversas (id INTEGER PRIMARY KEY AUTOINCREMENT, telefone TEXT UNIQUE, estado TEXT, nome TEXT, data TEXT);"
+      },
+      "name": "Criar Tabela (se não existir)",
+      "type": "n8n-nodes-base.sqlite",
+      "typeVersion": 1,
+      "position": [500, -200],
+      "credentials": {
+        "sqlite": "SQLite Local"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM conversas WHERE telefone = {{ $json[\"telefone\"] }};"
+      },
+      "name": "Buscar Estado",
+      "type": "n8n-nodes-base.sqlite",
+      "typeVersion": 1,
+      "position": [500, 0],
+      "credentials": {
+        "sqlite": "SQLite Local"
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"rows\"][0]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Usuário Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [750, 0]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO conversas (telefone, estado) VALUES ({{ $json[\"telefone\"] }}, 'menu');"
+      },
+      "name": "Criar Novo Usuário",
+      "type": "n8n-nodes-base.sqlite",
+      "typeVersion": 1,
+      "position": [1000, -150],
+      "credentials": {
+        "sqlite": "SQLite Local"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
         "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento"
       },
-      "name": "Enviar Menu",
+      "name": "Enviar Menu Inicial",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [600, -200],
+      "position": [1250, -150],
       "credentials": {
         "twilioApi": "Twilio account"
       }
     },
     {
       "parameters": {
-        "from": "={{$json.body.To}}",
-        "to": "={{$json.body.From}}",
+        "functionCode": "const rows=$json.rows;if(!rows||rows.length===0)return[{json:{estado:'menu'}}];return[{json:{estado:rows[0].estado,telefone:rows[0].telefone,mensagem:$json.mensagem,to:$json.to}}];"
+      },
+      "name": "Extrair Estado Atual",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1000, 150]
+    },
+    {
+      "parameters": {
+        "propertyName": "estado",
+        "rules": [
+          { "operation": "equal", "value": "menu" },
+          { "operation": "equal", "value": "esperando_nome_data" },
+          { "operation": "equal", "value": "esperando_cancelamento" },
+          { "operation": "equal", "value": "esperando_duvida" }
+        ]
+      },
+      "name": "Switch Estado Atual",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [1250, 150]
+    },
+    {
+      "parameters": {
+        "functionCode": "const msg=$json.mensagem;if(msg.includes('1'))return[{json:{acao:'agendar'}}];if(msg.includes('2'))return[{json:{acao:'duvida'}}];if(msg.includes('3'))return[{json:{acao:'cancelar'}}];return[{json:{acao:'menu'}}];"
+      },
+      "name": "Interpretar Escolha no Menu",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1500, -50]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE conversas SET estado='esperando_nome_data' WHERE telefone={{$json.telefone}};"
+      },
+      "name": "Atualizar Estado Esperando Nome/Data",
+      "type": "n8n-nodes-base.sqlite",
+      "typeVersion": 1,
+      "position": [1750, -150],
+      "credentials": {
+        "sqlite": "SQLite Local"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
         "message": "Por favor, envie no formato:\nNome, AAAA-MM-DD HH:MM"
       },
       "name": "Pedir Nome/Data",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [600, 0],
+      "position": [2000, -150],
       "credentials": {
         "twilioApi": "Twilio account"
       }
     },
     {
       "parameters": {
-        "functionCode": "const msg = $json.body.Body;\nif (msg.includes(',')) {\n  const parts = msg.split(',');\n  return [{json: {nome: parts[0].trim(), data: parts[1].trim(), phone: $json.body.From}}];\n}\nreturn items;"
+        "functionCode": "const msg=$json.mensagem;if(!msg.includes(','))return[];const parts=msg.split(',');return[{json:{nome:parts[0].trim(),data:parts[1].trim(),telefone:$json.telefone,to:$json.to}}];"
       },
       "name": "Extrair Nome/Data",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [900, 0]
+      "position": [1500, 150]
     },
     {
       "parameters": {
         "calendar": "primary",
-        "start": "={{$json[\"data\"]}}",
-        "end": "={{$json[\"data\"]}}",
-        "title": "Consulta com {{$json[\"nome\"]}}"
+        "title": "Consulta com {{$json.nome}}",
+        "start": "={{$json.data}}",
+        "end": "={{$json.data}}",
+        "description": "={{$json.telefone}}"
       },
       "name": "Criar Evento Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
-      "position": [1150, 0],
+      "position": [1750, 150],
       "credentials": {
         "googleCalendarOAuth2Api": "Google Calendar account"
       }
     },
     {
       "parameters": {
-        "from": "={{$json.body.To}}",
-        "to": "={{$json.body.From}}",
-        "message": "Agendamento confirmado ✅\n{{$json[\"nome\"]}} em {{$json[\"data\"]}}"
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
+        "message": "✅ Agendamento confirmado!\n{{$json.nome}} em {{$json.data}}"
       },
       "name": "Confirmar Agendamento",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [1400, 0],
+      "position": [2000, 150],
       "credentials": {
         "twilioApi": "Twilio account"
       }
     },
     {
       "parameters": {
-        "from": "={{$json.body.To}}",
-        "to": "={{$json.body.From}}",
-        "message": "FAQ da empresa:\n- Horário: seg a sex, 08h às 18h\n- Planos aceitos: Unimed, Amil\n- Endereço: Rua Exemplo, 123\n\nSe precisar de mais detalhes, digite 'humano'."
+        "operation": "executeQuery",
+        "query": "UPDATE conversas SET estado='menu' WHERE telefone={{$json.telefone}};"
       },
-      "name": "Responder Dúvidas",
-      "type": "n8n-nodes-base.twilio",
+      "name": "Voltar ao Menu (Após Agendar)",
+      "type": "n8n-nodes-base.sqlite",
       "typeVersion": 1,
-      "position": [600, 200],
+      "position": [2250, 150],
       "credentials": {
-        "twilioApi": "Twilio account"
+        "sqlite": "SQLite Local"
       }
     },
     {
       "parameters": {
-        "from": "={{$json.body.To}}",
-        "to": "={{$json.body.From}}",
-        "message": "Envie o Nome e Data do agendamento que deseja cancelar (formato: Nome, AAAA-MM-DD HH:MM)"
+        "operation": "executeQuery",
+        "query": "UPDATE conversas SET estado='esperando_cancelamento' WHERE telefone={{$json.telefone}};"
+      },
+      "name": "Atualizar Estado Esperando Cancelamento",
+      "type": "n8n-nodes-base.sqlite",
+      "typeVersion": 1,
+      "position": [1750, 50],
+      "credentials": {
+        "sqlite": "SQLite Local"
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
+        "message": "Envie o Nome e Data do agendamento que deseja cancelar (Nome, AAAA-MM-DD HH:MM)"
       },
       "name": "Pedir Cancelamento",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [600, 400],
+      "position": [2000, 50],
       "credentials": {
         "twilioApi": "Twilio account"
       }
     },
     {
       "parameters": {
-        "functionCode": "const msg = $json.body.Body;\nif (msg.includes(',')) {\n  const parts = msg.split(',');\n  return [{json: {nome: parts[0].trim(), data: parts[1].trim(), phone: $json.body.From}}];\n}\nreturn items;"
-      },
-      "name": "Extrair Nome/Data Cancelar",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [900, 400]
-    },
-    {
-      "parameters": {
         "calendar": "primary",
-        "options": {
-          "returnAll": true
-        }
+        "options": { "returnAll": true }
       },
-      "name": "Listar Eventos Google Calendar",
+      "name": "Listar Eventos Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
-      "position": [1150, 400],
+      "position": [1750, 350],
       "credentials": {
         "googleCalendarOAuth2Api": "Google Calendar account"
       }
     },
     {
       "parameters": {
-        "functionCode": "const nome = $json.nome;\nconst data = $json.data;\n\nconst evento = items[0].json.items.find(e => {\n  return e.summary.includes(nome) && e.start.dateTime.includes(data);\n});\n\nif (evento) {\n  return [{json: {eventoId: evento.id, nome, data, phone: $json.phone}}];\n}\n\nreturn [{json: {erro: true}}];"
+        "functionCode": "const nome=$json.nome;const data=$json.data;const evento=$json.items.find(e=>e.summary.includes(nome)&&e.start.dateTime.includes(data));if(evento)return[{json:{eventoId:evento.id,telefone:$json.telefone,to:$json.to,nome,data}}];return[];"
       },
       "name": "Encontrar Evento",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "position": [1400, 400]
+      "position": [2000, 350]
     },
     {
       "parameters": {
         "calendar": "primary",
-        "eventId": "={{$json[\"eventoId\"]}}"
+        "eventId": "={{$json.eventoId}}"
       },
       "name": "Deletar Evento Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
-      "position": [1650, 400],
+      "position": [2250, 350],
       "credentials": {
         "googleCalendarOAuth2Api": "Google Calendar account"
       }
     },
     {
       "parameters": {
-        "from": "={{$json.phone}}",
-        "to": "={{$json.phone}}",
-        "message": "Agendamento cancelado ❌\n{{$json[\"nome\"]}} em {{$json[\"data\"]}}"
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
+        "message": "❌ Agendamento cancelado!\n{{$json.nome}} em {{$json.data}}"
       },
       "name": "Confirmar Cancelamento",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [1900, 400],
-      "credentials": {
-        "twilioApi": "Twilio account"
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{$json.body.To}}",
-        "to": "={{$json.body.From}}",
-        "message": "Não encontrei esse agendamento. Verifique nome/data e tente novamente."
-      },
-      "name": "Erro Cancelamento",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [1900, 600],
-      "credentials": {
-        "twilioApi": "Twilio account"
-      }
-    },
-    {
-      "parameters": {
-        "triggerTimes": {
-          "item": [
-            {
-              "mode": "everyHour"
-            }
-          ]
-        }
-      },
-      "name": "Cron Lembrete",
-      "type": "n8n-nodes-base.cron",
-      "typeVersion": 1,
-      "position": [0, 800]
-    },
-    {
-      "parameters": {
-        "calendar": "primary",
-        "options": {
-          "returnAll": true
-        }
-      },
-      "name": "Listar Eventos p/ Lembrete",
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1,
-      "position": [300, 800],
-      "credentials": {
-        "googleCalendarOAuth2Api": "Google Calendar account"
-      }
-    },
-    {
-      "parameters": {
-        "functionCode": "const now = new Date();\nconst umDia = 24 * 60 * 60 * 1000;\nconst lembretes = [];\n\nfor (const e of $json.items) {\n  if (!e.start?.dateTime) continue;\n  const eventTime = new Date(e.start.dateTime);\n  const diff = eventTime - now;\n\n  if (diff > 0 && diff < umDia) {\n    lembretes.push({json: {nome: e.summary, data: e.start.dateTime, phone: e.description || ''}});\n  }\n}\n\nreturn lembretes;"
-      },
-      "name": "Filtrar Eventos 24h",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [600, 800]
-    },
-    {
-      "parameters": {
-        "from": "={{$json.phone}}",
-        "to": "={{$json.phone}}",
-        "message": "📅 Olá! Lembrete: você tem um agendamento amanhã às {{$json.data}}"
-      },
-      "name": "Enviar Lembrete WhatsApp",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [900, 800],
+      "position": [2500, 350],
       "credentials": {
         "twilioApi": "Twilio account"
       }
     }
   ],
   "connections": {
-    "Webhook IN": {"main": [[{"node":"Decidir Ação","type":"main","index":0}]]},
-    "Decidir Ação": {
+    "Webhook IN": { "main": [[{ "node": "Extrair Dados WhatsApp", "type": "main", "index": 0 }]] },
+    "Extrair Dados WhatsApp": { "main": [[{ "node": "Buscar Estado", "type": "main", "index": 0 }]] },
+    "Buscar Estado": { "main": [[{ "node": "Usuário Existe?", "type": "main", "index": 0 }]] },
+    "Usuário Existe?": {
       "main": [
-        [{"node":"Enviar Menu","type":"main","index":0}],
-        [{"node":"Pedir Nome/Data","type":"main","index":0}],
-        [{"node":"Responder Dúvidas","type":"main","index":0}],
-        [{"node":"Pedir Cancelamento","type":"main","index":0}]
+        [{ "node": "Criar Novo Usuário", "type": "main", "index": 0 }],
+        [{ "node": "Extrair Estado Atual", "type": "main", "index": 0 }]
       ]
     },
-    "Pedir Nome/Data": {"main":[[{"node":"Extrair Nome/Data","type":"main","index":0}]]},
-    "Extrair Nome/Data": {"main":[[{"node":"Criar Evento Google Calendar","type":"main","index":0}]]},
-    "Criar Evento Google Calendar": {"main":[[{"node":"Confirmar Agendamento","type":"main","index":0}]]},
-    "Pedir Cancelamento": {"main":[[{"node":"Extrair Nome/Data Cancelar","type":"main","index":0}]]},
-    "Extrair Nome/Data Cancelar": {"main":[[{"node":"Listar Eventos Google Calendar","type":"main","index":0}]]},
-    "Listar Eventos Google Calendar": {"main":[[{"node":"Encontrar Evento","type":"main","index":0}]]},
-    "Encontrar Evento": {
+    "Criar Novo Usuário": { "main": [[{ "node": "Enviar Menu Inicial", "type": "main", "index": 0 }]] },
+    "Extrair Estado Atual": { "main": [[{ "node": "Switch Estado Atual", "type": "main", "index": 0 }]] },
+    "Switch Estado Atual": {
       "main": [
-        [{"node":"Deletar Evento Google Calendar","type":"main","index":0}],
-        [{"node":"Erro Cancelamento","type":"main","index":0}]
+        [{ "node": "Interpretar Escolha no Menu", "type": "main", "index": 0 }],
+        [{ "node": "Extrair Nome/Data", "type": "main", "index": 0 }],
+        [{ "node": "Listar Eventos Calendar", "type": "main", "index": 0 }]
       ]
     },
-    "Deletar Evento Google Calendar": {"main":[[{"node":"Confirmar Cancelamento","type":"main","index":0}]]},
-    "Cron Lembrete": {"main":[[{"node":"Listar Eventos p/ Lembrete","type":"main","index":0}]]},
-    "Listar Eventos p/ Lembrete": {"main":[[{"node":"Filtrar Eventos 24h","type":"main","index":0}]]},
-    "Filtrar Eventos 24h": {"main":[[{"node":"Enviar Lembrete WhatsApp","type":"main","index":0}]]}
+    "Interpretar Escolha no Menu": {
+      "main": [
+        [{ "node": "Atualizar Estado Esperando Nome/Data", "type": "main", "index": 0 }],
+        [{ "node": "Atualizar Estado Esperando Cancelamento", "type": "main", "index": 0 }]
+      ]
+    },
+    "Atualizar Estado Esperando Nome/Data": { "main": [[{ "node": "Pedir Nome/Data", "type": "main", "index": 0 }]] },
+    "Atualizar Estado Esperando Cancelamento": { "main": [[{ "node": "Pedir Cancelamento", "type": "main", "index": 0 }]] },
+    "Extrair Nome/Data": { "main": [[{ "node": "Criar Evento Google Calendar", "type": "main", "index": 0 }]] },
+    "Criar Evento Google Calendar": { "main": [[{ "node": "Confirmar Agendamento", "type": "main", "index": 0 }]] },
+    "Confirmar Agendamento": { "main": [[{ "node": "Voltar ao Menu (Após Agendar)", "type": "main", "index": 0 }]] },
+    "Listar Eventos Calendar": { "main": [[{ "node": "Encontrar Evento", "type": "main", "index": 0 }]] },
+    "Encontrar Evento": { "main": [[{ "node": "Deletar Evento Google Calendar", "type": "main", "index": 0 }]] },
+    "Deletar Evento Google Calendar": { "main": [[{ "node": "Confirmar Cancelamento", "type": "main", "index": 0 }]] }
   }
 }

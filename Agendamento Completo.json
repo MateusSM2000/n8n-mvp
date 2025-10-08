@@ -1,0 +1,825 @@
+{
+  "name": "Agendamento Completo com MySQL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook",
+        "options": {}
+      },
+      "name": "Webhook IN",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -2416,
+        176
+      ],
+      "webhookId": "whatsapp-webhook",
+      "id": "fbd7e3ac-4b78-47da-b29e-8166384c377d"
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{telefone:$json.body.From, mensagem:$json.body.Body?.trim().toLowerCase(), to:$json.body.To}}];"
+      },
+      "name": "Extrair Dados WhatsApp",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -2160,
+        176
+      ],
+      "id": "79bfde76-0a5f-46d5-99a9-b40547503de7"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from conversas\nwhere telefone = '{{ $json.telefone }}';"
+      },
+      "name": "Buscar Estado",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        176
+      ],
+      "id": "a529ff41-b847-440e-a24a-d7735e2b6632",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json}}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Usuário Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1664,
+        176
+      ],
+      "id": "c02fb65a-69cc-4976-a1e9-9da97b0c4157"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into conversas (telefone, estado)\nvalues ('{{ $('Extrair Dados WhatsApp').item.json.telefone }}', 'menu');"
+      },
+      "name": "Criar Novo Usuário",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        -240
+      ],
+      "id": "7adfc9ff-f8c1-4b15-93eb-5b62332f2455",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const msg=$json.mensagem;if(msg.includes('1'))return[{json:{acao:'agendar'}}];if(msg.includes('2'))return[{json:{acao:'duvida'}}];if(msg.includes('3'))return[{json:{acao:'cancelar'}}];return[{json:{acao:'menu'}}];"
+      },
+      "name": "Interpretar Escolha no Menu",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        880
+      ],
+      "id": "694ec5e5-b871-4707-8352-fab428752d56"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from conversas"
+      },
+      "name": "Atualizar Estado Esperando Nome/Data",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        768
+      ],
+      "id": "c4917213-eb6e-4819-a1ff-052cff838890",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
+        "message": "Por favor, envie no formato:\nNome, AAAA-MM-DD HH:MM",
+        "options": {}
+      },
+      "name": "Pedir Nome/Data",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        768
+      ],
+      "id": "9fdf35c0-bf22-44d1-8d61-04bbb8aac307",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": "primary",
+        "start": "={{$json.data}}",
+        "end": "={{$json.data}}",
+        "additionalFields": {}
+      },
+      "name": "Criar Evento Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        400
+      ],
+      "id": "302a7e32-4462-4148-827c-662dd7eb893f",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": null,
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
+        "message": "✅ Agendamento confirmado!\n{{$json.nome}} em {{$json.data}}",
+        "options": {}
+      },
+      "name": "Confirmar Agendamento",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        400
+      ],
+      "id": "04f4d93a-10e7-41c2-945e-87611a9a3015",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from conversas"
+      },
+      "name": "Voltar ao Menu (Após Agendar)",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        400
+      ],
+      "id": "44d0ad9a-d7f1-43db-8684-820defcdfb03",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from conversas"
+      },
+      "name": "Atualizar Estado Esperando Cancelamento",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        1056
+      ],
+      "id": "e6a1c68d-9658-4d5d-b148-07139e8f75df",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
+        "message": "Envie o Nome e Data do agendamento que deseja cancelar (Nome, AAAA-MM-DD HH:MM)",
+        "options": {}
+      },
+      "name": "Pedir Cancelamento",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        1056
+      ],
+      "id": "a4e680ee-a2f0-44d9-b6bc-5a46243fa7de",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
+        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento",
+        "options": {}
+      },
+      "name": "Enviar Menu Inicial",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -1232,
+        -240
+      ],
+      "id": "ccd17320-a1ec-48ac-a300-0375fa0bc734",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{estado: $json.estado, telefone: $('Extrair Dados WhatsApp').item.json.telefone, mensagem: $('Extrair Dados WhatsApp').item.json.mensagem, to: $('Extrair Dados WhatsApp').item.json.to}}];"
+      },
+      "name": "Extrair Estado Atual",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        192
+      ],
+      "id": "5adae11e-8d31-41fb-9831-48c008bd2aae"
+    },
+    {
+      "parameters": {
+        "from": "={{$json.to}}",
+        "to": "={{$json.telefone}}",
+        "message": "=Por favor, digite seu nome e a data que deseja reservar no formato:\nNome, DD/MM/AAAA HH:MM",
+        "options": {}
+      },
+      "name": "Pedir nome e data",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -256
+      ],
+      "id": "836118d7-532d-4e94-a0d1-444fa9b1aba9",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update conversas\nset estado = 'agendamento'\nwhere telefone = '{{ $('Extrair Estado Atual').item.json.telefone }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -224,
+        -256
+      ],
+      "id": "59e0a5b7-1608-4e5d-8774-ecad87143103",
+      "name": "Mudar estado para agendamento",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0e7bfae9-4d6f-4ab4-bc87-18ff5fedee51",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "menu",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -736,
+        -240
+      ],
+      "id": "a173d3f8-7959-4e44-b175-e34c32228302",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "172934af-0ad5-4bfd-bdc7-b79ad0a7216b"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "iniciar agendamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f1b96e06-7c04-4cfd-ae2d-9fdc3f0acf00",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "agendar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "iniciar agendamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e97a6ee4-b2c5-4cf5-a2f1-7f1817646784",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enviar duvidas"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "88aa86ed-d571-4ec6-8e7d-47d5759c33bf",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "duvida",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enviar duvidas"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e10c0678-68bf-4094-9c12-af9894adab68",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "dúvida",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enviar duvidas"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "25431c5d-31ab-44d0-9f47-97c0f70271fb",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "iniciar cancelamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f327e4df-dd5d-44cc-ab5a-d1c861c9052f",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "cancelar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "iniciar cancelamento"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -1088,
+        -64
+      ],
+      "id": "9e5487e7-084c-4148-997c-4b53dded41df",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  item.json.myNewField = 1\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -816,
+        400
+      ],
+      "id": "0c3ba479-35b2-4e8d-850c-4222d76cc56f",
+      "name": "Extrair nome e data"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "agendamento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "ca8202e9-78ca-480a-9531-4739615a6ebd"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "agendamento"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -1088,
+        400
+      ],
+      "id": "2d2f9bd9-2788-4193-8aae-5c74eb2afae5",
+      "name": "Switch1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook IN": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Dados WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Buscar Estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Estado": {
+      "main": [
+        [
+          {
+            "node": "Usuário Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usuário Existe?": {
+      "main": [
+        [
+          {
+            "node": "Criar Novo Usuário",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extrair Estado Atual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Novo Usuário": {
+      "main": [
+        [
+          {
+            "node": "Enviar Menu Inicial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interpretar Escolha no Menu": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Estado Esperando Nome/Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Estado Esperando Nome/Data": {
+      "main": [
+        [
+          {
+            "node": "Pedir Nome/Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Estado Esperando Cancelamento": {
+      "main": [
+        [
+          {
+            "node": "Pedir Cancelamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Evento Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Confirmar Agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar Agendamento": {
+      "main": [
+        [
+          {
+            "node": "Voltar ao Menu (Após Agendar)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Estado Atual": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pedir nome e data": {
+      "main": [
+        [
+          {
+            "node": "Mudar estado para agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Pedir nome e data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "Extrair nome e data": {
+      "main": [
+        [
+          {
+            "node": "Criar Evento Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Extrair nome e data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c8484329-c14e-48d7-a196-ca126f80a580",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb109072c7e3897f3d4cd1c2cc4864bc3ba45d5c1d80634c5ee3532b7bdc100f"
+  },
+  "id": "0wZTN28rsAHoA4JR",
+  "tags": []
+}

@@ -99,8 +99,8 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -704,
-        880
+        -1056,
+        1088
       ],
       "id": "694ec5e5-b871-4707-8352-fab428752d56"
     },
@@ -113,8 +113,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -464,
-        768
+        -816,
+        976
       ],
       "id": "c4917213-eb6e-4819-a1ff-052cff838890",
       "credentials": {
@@ -135,8 +135,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -208,
-        768
+        -560,
+        976
       ],
       "id": "9fdf35c0-bf22-44d1-8d61-04bbb8aac307",
       "credentials": {
@@ -149,18 +149,18 @@
     {
       "parameters": {
         "calendar": "primary",
-        "start": "={{ $json.data_google_calendar_start }}",
-        "end": "={{ $json.data_google_calendar_end }}",
+        "start": "={{ $('Transformação de dados').item.json.data_google_calendar_start }}",
+        "end": "={{ $('Transformação de dados').item.json.data_google_calendar_end }}",
         "additionalFields": {
-          "summary": "=Consulta {{ $json.nome }} {{ $json.to }}"
+          "summary": "=Consulta {{ $('Transformação de dados').item.json.nome }} {{ $('Transformação de dados').item.json.to }}"
         }
       },
       "name": "Criar Evento Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
       "position": [
-        -160,
-        384
+        384,
+        352
       ],
       "id": "302a7e32-4462-4148-827c-662dd7eb893f",
       "credentials": {
@@ -181,8 +181,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        32,
-        384
+        560,
+        352
       ],
       "id": "04f4d93a-10e7-41c2-945e-87611a9a3015",
       "credentials": {
@@ -201,8 +201,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -640,
-        1056
+        -992,
+        1264
       ],
       "id": "e6a1c68d-9658-4d5d-b148-07139e8f75df",
       "credentials": {
@@ -223,8 +223,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -384,
-        1056
+        -736,
+        1264
       ],
       "id": "a4e680ee-a2f0-44d9-b6bc-5a46243fa7de",
       "credentials": {
@@ -273,7 +273,7 @@
       "parameters": {
         "from": "={{$json.to}}",
         "to": "={{$json.telefone}}",
-        "message": "=Por favor, digite seu nome e a data que deseja reservar no formato:\nNome, DD/MM/AAAA HH:MM",
+        "message": "=Por favor, digite seu nome e a data que deseja reservar.",
         "options": {}
       },
       "name": "Pedir nome e data",
@@ -481,7 +481,9 @@
                   }
                 ],
                 "combinator": "and"
-              }
+              },
+              "renameOutput": true,
+              "outputKey": "default"
             }
           ]
         },
@@ -533,8 +535,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -864,
-        384
+        -672,
+        528
       ],
       "id": "2d2f9bd9-2788-4193-8aae-5c74eb2afae5",
       "name": "Opções estados"
@@ -576,14 +578,14 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\"\n}\n\nMensagem: {{ $json[\"mensagem\"] }}",
+        "text": "=Você é um assistente de agendamento.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\"\n}\n\nMensagem: {{ $json[\"mensagem\"] }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -672,
-        384
+        -480,
+        528
       ],
       "id": "83ae222e-315b-4e94-bd7c-906201a77468",
       "name": "Basic LLM Chain"
@@ -596,8 +598,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -672,
-        576
+        -480,
+        720
       ],
       "id": "be938520-0071-446e-884b-92f679d6000d",
       "name": "Google Gemini Chat Model",
@@ -610,13 +612,13 @@
     },
     {
       "parameters": {
-        "jsCode": "let output = $input.first().json.text || '';\noutput = output\n  .replace(/```json/i, '')\n  .replace(/```/g, '')\n  .trim();\nconst dados = JSON.parse(output);\n\nconst dataInicial = new Date(dados.data).toISOString();\n\nlet dataFinal = new Date(dados.data);\ndataFinal.setHours(dataFinal.getHours() + 1);\n\n\nconst dataStart = new Date(dados.data);\nconst formatador = new Intl.DateTimeFormat('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  timeZone: 'America/Sao_Paulo'\n});\nconst dataFormatada = formatador.format(dataStart).replace(',', '');\n\nconst dataFormatadaMYSQL = new Date(dados.data).toISOString().replace('T', ' ').slice(0,19)\n\nreturn [{\n  json: {\n    nome: dados.nome,\n    data_google_calendar_start: dataInicial,\n    data_google_calendar_end: dataFinal.toISOString(),\n    data_a_exibir: dataFormatada,\n    data_mysql: dataFormatadaMYSQL,\n    telefone: $('Extrair Dados WhatsApp').first().json.to,\n    to: $('Extrair Dados WhatsApp').first().json.telefone\n  }\n}];\n"
+        "jsCode": "let output = $input.first().json.text || '';\noutput = output\n  .replace(/```json/i, '')\n  .replace(/```/g, '')\n  .trim();\nconst dados = JSON.parse(output);\n\nfunction capitalizeEachWord(sentence) {\n  return sentence.split(' ').map(word => {\n    if (word.length === 0) { // Handle empty strings if any\n      return '';\n    }\n    return word.charAt(0).toUpperCase() + word.slice(1);\n  }).join(' ');\n}\n\nconst dataInicial = new Date(dados.data).toISOString();\n\nlet dataFinal = new Date(dados.data);\ndataFinal.setHours(dataFinal.getHours() + 1);\n\n\nconst dataStart = new Date(dados.data);\nconst formatador = new Intl.DateTimeFormat('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  timeZone: 'America/Sao_Paulo'\n});\nconst dataFormatada = formatador.format(dataStart).replace(',', '');\n\nconst dataFormatadaMYSQL = new Date(dados.data).toISOString().replace('T', ' ').slice(0,19)\n\nreturn [{\n  json: {\n    nome: capitalizeEachWord(dados.nome),\n    data_google_calendar_start: dataInicial,\n    data_google_calendar_end: dataFinal.toISOString(),\n    data_a_exibir: dataFormatada,\n    data_mysql: dataFormatadaMYSQL,\n    telefone: $('Extrair Dados WhatsApp').first().json.to,\n    to: $('Extrair Dados WhatsApp').first().json.telefone\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -368,
-        384
+        -176,
+        528
       ],
       "id": "74e76cfe-5b7f-4f99-9946-3c71b9910bf6",
       "name": "Transformação de dados"
@@ -630,8 +632,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        224,
-        384
+        752,
+        352
       ],
       "id": "d9aeab29-9d92-4f51-89f3-a7ffbcac3c3d",
       "name": "retornar estado menu",
@@ -653,8 +655,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -608,
-        80
+        -656,
+        64
       ],
       "id": "56a21672-e120-4e2c-afbc-82cadd5b73a1",
       "credentials": {
@@ -663,9 +665,418 @@
           "name": "Twilio account"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "calendar",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "timeMin": "={{ $json.data_google_calendar_start }}",
+        "timeMax": "={{ $json.data_google_calendar_end }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        528
+      ],
+      "id": "db9e83b5-cefc-42a9-bb24-7219a167162b",
+      "name": "Get availability in a calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5zO8YWIhs6oVo5hV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "eabece7f-6ad2-4b07-a92e-d60743013a35",
+              "leftValue": "={{ $json.available }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        528
+      ],
+      "id": "3dfa2e6a-d986-42e7-827a-ac2585189bab",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.after }}",
+        "timeMax": "={{ $json.before }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        592,
+        688
+      ],
+      "id": "caef0c2e-288a-4d0a-9e80-97e3a1ab4d69",
+      "name": "Get many events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5zO8YWIhs6oVo5hV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let originalDate = $('Transformação de dados').first().json.data_google_calendar_start;\n\nlet startOfDay = new Date(originalDate);\nconsole.log(startOfDay);\nstartOfDay.setUTCHours(0, 0, 0, 0);\n\nlet endOfDay = new Date(originalDate);\nendOfDay.setUTCDate(endOfDay.getUTCDate() + 1);\nendOfDay.setUTCHours(0, 0, 0, 0);\n\nreturn [\n  {\n    \"json\": {\n      \"after\" : startOfDay.toISOString(),\n      \"before\": endOfDay.toISOString()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        688
+      ],
+      "id": "dd7da1c7-99e8-4953-9160-14115fc29e01",
+      "name": "Transformação de Dados"
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventos = $input.all();\nconst horariosOcupados = eventos.map(e => new Date(new Date(e.json.start.dateTime).setHours(new Date(e.json.start.dateTime).getHours() - 3)).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}));\nconsole.log(horariosOcupados);\nconst msg = `⛔ O horário escolhido já está ocupado.\\nHorários livres neste dia: ${[\"08:00\", \"09:00\", \"10:00\", \"11:00\", \"13:00\", \"14:00\", \"15:00\", \"16:00\", \"17:00\"].filter(h => !horariosOcupados.includes(h)).join(', ')}.`;\n\nreturn [{\n  json: {\n    message: msg\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        912
+      ],
+      "id": "4e22053d-1504-41fb-9eed-7ec0015c2433",
+      "name": "Horarios livres"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "triggerOn": "eventCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        896,
+        512
+      ],
+      "id": "34a2cdf8-77a9-4c56-97a5-1f49bf7106ca",
+      "name": "Google Calendar Trigger",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5zO8YWIhs6oVo5hV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.creator.email }}",
+        "subject": "={{ $json.summary }}",
+        "emailType": "text",
+        "message": "={{ $json.start.date }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        512
+      ],
+      "id": "bfbdcf8c-7ae1-473d-a676-579368d4b073",
+      "name": "Send a message",
+      "webhookId": "d5bb4bea-d29b-41f8-98a1-bd986651d69d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Fr4rZg5pXAZCt6k4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um assistente de agendamento para solucionar conflitos na escolha de horário que o cliente pede. A seguir são todos os eventos agendados no meu Google Calendar para o dia que o cliente quer agendar, em formato json:\n\n{{ $input.all() }}\n\nPreciso que você crie uma mensagem explicando ao cliente ({{ $('Transformação de dados').item.json.nome }}) que o horário que ele pediu já está agendado, e que você proponha novos horários em que não há eventos criados durante o nosso horário de funcionamento, que é das 08:00 às 18:00. Diga, também, para reenviar a mensagem com seu nome, data e horário novamente.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        800,
+        688
+      ],
+      "id": "b94755e9-7ccc-4363-90a2-757e3803b86f",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-pro-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        800,
+        864
+      ],
+      "id": "11638dd7-12bf-47a7-9acc-52bfde066188",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ig7oq7pctKGz7cqE",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Transformação de dados').item.json.telefone }}",
+        "to": "={{ $('Transformação de dados').item.json.to }}",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        688
+      ],
+      "id": "fe81c0b1-d951-4644-af5e-d9e7b7b52871",
+      "name": "Horários alternativos",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update conversas\nset estado = 'menu'\nwhere telefone = '{{ $('Extrair Estado Atual').item.json.telefone }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -496,
+        272
+      ],
+      "id": "cfff9279-aa7c-49c4-bfe5-294fe6d094f8",
+      "name": "Retornar ao menu",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
+        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento",
+        "options": {}
+      },
+      "name": "Enviar Menu Inicial2",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        272
+      ],
+      "id": "683a047f-c189-4933-9ed2-4fec0e71ce56",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "08e37ee4-b4d4-4290-93e2-d1f7f9ec8d21",
+              "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
+              "rightValue": "menu",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "6d27df10-1b90-498d-88b2-f41c5d78e747",
+              "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
+              "rightValue": "voltar",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "f5c2cb8f-b9d5-47a5-9139-a01bebf6a84f",
+              "leftValue": "={{ $json.mensagem }}",
+              "rightValue": "retornar",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -944,
+        400
+      ],
+      "id": "87961ed2-f414-4680-88ea-7d32c9b1f343",
+      "name": "If voltar menu"
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Transformação de dados": [
+      {
+        "json": {
+          "nome": "Mateus Mesquita",
+          "data_google_calendar_start": "2025-10-15T17:01:00.000Z",
+          "data_google_calendar_end": "2025-10-15T18:01:00.000Z",
+          "data_a_exibir": "15/10/2025 15:00",
+          "data_mysql": "2025-10-15 18:00:00",
+          "telefone": "whatsapp:+14155238886",
+          "to": "whatsapp:+5519996643834"
+        }
+      }
+    ],
+    "Get many events": [
+      {
+        "json": {
+          "id": "2u6r3ei4ehir863vkojrt4k81c",
+          "summary": "Consulta Mateus Mesquita whatsapp:+5519996643834",
+          "start": {
+            "dateTime": "2025-10-15T15:10:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2025-10-15T16:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "creator": {
+            "email": "mateussmesquita@gmail.com",
+            "self": true
+          },
+          "organizer": {
+            "email": "mateussmesquita@gmail.com",
+            "self": true
+          },
+          "created": "2025-10-13T19:14:05.000Z",
+          "updated": "2025-10-13T19:14:05.842Z",
+          "etag": "\"3520765691685630\"",
+          "eventType": "default",
+          "htmlLink": "https://www.google.com/calendar/event?eid=MnU2cjNlaTRlaGlyODYzdmtvanJ0NGs4MWMgbWF0ZXVzc21lc3F1aXRhQG0",
+          "iCalUID": "2u6r3ei4ehir863vkojrt4k81c@google.com",
+          "kind": "calendar#event",
+          "reminders": {
+            "useDefault": true
+          },
+          "sequence": 0,
+          "status": "confirmed"
+        }
+      },
+      {
+        "json": {
+          "id": "copjie9k69hmabb3c9j3cb9k6gp3eb9o6tj36b9n68om4oj36pj64d1g68",
+          "summary": "Consulta",
+          "start": {
+            "dateTime": "2025-10-15T17:10:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2025-10-15T18:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "creator": {
+            "email": "mateussmesquita@gmail.com",
+            "self": true
+          },
+          "organizer": {
+            "email": "mateussmesquita@gmail.com",
+            "self": true
+          },
+          "created": "2025-10-13T20:38:55.000Z",
+          "updated": "2025-10-13T20:38:56.053Z",
+          "etag": "\"3520775872106622\"",
+          "eventType": "default",
+          "htmlLink": "https://www.google.com/calendar/event?eid=Y29wamllOWs2OWhtYWJiM2M5ajNjYjlrNmdwM2ViOW82dGozNmI5bjY4b200b2ozNnBqNjRkMWc2OCBtYXRldXNzbWVzcXVpdGFAbQ",
+          "iCalUID": "copjie9k69hmabb3c9j3cb9k6gp3eb9o6tj36b9n68om4oj36pj64d1g68@google.com",
+          "kind": "calendar#event",
+          "reminders": {
+            "useDefault": true
+          },
+          "sequence": 0,
+          "status": "confirmed"
+        }
+      }
+    ]
+  },
   "connections": {
     "Webhook IN": {
       "main": [
@@ -857,7 +1268,7 @@
         ],
         [
           {
-            "node": "Opções estados",
+            "node": "If voltar menu",
             "type": "main",
             "index": 0
           }
@@ -890,7 +1301,7 @@
       "main": [
         [
           {
-            "node": "Criar Evento Google Calendar",
+            "node": "Get availability in a calendar",
             "type": "main",
             "index": 0
           }
@@ -901,13 +1312,126 @@
       "main": [
         []
       ]
+    },
+    "Get availability in a calendar": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Criar Evento Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Transformação de Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transformação de Dados": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Horários alternativos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Menu Inicial2": {
+      "main": [
+        [
+          {
+            "node": "Retornar ao menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If voltar menu": {
+      "main": [
+        [
+          {
+            "node": "Enviar Menu Inicial2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Opções estados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "dd64aae7-4c5a-4511-8ff0-5156f34149f4",
+  "versionId": "a0374d44-19db-476e-ad53-d8f9eacea9ec",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb109072c7e3897f3d4cd1c2cc4864bc3ba45d5c1d80634c5ee3532b7bdc100f"

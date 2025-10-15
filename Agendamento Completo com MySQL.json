@@ -93,74 +93,19 @@
     },
     {
       "parameters": {
-        "functionCode": "const msg=$json.mensagem;if(msg.includes('1'))return[{json:{acao:'agendar'}}];if(msg.includes('2'))return[{json:{acao:'duvida'}}];if(msg.includes('3'))return[{json:{acao:'cancelar'}}];return[{json:{acao:'menu'}}];"
-      },
-      "name": "Interpretar Escolha no Menu",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [
-        -1056,
-        1088
-      ],
-      "id": "694ec5e5-b871-4707-8352-fab428752d56"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select * from conversas"
-      },
-      "name": "Atualizar Estado Esperando Nome/Data",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 1,
-      "position": [
-        -816,
-        976
-      ],
-      "id": "c4917213-eb6e-4819-a1ff-052cff838890",
-      "credentials": {
-        "mySql": {
-          "id": "rI9YA4iOV2Ex03Gc",
-          "name": "MySQL account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{$json.to}}",
-        "to": "={{$json.telefone}}",
-        "message": "Por favor, envie no formato:\nNome, AAAA-MM-DD HH:MM",
-        "options": {}
-      },
-      "name": "Pedir Nome/Data",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        -560,
-        976
-      ],
-      "id": "9fdf35c0-bf22-44d1-8d61-04bbb8aac307",
-      "credentials": {
-        "twilioApi": {
-          "id": "IcxAkoupGujPtEyg",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "calendar": "primary",
-        "start": "={{ $('Transformação de dados').item.json.data_google_calendar_start }}",
-        "end": "={{ $('Transformação de dados').item.json.data_google_calendar_end }}",
+        "start": "={{ $('Transformação de dadoss').item.json.data_google_calendar_start }}",
+        "end": "={{ $('Transformação de dadoss').item.json.data_google_calendar_end }}",
         "additionalFields": {
-          "summary": "=Consulta {{ $('Transformação de dados').item.json.nome }} {{ $('Transformação de dados').item.json.to }}"
+          "summary": "=Consulta {{ $('Transformação de dadoss').item.json.nome }} {{ $('Transformação de dadoss').item.json.to }}"
         }
       },
       "name": "Criar Evento Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
       "position": [
-        384,
-        352
+        400,
+        336
       ],
       "id": "302a7e32-4462-4148-827c-662dd7eb893f",
       "credentials": {
@@ -172,17 +117,17 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Transformação de dados').item.json.telefone }}",
-        "to": "={{ $('Transformação de dados').item.json.to }}",
-        "message": "=✅ Agendamento confirmado!\n{{ $('Transformação de dados').item.json.nome }} em {{ $('Transformação de dados').item.json.data_a_exibir }}",
+        "from": "={{ $('Transformação de dadoss').first().json.telefone }}",
+        "to": "={{ $('Transformação de dadoss').first().json.to }}",
+        "message": "=✅ Agendamento confirmado!\n{{ $('Transformação de dadoss').first().json.nome }} em {{ $('Transformação de dadoss').first().json.data_a_exibir }}",
         "options": {}
       },
       "name": "Confirmar Agendamento",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        560,
-        352
+        576,
+        336
       ],
       "id": "04f4d93a-10e7-41c2-945e-87611a9a3015",
       "credentials": {
@@ -194,51 +139,9 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "select * from conversas"
-      },
-      "name": "Atualizar Estado Esperando Cancelamento",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 1,
-      "position": [
-        -992,
-        1264
-      ],
-      "id": "e6a1c68d-9658-4d5d-b148-07139e8f75df",
-      "credentials": {
-        "mySql": {
-          "id": "rI9YA4iOV2Ex03Gc",
-          "name": "MySQL account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{$json.to}}",
-        "to": "={{$json.telefone}}",
-        "message": "Envie o Nome e Data do agendamento que deseja cancelar (Nome, AAAA-MM-DD HH:MM)",
-        "options": {}
-      },
-      "name": "Pedir Cancelamento",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        -736,
-        1264
-      ],
-      "id": "a4e680ee-a2f0-44d9-b6bc-5a46243fa7de",
-      "credentials": {
-        "twilioApi": {
-          "id": "IcxAkoupGujPtEyg",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\", \"voltar\" ou \"retornar\".",
         "options": {}
       },
       "name": "Enviar Menu Inicial",
@@ -273,15 +176,15 @@
       "parameters": {
         "from": "={{$json.to}}",
         "to": "={{$json.telefone}}",
-        "message": "=Por favor, digite seu nome e a data que deseja reservar.",
+        "message": "=Por favor, digite seu nome, data e horário que deseja reservar.",
         "options": {}
       },
       "name": "Pedir nome e data",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -688,
-        -256
+        -704,
+        -480
       ],
       "id": "836118d7-532d-4e94-a0d1-444fa9b1aba9",
       "credentials": {
@@ -300,8 +203,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -496,
-        -256
+        -512,
+        -480
       ],
       "id": "59e0a5b7-1608-4e5d-8774-ecad87143103",
       "name": "Mudar estado para agendamento",
@@ -470,6 +373,30 @@
                 },
                 "conditions": [
                   {
+                    "id": "13a65774-ece6-473a-8fea-732562dd9249",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "cancelar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "iniciar cancelamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
                     "id": "d9c2eb8c-e40e-41bb-a300-f9f41a71514c",
                     "leftValue": "",
                     "rightValue": "",
@@ -526,6 +453,31 @@
               },
               "renameOutput": true,
               "outputKey": "agendamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ea02a078-c7e4-4961-bff8-2857949c8271",
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "faq",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "faq"
             }
           ]
         },
@@ -584,8 +536,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -480,
-        528
+        -464,
+        512
       ],
       "id": "83ae222e-315b-4e94-bd7c-906201a77468",
       "name": "Basic LLM Chain"
@@ -598,8 +550,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -480,
-        720
+        -464,
+        672
       ],
       "id": "be938520-0071-446e-884b-92f679d6000d",
       "name": "Google Gemini Chat Model",
@@ -612,28 +564,15 @@
     },
     {
       "parameters": {
-        "jsCode": "let output = $input.first().json.text || '';\noutput = output\n  .replace(/```json/i, '')\n  .replace(/```/g, '')\n  .trim();\nconst dados = JSON.parse(output);\n\nfunction capitalizeEachWord(sentence) {\n  return sentence.split(' ').map(word => {\n    if (word.length === 0) { // Handle empty strings if any\n      return '';\n    }\n    return word.charAt(0).toUpperCase() + word.slice(1);\n  }).join(' ');\n}\n\nconst dataInicial = new Date(dados.data).toISOString();\n\nlet dataFinal = new Date(dados.data);\ndataFinal.setHours(dataFinal.getHours() + 1);\n\n\nconst dataStart = new Date(dados.data);\nconst formatador = new Intl.DateTimeFormat('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  timeZone: 'America/Sao_Paulo'\n});\nconst dataFormatada = formatador.format(dataStart).replace(',', '');\n\nconst dataFormatadaMYSQL = new Date(dados.data).toISOString().replace('T', ' ').slice(0,19)\n\nreturn [{\n  json: {\n    nome: capitalizeEachWord(dados.nome),\n    data_google_calendar_start: dataInicial,\n    data_google_calendar_end: dataFinal.toISOString(),\n    data_a_exibir: dataFormatada,\n    data_mysql: dataFormatadaMYSQL,\n    telefone: $('Extrair Dados WhatsApp').first().json.to,\n    to: $('Extrair Dados WhatsApp').first().json.telefone\n  }\n}];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -176,
-        528
-      ],
-      "id": "74e76cfe-5b7f-4f99-9946-3c71b9910bf6",
-      "name": "Transformação de dados"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
-        "query": "update conversas\nset estado = \"menu\",\n    nome = \"{{ $('Transformação de dados').item.json.nome }}\",\n    `data` = DATE_SUB(\"{{ $('Transformação de dados').item.json.data_mysql }}\", INTERVAL 3 HOUR)\nwhere telefone = \"{{ $('Extrair Dados WhatsApp').item.json.telefone }}\";",
+        "query": "update conversas\nset estado = \"menu\",\n    nome = \"{{ $('Transformação de dadoss').item.json.nome }}\",\n    `data` = DATE_SUB(\"{{ $('Transformação de dadoss').item.json.data_mysql }}\", INTERVAL 3 HOUR)\nwhere telefone = \"{{ $('Extrair Dados WhatsApp').item.json.telefone }}\";",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        752,
-        352
+        768,
+        336
       ],
       "id": "d9aeab29-9d92-4f51-89f3-a7ffbcac3c3d",
       "name": "retornar estado menu",
@@ -648,7 +587,7 @@
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\", \"voltar\" ou \"retornar\".",
         "options": {}
       },
       "name": "Enviar Menu Inicial1",
@@ -656,7 +595,7 @@
       "typeVersion": 1,
       "position": [
         -656,
-        64
+        80
       ],
       "id": "56a21672-e120-4e2c-afbc-82cadd5b73a1",
       "credentials": {
@@ -682,8 +621,8 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        0,
-        528
+        16,
+        512
       ],
       "id": "db9e83b5-cefc-42a9-bb24-7219a167162b",
       "name": "Get availability in a calendar",
@@ -722,8 +661,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        176,
-        528
+        192,
+        512
       ],
       "id": "3dfa2e6a-d986-42e7-827a-ac2585189bab",
       "name": "If"
@@ -745,8 +684,8 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        592,
-        688
+        608,
+        672
       ],
       "id": "caef0c2e-288a-4d0a-9e80-97e3a1ab4d69",
       "name": "Get many events",
@@ -759,36 +698,25 @@
     },
     {
       "parameters": {
-        "jsCode": "let originalDate = $('Transformação de dados').first().json.data_google_calendar_start;\n\nlet startOfDay = new Date(originalDate);\nconsole.log(startOfDay);\nstartOfDay.setUTCHours(0, 0, 0, 0);\n\nlet endOfDay = new Date(originalDate);\nendOfDay.setUTCDate(endOfDay.getUTCDate() + 1);\nendOfDay.setUTCHours(0, 0, 0, 0);\n\nreturn [\n  {\n    \"json\": {\n      \"after\" : startOfDay.toISOString(),\n      \"before\": endOfDay.toISOString()\n    }\n  }\n];"
+        "jsCode": "let originalDate = $('Transformação de dadoss').first().json.data_google_calendar_start;\n\nlet startOfDay = new Date(originalDate);\nconsole.log(startOfDay);\nstartOfDay.setUTCHours(0, 0, 0, 0);\n\nlet endOfDay = new Date(originalDate);\nendOfDay.setUTCDate(endOfDay.getUTCDate() + 1);\nendOfDay.setUTCHours(0, 0, 0, 0);\n\nreturn [\n  {\n    \"json\": {\n      \"after\" : startOfDay.toISOString(),\n      \"before\": endOfDay.toISOString()\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        384,
-        688
+        400,
+        672
       ],
       "id": "dd7da1c7-99e8-4953-9160-14115fc29e01",
       "name": "Transformação de Dados"
     },
     {
       "parameters": {
-        "jsCode": "const eventos = $input.all();\nconst horariosOcupados = eventos.map(e => new Date(new Date(e.json.start.dateTime).setHours(new Date(e.json.start.dateTime).getHours() - 3)).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}));\nconsole.log(horariosOcupados);\nconst msg = `⛔ O horário escolhido já está ocupado.\\nHorários livres neste dia: ${[\"08:00\", \"09:00\", \"10:00\", \"11:00\", \"13:00\", \"14:00\", \"15:00\", \"16:00\", \"17:00\"].filter(h => !horariosOcupados.includes(h)).join(', ')}.`;\n\nreturn [{\n  json: {\n    message: msg\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        112,
-        912
-      ],
-      "id": "4e22053d-1504-41fb-9eed-7ec0015c2433",
-      "name": "Horarios livres"
-    },
-    {
-      "parameters": {
         "pollTimes": {
           "item": [
             {
-              "mode": "everyMinute"
+              "mode": "everyX",
+              "value": 10,
+              "unit": "minutes"
             }
           ]
         },
@@ -804,7 +732,7 @@
       "type": "n8n-nodes-base.googleCalendarTrigger",
       "typeVersion": 1,
       "position": [
-        896,
+        544,
         512
       ],
       "id": "34a2cdf8-77a9-4c56-97a5-1f49bf7106ca",
@@ -821,13 +749,15 @@
         "sendTo": "={{ $json.creator.email }}",
         "subject": "={{ $json.summary }}",
         "emailType": "text",
-        "message": "={{ $json.start.date }}",
-        "options": {}
+        "message": "={{ $json.start.dateTime }}",
+        "options": {
+          "appendAttribution": false
+        }
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1104,
+        752,
         512
       ],
       "id": "bfbdcf8c-7ae1-473d-a676-579368d4b073",
@@ -843,14 +773,14 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento para solucionar conflitos na escolha de horário que o cliente pede. A seguir são todos os eventos agendados no meu Google Calendar para o dia que o cliente quer agendar, em formato json:\n\n{{ $input.all() }}\n\nPreciso que você crie uma mensagem explicando ao cliente ({{ $('Transformação de dados').item.json.nome }}) que o horário que ele pediu já está agendado, e que você proponha novos horários em que não há eventos criados durante o nosso horário de funcionamento, que é das 08:00 às 18:00. Diga, também, para reenviar a mensagem com seu nome, data e horário novamente.",
+        "text": "=Você é um assistente de agendamento.\nEsses são os eventos já marcados no dia:\n\n{{ JSON.stringify($json[\"eventos\"], null, 2) }}\n\nCom base nesses eventos, indique horários alternativos ainda estão livres no mesmo dia (entre 08:00 e 18:00, no fuso horário de São Paulo). Como as consultas duram em média 1 hora, indique os horários livres que em dentro de 1 hora não haverá conflito com outros eventos.\nResponda apenas como se estivesse respondendo diretamente ao cliente (sem conter frases como \"Claro! Aqui está a resposta para o cliente\"), com uma frase simples explicando que o horário que ele pediu já se encontra agendado e informando quais intervalos de tempo estão disponíveis para agendamento, e também avise para o cliente enviar a próxima mensagem contendo a data e horário escolhido para agendamento. O nome do cliente é {{ $('Buscar Estado').item.json.nome }}. A primeira palavra de sua resposta deve ser o nome do cliente caso for informado, se não, omita isso e continue com o restante da frase normalmente.",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        800,
-        688
+        1024,
+        672
       ],
       "id": "b94755e9-7ccc-4363-90a2-757e3803b86f",
       "name": "Basic LLM Chain1"
@@ -863,8 +793,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        800,
-        864
+        1024,
+        848
       ],
       "id": "11638dd7-12bf-47a7-9acc-52bfde066188",
       "name": "Google Gemini Chat Model1",
@@ -877,16 +807,16 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Transformação de dados').item.json.telefone }}",
-        "to": "={{ $('Transformação de dados').item.json.to }}",
+        "from": "={{ $('Transformação de dadoss').first().json.telefone }}",
+        "to": "={{ $('Transformação de dadoss').first().json.to }}",
         "message": "={{ $json.text }}",
         "options": {}
       },
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        1104,
-        688
+        1344,
+        672
       ],
       "id": "fe81c0b1-d951-4644-af5e-d9e7b7b52871",
       "name": "Horários alternativos",
@@ -922,7 +852,7 @@
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\", \"voltar\" ou \"retornar\".",
         "options": {}
       },
       "name": "Enviar Menu Inicial2",
@@ -990,93 +920,147 @@
       ],
       "id": "87961ed2-f414-4680-88ea-7d32c9b1f343",
       "name": "If voltar menu"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega todos os eventos retornados\nconst eventos = $input.all().map(item => item.json);\nconsole.log(eventos)\n// Garante que o modelo receba uma lista limpa e simples\nconst listaEventos = eventos.map(e => ({\n  summary: e.summary,\n  start: e.start?.dateTime,\n  end: e.end?.dateTime\n}));\n\n// Retorna tudo como um único item JSON\nreturn [{\n  json: {\n    eventos: listaEventos\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        672
+      ],
+      "id": "0fea4ea4-ee89-472f-9436-be2c75e6604e",
+      "name": "Juntando em um elemento"
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = $input.first().json.text || '';\noutput = output\n  .replace(/```json/i, '')\n  .replace(/```/g, '')\n  .trim();\nconst dados = JSON.parse(output);\n\nfunction capitalizeEachWord(sentence) {\n  return sentence.split(' ').map(word => {\n    if (word.length === 0) { // Handle empty strings if any\n      return '';\n    }\n    return word.charAt(0).toUpperCase() + word.slice(1);\n  }).join(' ');\n}\n\nconst dataInicial = new Date(dados.data).toISOString();\n\nlet dataFinal = new Date(dados.data);\ndataFinal.setHours(dataFinal.getHours() + 1);\n\n\nconst dataStart = new Date(dados.data);\nconst formatador = new Intl.DateTimeFormat('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  timeZone: 'America/Sao_Paulo'\n});\nconst dataFormatada = formatador.format(dataStart).replace(',', '');\n\nconst dataFormatadaMYSQL = new Date(dados.data).toISOString().replace('T', ' ').slice(0,19)\n\nreturn [{\n  json: {\n    nome: capitalizeEachWord(dados.nome),\n    data_google_calendar_start: dataInicial,\n    data_google_calendar_end: dataFinal.toISOString(),\n    data_a_exibir: dataFormatada,\n    data_mysql: dataFormatadaMYSQL,\n    telefone: $('Extrair Dados WhatsApp').first().json.to,\n    to: $('Extrair Dados WhatsApp').first().json.telefone\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        512
+      ],
+      "id": "74e76cfe-5b7f-4f99-9946-3c71b9910bf6",
+      "name": "Transformação de dadoss"
+    },
+    {
+      "parameters": {
+        "from": "={{ $json.to }}",
+        "to": "={{ $json.telefone }}",
+        "message": "Ok! Me conte quais são suas dúvidas.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -272
+      ],
+      "id": "62180c7d-9de1-44c2-b72b-ffe325d1dc02",
+      "name": "Iniciar duvidas",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update conversas\nset estado = \"faq\"\nwhere telefone = \"{{ $('Extrair Estado Atual').item.json.telefone }}\";",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -480,
+        -272
+      ],
+      "id": "824f0282-8730-4a6a-916f-10294c684590",
+      "name": "Mudar estado para faq",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select historico\nfrom conversas\nwhere telefone = \"{{ $json.telefone }}\";",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -464,
+        896
+      ],
+      "id": "e0f44f24-2261-4ffd-bd03-cfd7d4e42931",
+      "name": "Buscar historico de conversas",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um assistente virtual de atendimento para um escritório de advocacia criminal.\nResponda de forma informativa às dúvidas do cliente ({{ $('Buscar Estado').item.json.nome }}). Não indique término da conversa nas suas respotas, deixe claro que caso houver mais dúvidas o cliente pode perguntar.\nUse o contexto da conversa abaixo para entender a pergunta atual.\n\nHistórico da conversa em JSON:\n{{ JSON.stringify($json[\"historico\"], null, 2) }}\n\nPergunta/mensagem mais recente:\n{{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -256,
+        896
+      ],
+      "id": "ac62e3a4-ea01-4260-b008-c9569a90d6c2",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-pro-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        1072
+      ],
+      "id": "9fe5b287-38dd-4aca-a2cc-69feb8231c44",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ig7oq7pctKGz7cqE",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const historico = $('Buscar historico de conversas').first().json.historico ? $('Buscar historico de conversas').first().json.historico : [];\nhistorico.push({ role: \"user\", content: $('Extrair Dados WhatsApp').first().json.mensagem }, { \"role\": \"assistant\", \"content\": $input.first().json.text});\nreturn [\n  {\n    \"json\": {\n      \"historico\": historico\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        896
+      ],
+      "id": "cac55524-b9e4-4f92-84f0-f91324e1b885",
+      "name": "Adicionar msg ao historico"
     }
   ],
-  "pinData": {
-    "Transformação de dados": [
-      {
-        "json": {
-          "nome": "Mateus Mesquita",
-          "data_google_calendar_start": "2025-10-15T17:01:00.000Z",
-          "data_google_calendar_end": "2025-10-15T18:01:00.000Z",
-          "data_a_exibir": "15/10/2025 15:00",
-          "data_mysql": "2025-10-15 18:00:00",
-          "telefone": "whatsapp:+14155238886",
-          "to": "whatsapp:+5519996643834"
-        }
-      }
-    ],
-    "Get many events": [
-      {
-        "json": {
-          "id": "2u6r3ei4ehir863vkojrt4k81c",
-          "summary": "Consulta Mateus Mesquita whatsapp:+5519996643834",
-          "start": {
-            "dateTime": "2025-10-15T15:10:00-03:00",
-            "timeZone": "America/Sao_Paulo"
-          },
-          "end": {
-            "dateTime": "2025-10-15T16:00:00-03:00",
-            "timeZone": "America/Sao_Paulo"
-          },
-          "creator": {
-            "email": "mateussmesquita@gmail.com",
-            "self": true
-          },
-          "organizer": {
-            "email": "mateussmesquita@gmail.com",
-            "self": true
-          },
-          "created": "2025-10-13T19:14:05.000Z",
-          "updated": "2025-10-13T19:14:05.842Z",
-          "etag": "\"3520765691685630\"",
-          "eventType": "default",
-          "htmlLink": "https://www.google.com/calendar/event?eid=MnU2cjNlaTRlaGlyODYzdmtvanJ0NGs4MWMgbWF0ZXVzc21lc3F1aXRhQG0",
-          "iCalUID": "2u6r3ei4ehir863vkojrt4k81c@google.com",
-          "kind": "calendar#event",
-          "reminders": {
-            "useDefault": true
-          },
-          "sequence": 0,
-          "status": "confirmed"
-        }
-      },
-      {
-        "json": {
-          "id": "copjie9k69hmabb3c9j3cb9k6gp3eb9o6tj36b9n68om4oj36pj64d1g68",
-          "summary": "Consulta",
-          "start": {
-            "dateTime": "2025-10-15T17:10:00-03:00",
-            "timeZone": "America/Sao_Paulo"
-          },
-          "end": {
-            "dateTime": "2025-10-15T18:00:00-03:00",
-            "timeZone": "America/Sao_Paulo"
-          },
-          "creator": {
-            "email": "mateussmesquita@gmail.com",
-            "self": true
-          },
-          "organizer": {
-            "email": "mateussmesquita@gmail.com",
-            "self": true
-          },
-          "created": "2025-10-13T20:38:55.000Z",
-          "updated": "2025-10-13T20:38:56.053Z",
-          "etag": "\"3520775872106622\"",
-          "eventType": "default",
-          "htmlLink": "https://www.google.com/calendar/event?eid=Y29wamllOWs2OWhtYWJiM2M5ajNjYjlrNmdwM2ViOW82dGozNmI5bjY4b200b2ozNnBqNjRkMWc2OCBtYXRldXNzbWVzcXVpdGFAbQ",
-          "iCalUID": "copjie9k69hmabb3c9j3cb9k6gp3eb9o6tj36b9n68om4oj36pj64d1g68@google.com",
-          "kind": "calendar#event",
-          "reminders": {
-            "useDefault": true
-          },
-          "sequence": 0,
-          "status": "confirmed"
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Webhook IN": {
       "main": [
@@ -1134,39 +1118,6 @@
         [
           {
             "node": "Enviar Menu Inicial",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Interpretar Escolha no Menu": {
-      "main": [
-        [
-          {
-            "node": "Atualizar Estado Esperando Nome/Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Atualizar Estado Esperando Nome/Data": {
-      "main": [
-        [
-          {
-            "node": "Pedir Nome/Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Atualizar Estado Esperando Cancelamento": {
-      "main": [
-        [
-          {
-            "node": "Pedir Cancelamento",
             "type": "main",
             "index": 0
           }
@@ -1233,8 +1184,27 @@
             "index": 0
           }
         ],
-        [],
-        [],
+        [
+          {
+            "node": "Iniciar duvidas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Iniciar duvidas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Iniciar duvidas",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [],
         [],
         [
@@ -1251,6 +1221,13 @@
         [
           {
             "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar historico de conversas",
             "type": "main",
             "index": 0
           }
@@ -1290,18 +1267,7 @@
       "main": [
         [
           {
-            "node": "Transformação de dados",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Transformação de dados": {
-      "main": [
-        [
-          {
-            "node": "Get availability in a calendar",
+            "node": "Transformação de dadoss",
             "type": "main",
             "index": 0
           }
@@ -1357,7 +1323,7 @@
       "main": [
         [
           {
-            "node": "Basic LLM Chain1",
+            "node": "Juntando em um elemento",
             "type": "main",
             "index": 0
           }
@@ -1425,13 +1391,79 @@
           }
         ]
       ]
+    },
+    "Juntando em um elemento": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transformação de dadoss": {
+      "main": [
+        [
+          {
+            "node": "Get availability in a calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Iniciar duvidas": {
+      "main": [
+        [
+          {
+            "node": "Mudar estado para faq",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar historico de conversas": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Adicionar msg ao historico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a0374d44-19db-476e-ad53-d8f9eacea9ec",
+  "versionId": "fbbb0e0a-87a5-46b9-81b7-b9ec5a6a72bb",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb109072c7e3897f3d4cd1c2cc4864bc3ba45d5c1d80634c5ee3532b7bdc100f"

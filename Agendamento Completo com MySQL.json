@@ -11,7 +11,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -2416,
+        -2064,
         176
       ],
       "webhookId": "whatsapp-webhook",
@@ -25,7 +25,7 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -2160,
+        -1872,
         176
       ],
       "id": "79bfde76-0a5f-46d5-99a9-b40547503de7"
@@ -39,7 +39,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -1920,
+        -1696,
         176
       ],
       "id": "a529ff41-b847-440e-a24a-d7735e2b6632",
@@ -66,7 +66,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1664,
+        -1536,
         176
       ],
       "id": "c02fb65a-69cc-4976-a1e9-9da97b0c4157"
@@ -80,8 +80,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -1488,
-        -240
+        -1360,
+        -16
       ],
       "id": "7adfc9ff-f8c1-4b15-93eb-5b62332f2455",
       "credentials": {
@@ -148,8 +148,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -1232,
-        -240
+        -1216,
+        -16
       ],
       "id": "ccd17320-a1ec-48ac-a300-0375fa0bc734",
       "credentials": {
@@ -167,7 +167,7 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -1376,
+        -1344,
         192
       ],
       "id": "5adae11e-8d31-41fb-9831-48c008bd2aae"
@@ -830,7 +830,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update conversas\nset estado = 'menu'\nwhere telefone = '{{ $('Extrair Estado Atual').item.json.telefone }}';",
+        "query": "update conversas\nset estado = 'menu' , historico = null\nwhere telefone = '{{ $('Extrair Estado Atual').item.json.telefone }}';",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -886,7 +886,7 @@
               "rightValue": "menu",
               "operator": {
                 "type": "string",
-                "operation": "contains"
+                "operation": "equals"
               }
             },
             {
@@ -895,7 +895,7 @@
               "rightValue": "voltar",
               "operator": {
                 "type": "string",
-                "operation": "contains"
+                "operation": "equals"
               }
             },
             {
@@ -904,7 +904,7 @@
               "rightValue": "retornar",
               "operator": {
                 "type": "string",
-                "operation": "contains"
+                "operation": "equals"
               }
             }
           ],
@@ -1014,7 +1014,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente virtual de atendimento para um escritório de advocacia criminal.\nResponda de forma informativa às dúvidas do cliente ({{ $('Buscar Estado').item.json.nome }}). Não indique término da conversa nas suas respotas, deixe claro que caso houver mais dúvidas o cliente pode perguntar.\nUse o contexto da conversa abaixo para entender a pergunta atual.\n\nHistórico da conversa em JSON:\n{{ JSON.stringify($json[\"historico\"], null, 2) }}\n\nPergunta/mensagem mais recente:\n{{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
+        "text": "=Você é um assistente virtual de atendimento no WhatsApp para um escritório de advocacia criminal.\nResponda de forma informativa às dúvidas do cliente ({{ $('Buscar Estado').item.json.nome }}). Não indique término da conversa nas suas respotas, deixe claro que caso houver mais dúvidas o cliente pode perguntar. Se já consta histórico da conversa no JSON, não precisa começar sua respota com cumprimento.\nUse o contexto da conversa abaixo para entender a pergunta atual.\n\nHistórico da conversa em JSON:\n{{ JSON.stringify($json[\"historico\"], null, 2) }}\n\nPergunta/mensagem mais recente:\n{{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -1028,7 +1028,7 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-pro-latest",
+        "modelName": "models/gemini-flash-latest",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
@@ -1048,16 +1048,75 @@
     },
     {
       "parameters": {
-        "jsCode": "const historico = $('Buscar historico de conversas').first().json.historico ? $('Buscar historico de conversas').first().json.historico : [];\nhistorico.push({ role: \"user\", content: $('Extrair Dados WhatsApp').first().json.mensagem }, { \"role\": \"assistant\", \"content\": $input.first().json.text});\nreturn [\n  {\n    \"json\": {\n      \"historico\": historico\n    }\n  }\n];"
+        "jsCode": "const historico = $('Buscar historico de conversas').first().json.historico ? $('Buscar historico de conversas').first().json.historico : [];\nhistorico.push({ 'role': 'user', 'content': $('Extrair Dados WhatsApp').first().json.mensagem }, { 'role': 'assistant', 'content': $input.first().json.text});\nreturn [\n  {\n    \"json\": {\n      \"historico\": JSON.stringify(historico)\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        96,
+        48,
         896
       ],
       "id": "cac55524-b9e4-4f92-84f0-f91324e1b885",
       "name": "Adicionar msg ao historico"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "conversas",
+          "mode": "list",
+          "cachedResultName": "conversas"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "telefone",
+        "valueToMatchOn": "={{ $('Extrair Estado Atual').item.json.telefone }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "historico",
+              "value": "={{ $json.historico }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        256,
+        896
+      ],
+      "id": "32cc4128-64b9-46ab-909b-da19c2b1935a",
+      "name": "Update rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Extrair Estado Atual').item.json.to }}",
+        "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
+        "message": "={{ $('Basic LLM Chain2').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        464,
+        896
+      ],
+      "id": "8237a272-a137-4fab-91cd-7f798ca20648",
+      "name": "Enviar msg da IA",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1457,13 +1516,35 @@
           }
         ]
       ]
+    },
+    "Adicionar msg ao historico": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Enviar msg da IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "fbbb0e0a-87a5-46b9-81b7-b9ec5a6a72bb",
+  "versionId": "856b3cab-cbc6-48a9-8456-1fee5bc3c63a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb109072c7e3897f3d4cd1c2cc4864bc3ba45d5c1d80634c5ee3532b7bdc100f"

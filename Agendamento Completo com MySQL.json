@@ -1073,8 +1073,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -64,
-        -128
+        160,
+        -256
       ],
       "id": "e06a31cd-8821-4bb2-809d-45923a816967",
       "name": "Mudar estado para cancelamento",
@@ -1087,7 +1087,8 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "mode": "runOnceForEachItem",
+        "jsCode": "if (Object.keys($input.item.json).length == 0) {\n  return {\"json\": {}}\n}\n\nconst dataISO = new Date($json.start.dateTime)\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1100,16 +1101,16 @@
     },
     {
       "parameters": {
-        "from": "asd",
-        "to": "asd",
-        "message": "asd",
+        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
+        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}d",
+        "message": "=Detectei as seguintes datas marcadas no seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map(item => item.json.data).join('\\n') }}",
         "options": {}
       },
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -240,
-        -128
+        -32,
+        -256
       ],
       "id": "8a0a8535-c404-498d-b958-5825a1b0388a",
       "name": "Enviar datas para cancelar",
@@ -1130,7 +1131,6 @@
           "cachedResultName": "mateussmesquita@gmail.com"
         },
         "returnAll": true,
-        "timeMin": "=2025-10-16T00:00:00",
         "timeMax": "={{ $now.plus({ month: 1 }) }}",
         "options": {
           "query": "={{ $json.telefone }}"
@@ -1144,6 +1144,7 @@
       ],
       "id": "de433171-c536-41a1-a482-c68c48f9a18f",
       "name": "Get many events1",
+      "alwaysOutputData": true,
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "5zO8YWIhs6oVo5hV",
@@ -1332,6 +1333,62 @@
         368
       ],
       "id": "04f4d93a-10e7-41c2-945e-87611a9a3015",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cc9bb3aa-5a10-4466-8f3b-e457df97e110",
+              "leftValue": "={{ $input.item.json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        -128
+      ],
+      "id": "5cb69736-07f8-453f-8ce0-8206b046da20",
+      "name": "If tem datas"
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Extrair Estado Atual').item.json.to }}",
+        "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
+        "message": "=Não consta nenhuma data marcada com seu número {{ $('Extrair Estado Atual').item.json.telefone.split(9) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "a9773aca-7841-45fd-a4f8-9b32293544b4",
+      "name": "Send an SMS/MMS/WhatsApp message",
       "credentials": {
         "twilioApi": {
           "id": "IcxAkoupGujPtEyg",
@@ -1752,7 +1809,7 @@
       "main": [
         [
           {
-            "node": "Enviar datas para cancelar",
+            "node": "If tem datas",
             "type": "main",
             "index": 0
           }
@@ -1865,13 +1922,31 @@
           }
         ]
       ]
+    },
+    "If tem datas": {
+      "main": [
+        [
+          {
+            "node": "Enviar datas para cancelar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "f4ec7e2b-b853-44bb-8195-8e052c325157",
+  "versionId": "2ab0f579-185d-42bd-94a0-bef18e71147b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb109072c7e3897f3d4cd1c2cc4864bc3ba45d5c1d80634c5ee3532b7bdc100f"

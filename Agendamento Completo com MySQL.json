@@ -97,6 +97,7 @@
         "start": "={{ $('Transformação de dadoss').item.json.data_google_calendar_start }}",
         "end": "={{ $('Transformação de dadoss').item.json.data_google_calendar_end }}",
         "additionalFields": {
+          "sendUpdates": "all",
           "summary": "=Consulta {{ $('Transformação de dadoss').item.json.nome }} {{ $('Transformação de dadoss').item.json.to }}"
         }
       },
@@ -456,6 +457,31 @@
               },
               "renameOutput": true,
               "outputKey": "faq"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1fada238-40d4-4ee2-b2ad-49ae7d7adf5c",
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "cancelamento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancelamento"
             }
           ]
         },
@@ -1066,14 +1092,30 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "update conversas\nset estado = \"cancelamento\"\nwhere telefone = \"{{ $('Extrair Estado Atual').item.json.telefone }}\"",
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "conversas",
+          "mode": "list",
+          "cachedResultName": "conversas"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "telefone",
+        "valueToMatchOn": "={{ $('Extrair Estado Atual').first().json.telefone }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "estado",
+              "value": "cancelamento"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        160,
+        144,
         -256
       ],
       "id": "e06a31cd-8821-4bb2-809d-45923a816967",
@@ -1102,18 +1144,19 @@
     {
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}d",
-        "message": "=Detectei as seguintes datas marcadas no seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map(item => item.json.data).join('\\n') }}",
+        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
+        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja cancelar?\nResponda apenas com o primeiro número.",
         "options": {}
       },
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -32,
+        -48,
         -256
       ],
       "id": "8a0a8535-c404-498d-b958-5825a1b0388a",
       "name": "Enviar datas para cancelar",
+      "executeOnce": true,
       "credentials": {
         "twilioApi": {
           "id": "IcxAkoupGujPtEyg",
@@ -1154,12 +1197,14 @@
     },
     {
       "parameters": {
-        "content": "tenho q atualizar coluna status da nova tabela ao cancelar e enviar email tbm pro dono avisando tbm\n\n\ntbm tenho q enviar msg para relembrar clientes de consultas"
+        "content": "tenho q atualizar coluna status da nova tabela ao cancelar e enviar email tbm pro dono avisando tbm\n\n\ntbm tenho q enviar msg para relembrar clientes de consultas\n\ne tbm adicionar opção de reagendar",
+        "height": 240,
+        "width": 256
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -512,
-        1456
+        -1072,
+        1568
       ],
       "typeVersion": 1,
       "id": "ef31a076-0985-4c7a-a62d-fa814380ac73",
@@ -1368,7 +1413,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -240,
+        -256,
         -128
       ],
       "id": "5cb69736-07f8-453f-8ce0-8206b046da20",
@@ -1378,17 +1423,165 @@
       "parameters": {
         "from": "={{ $('Extrair Estado Atual').item.json.to }}",
         "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
-        "message": "=Não consta nenhuma data marcada com seu número {{ $('Extrair Estado Atual').item.json.telefone.split(9) }}",
+        "message": "=Não encontrei nenhuma data marcada para seu número {{ $('Extrair Estado Atual').item.json.telefone.split(9) }}.",
         "options": {}
       },
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        -32,
+        -48,
         0
       ],
       "id": "a9773aca-7841-45fd-a4f8-9b32293544b4",
-      "name": "Send an SMS/MMS/WhatsApp message",
+      "name": "Sem datas",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "returnAll": true,
+        "timeMax": "={{ $now.plus({ month: 1 }) }}",
+        "options": {
+          "query": "={{ $json.telefone }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -432,
+        1472
+      ],
+      "id": "5899c902-4a6a-46b3-a620-1b117f63a338",
+      "name": "Get many events2",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5zO8YWIhs6oVo5hV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "eventId": "={{ $json.id }}",
+        "options": {
+          "sendUpdates": "all"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        1472
+      ],
+      "id": "1d909f09-e5f7-4ad1-9d18-ebe0479151c5",
+      "name": "Delete an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5zO8YWIhs6oVo5hV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataISO = new Date($input.all()[parseInt($('Extrair Dados WhatsApp').first().json.mensagem) - 1].json.start.dateTime)\n\nreturn [{json: {\n  id: $input.all()[parseInt($('Extrair Dados WhatsApp').first().json.mensagem) - 1].json.id,\n  dataMSG: dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        1472
+      ],
+      "id": "6167a80a-bcdd-4079-89e1-6f77db6cf57d",
+      "name": "Retorna id",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "datas_agendadas",
+          "mode": "list",
+          "cachedResultName": "datas_agendadas"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "evento_id",
+        "valueToMatchOn": "={{ $('Retorna id').item.json.id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "status",
+              "value": "cancelado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        128,
+        1472
+      ],
+      "id": "637f844f-4f90-4188-a939-c3b1291941cb",
+      "name": "Update datas_agendadas",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "sequëncia caso cliente mande msg errada",
+        "height": 240,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -384,
+        1744
+      ],
+      "typeVersion": 1,
+      "id": "31706628-ecd9-4615-92d2-af49173fae59",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Extrair Dados WhatsApp').first().json.to }}",
+        "to": "={{ $('Extrair Dados WhatsApp').first().json.telefone }}",
+        "message": "=Sua consulta no dia {{ $('Retorna id').item.json.dataMSG }} foi cancelada com sucesso.\n\nObrigado!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        336,
+        1472
+      ],
+      "id": "b104f7a3-f458-4167-8937-2bdb8a133144",
+      "name": "Cancelamento confirmado",
       "credentials": {
         "twilioApi": {
           "id": "IcxAkoupGujPtEyg",
@@ -1566,6 +1759,13 @@
         [
           {
             "node": "Buscar historico de conversas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get many events2",
             "type": "main",
             "index": 0
           }
@@ -1934,7 +2134,51 @@
         ],
         [
           {
-            "node": "Send an SMS/MMS/WhatsApp message",
+            "node": "Sem datas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events2": {
+      "main": [
+        [
+          {
+            "node": "Retorna id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna id": {
+      "main": [
+        [
+          {
+            "node": "Delete an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete an event": {
+      "main": [
+        [
+          {
+            "node": "Update datas_agendadas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update datas_agendadas": {
+      "main": [
+        [
+          {
+            "node": "Cancelamento confirmado",
             "type": "main",
             "index": 0
           }
@@ -1946,7 +2190,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2ab0f579-185d-42bd-94a0-bef18e71147b",
+  "versionId": "bf80ee25-c23a-43be-a552-45fd10c9e1b5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb109072c7e3897f3d4cd1c2cc4864bc3ba45d5c1d80634c5ee3532b7bdc100f"

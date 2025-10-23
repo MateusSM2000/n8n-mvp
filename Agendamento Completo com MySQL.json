@@ -681,47 +681,10 @@
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyX",
-              "value": 10,
-              "unit": "minutes"
-            }
-          ]
-        },
-        "calendarId": {
-          "__rl": true,
-          "value": "mateussmesquita@gmail.com",
-          "mode": "list",
-          "cachedResultName": "mateussmesquita@gmail.com"
-        },
-        "triggerOn": "eventCreated",
-        "options": {
-          "matchTerm": "Consulta"
-        }
-      },
-      "type": "n8n-nodes-base.googleCalendarTrigger",
-      "typeVersion": 1,
-      "position": [
-        864,
-        544
-      ],
-      "id": "34a2cdf8-77a9-4c56-97a5-1f49bf7106ca",
-      "name": "Google Calendar Trigger",
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "5zO8YWIhs6oVo5hV",
-          "name": "Google Calendar account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "sendTo": "={{ $json.creator.email }}",
-        "subject": "={{ $json.summary }}",
+        "sendTo": "={{ $('Trigger evento criado').item.json.creator.email }}",
+        "subject": "=Agendamento confirmado {{ $json.data }}",
         "emailType": "text",
-        "message": "={{ $json.start.dateTime }}",
+        "message": "={{ $('Trigger evento criado').item.json.summary }}",
         "options": {
           "appendAttribution": false
         }
@@ -729,8 +692,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1072,
-        544
+        -1680,
+        624
       ],
       "id": "bfbdcf8c-7ae1-473d-a676-579368d4b073",
       "name": "Send a message",
@@ -1130,7 +1093,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "if (Object.keys($input.item.json).length == 0) {\n  return {\"json\": {}}\n}\n\nconst dataISO = new Date($json.start.dateTime)\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}}"
+        "jsCode": "if (Object.keys($input.item.json).length == 0) {\n  return {\"json\": {}}\n};\n\nconst dataISO = new Date($json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1145,7 +1108,7 @@
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja cancelar?\nResponda apenas com o primeiro número.",
+        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja cancelar?\nResponda com a numeração da sequência.",
         "options": {}
       },
       "type": "n8n-nodes-base.twilio",
@@ -1197,7 +1160,7 @@
     },
     {
       "parameters": {
-        "content": "tenho q atualizar coluna status da nova tabela ao cancelar e enviar email tbm pro dono avisando tbm\n\n\ntbm tenho q enviar msg para relembrar clientes de consultas\n\ne tbm adicionar opção de reagendar",
+        "content": "e tbm adicionar opção de reagendar",
         "height": 240,
         "width": 256
       },
@@ -1459,8 +1422,8 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        -432,
-        1472
+        -448,
+        1568
       ],
       "id": "5899c902-4a6a-46b3-a620-1b117f63a338",
       "name": "Get many events2",
@@ -1489,8 +1452,8 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        -64,
-        1472
+        -16,
+        1440
       ],
       "id": "1d909f09-e5f7-4ad1-9d18-ebe0479151c5",
       "name": "Delete an event",
@@ -1503,20 +1466,6 @@
     },
     {
       "parameters": {
-        "jsCode": "const dataISO = new Date($input.all()[parseInt($('Extrair Dados WhatsApp').first().json.mensagem) - 1].json.start.dateTime)\n\nreturn [{json: {\n  id: $input.all()[parseInt($('Extrair Dados WhatsApp').first().json.mensagem) - 1].json.id,\n  dataMSG: dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -256,
-        1472
-      ],
-      "id": "6167a80a-bcdd-4079-89e1-6f77db6cf57d",
-      "name": "Retorna id",
-      "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
         "operation": "update",
         "table": {
           "__rl": true,
@@ -1526,7 +1475,7 @@
         },
         "dataMode": "defineBelow",
         "columnToMatchOn": "evento_id",
-        "valueToMatchOn": "={{ $('Retorna id').item.json.id }}",
+        "valueToMatchOn": "={{ $('Retorna id e formata msg').item.json.id }}",
         "valuesToSend": {
           "values": [
             {
@@ -1540,8 +1489,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        128,
-        1472
+        176,
+        1440
       ],
       "id": "637f844f-4f90-4188-a939-c3b1291941cb",
       "name": "Update datas_agendadas",
@@ -1554,34 +1503,371 @@
     },
     {
       "parameters": {
-        "content": "sequëncia caso cliente mande msg errada",
-        "height": 240,
-        "width": 256
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -384,
-        1744
-      ],
-      "typeVersion": 1,
-      "id": "31706628-ecd9-4615-92d2-af49173fae59",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').first().json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').first().json.telefone }}",
-        "message": "=Sua consulta no dia {{ $('Retorna id').item.json.dataMSG }} foi cancelada com sucesso.\n\nObrigado!",
+        "message": "=Sua consulta no dia {{ $('Retorna id e formata msg').item.json.dataMSG }} foi cancelada com sucesso.\n\nObrigado!",
         "options": {}
       },
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        336,
-        1472
+        384,
+        1440
       ],
       "id": "b104f7a3-f458-4167-8937-2bdb8a133144",
       "name": "Cancelamento confirmado",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update conversas\nset estado = 'menu'\nwhere telefone = '{{ $json.to }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        592,
+        1440
+      ],
+      "id": "1a4a4882-c3a7-4822-82a3-5b45db6d7b97",
+      "name": "Update estado menu",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Opções estados').item.json.to }}",
+        "to": "={{ $('Opções estados').item.json.telefone }}",
+        "message": "Por favor, envie a numeração correta da data que deseja desmarcar.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        1680
+      ],
+      "id": "ae4e8edc-4d5f-4142-a7d9-0b315a43c1bd",
+      "name": "Enviar data correta",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msgFormatada = $('Extrair Dados WhatsApp').first().json.mensagem.slice(0, 1);\n\nconst msgFormatadaInt = parseInt(msgFormatada);\n\nconst dataISO = new Date($input.all()[msgFormatadaInt - 1].json.start.dateTime);\n\nreturn [{json: {\n  id: $input.all()[msgFormatadaInt - 1].json.id,\n  dataMSG: dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'})\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        1568
+      ],
+      "id": "6167a80a-bcdd-4079-89e1-6f77db6cf57d",
+      "name": "Retorna id e formata msg",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Trigger evento cancelado').item.json.creator.email }}",
+        "subject": "=Agendamento cancelado {{ $json.data }}",
+        "emailType": "text",
+        "message": "={{ $('Trigger evento cancelado').item.json.summary }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1664,
+        816
+      ],
+      "id": "29846d94-e6a6-494b-9514-8a00348dbae3",
+      "name": "Send a message1",
+      "webhookId": "de654d40-b863-4c9f-b1f4-140f63e30056",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Fr4rZg5pXAZCt6k4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1872,
+        816
+      ],
+      "id": "53629285-23f4-4645-8016-d629f1206f92",
+      "name": "Formatar data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1872,
+        624
+      ],
+      "id": "718ad6a1-46db-4260-8007-d735613ce199",
+      "name": "Formatar data1"
+    },
+    {
+      "parameters": {
+        "content": "## Triggers adicionais",
+        "height": 960,
+        "width": 976
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2192,
+        480
+      ],
+      "typeVersion": 1,
+      "id": "e3efae93-1de5-48a0-89c0-5097e04e26ca",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 1,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "triggerOn": "eventCreated",
+        "options": {
+          "matchTerm": "Consulta"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        624
+      ],
+      "id": "34a2cdf8-77a9-4c56-97a5-1f49bf7106ca",
+      "name": "Trigger evento criado",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5zO8YWIhs6oVo5hV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 1,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "triggerOn": "eventCancelled",
+        "options": {
+          "matchTerm": "Consulta"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        816
+      ],
+      "id": "15f138c8-27ff-4779-b9c1-c2c16c739d01",
+      "name": "Trigger evento cancelado",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5zO8YWIhs6oVo5hV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2080,
+        1024
+      ],
+      "id": "2b477067-1bb5-43e4-80ff-f5071b86738e",
+      "name": "Lembrete 1 dia antes"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.nome, c.telefone, d.`data`\nfrom datas_agendadas as d\njoin conversas as c\non d.conversas_telefone = c.telefone\nwhere d.status = 'ativo'\n  and DATE(d.`data`) = DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -1872,
+        1024
+      ],
+      "id": "bfb91782-760b-4d84-b3b6-03965843d12d",
+      "name": "Select datas agendadas amanha",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5)\n}}));\n\nreturn dados;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1664,
+        1024
+      ],
+      "id": "e72ed222-228d-407e-ba8e-74f9ecfa8284",
+      "name": "Formatar os dados"
+    },
+    {
+      "parameters": {
+        "from": "whatsapp:+14155238886",
+        "to": "={{ $('Select datas agendadas amanha').item.json.telefone }}",
+        "message": "=Olá {{ $json.nome }}! 👋\nLembrando que você tem um agendamento amanhã às {{ $json.data }}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.",
+        "options": {
+          "statusCallback": ""
+        }
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        1024
+      ],
+      "id": "0cf3c7e3-bc80-490b-9e8f-14002628a833",
+      "name": "Enviar aviso",
+      "credentials": {
+        "twilioApi": {
+          "id": "IcxAkoupGujPtEyg",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2080,
+        1216
+      ],
+      "id": "df0cde40-4eb5-4dab-9e87-bb4eb1ab9324",
+      "name": "Lembrete no dia"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.nome, c.telefone, d.`data`\nfrom datas_agendadas as d\njoin conversas as c\non d.conversas_telefone = c.telefone\nwhere d.status = 'ativo'\n  and DATE(d.`data`) = CURRENT_DATE();",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -1872,
+        1216
+      ],
+      "id": "a55de75d-1715-4042-97f6-4e5e807546f5",
+      "name": "Select datas agendadas hoje",
+      "credentials": {
+        "mySql": {
+          "id": "rI9YA4iOV2Ex03Gc",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5)\n}}));\n\nreturn dados;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1664,
+        1216
+      ],
+      "id": "66835c35-5bad-4990-8650-605782849a95",
+      "name": "Formatar os dados1"
+    },
+    {
+      "parameters": {
+        "from": "whatsapp:+14155238886",
+        "to": "={{ $('Select datas agendadas hoje').item.json.telefone }}",
+        "message": "=Olá {{ $json.nome }}! 👋\nLembrando que você tem um agendamento hoje às {{ $json.data }}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.",
+        "options": {
+          "statusCallback": ""
+        }
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        1216
+      ],
+      "id": "e29a91b0-d5b9-481c-9749-a872772f021e",
+      "name": "Enviar aviso1",
       "credentials": {
         "twilioApi": {
           "id": "IcxAkoupGujPtEyg",
@@ -1844,17 +2130,6 @@
         [
           {
             "node": "Juntando em um elemento",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Calendar Trigger": {
-      "main": [
-        [
-          {
-            "node": "Send a message",
             "type": "main",
             "index": 0
           }
@@ -2145,18 +2420,7 @@
       "main": [
         [
           {
-            "node": "Retorna id",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Retorna id": {
-      "main": [
-        [
-          {
-            "node": "Delete an event",
+            "node": "Retorna id e formata msg",
             "type": "main",
             "index": 0
           }
@@ -2184,13 +2448,152 @@
           }
         ]
       ]
+    },
+    "Cancelamento confirmado": {
+      "main": [
+        [
+          {
+            "node": "Update estado menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna id e formata msg": {
+      "main": [
+        [
+          {
+            "node": "Delete an event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar data correta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar data": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar data1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger evento criado": {
+      "main": [
+        [
+          {
+            "node": "Formatar data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger evento cancelado": {
+      "main": [
+        [
+          {
+            "node": "Formatar data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lembrete 1 dia antes": {
+      "main": [
+        [
+          {
+            "node": "Select datas agendadas amanha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select datas agendadas amanha": {
+      "main": [
+        [
+          {
+            "node": "Formatar os dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar os dados": {
+      "main": [
+        [
+          {
+            "node": "Enviar aviso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select datas agendadas hoje": {
+      "main": [
+        [
+          {
+            "node": "Formatar os dados1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lembrete no dia": {
+      "main": [
+        [
+          {
+            "node": "Select datas agendadas hoje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar os dados1": {
+      "main": [
+        [
+          {
+            "node": "Enviar aviso1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "bf80ee25-c23a-43be-a552-45fd10c9e1b5",
+  "versionId": "119bc3db-53c0-418b-8870-351967efa4e8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cb109072c7e3897f3d4cd1c2cc4864bc3ba45d5c1d80634c5ee3532b7bdc100f"

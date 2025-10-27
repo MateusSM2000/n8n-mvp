@@ -120,7 +120,7 @@
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\", \"voltar\" ou \"retornar\".",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".",
         "options": {}
       },
       "name": "Enviar Menu Inicial",
@@ -162,8 +162,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        176,
+        -144
       ],
       "id": "d0a1320e-f71f-4278-9194-e7bb829e7c36",
       "credentials": {
@@ -182,8 +182,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        176,
-        0
+        352,
+        -144
       ],
       "id": "5ce66f12-95a4-47cd-95a6-3de7f9ffbddb",
       "name": "Mudar estado para agendamento",
@@ -237,7 +237,7 @@
                     "rightValue": "agendar",
                     "operator": {
                       "type": "string",
-                      "operation": "contains"
+                      "operation": "equals"
                     }
                   }
                 ],
@@ -376,6 +376,54 @@
                 },
                 "conditions": [
                   {
+                    "id": "33b91e79-19b4-47e9-b34f-2862cd95882e",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "reagendar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "iniciar reagendamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8d168af5-dd61-4786-8485-e73186a71c62",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "4",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "iniciar reagendamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
                     "id": "d9c2eb8c-e40e-41bb-a300-f9f41a71514c",
                     "leftValue": "",
                     "rightValue": "",
@@ -482,6 +530,31 @@
               },
               "renameOutput": true,
               "outputKey": "cancelamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3a82e2a4-fd56-45e9-844d-3258d9a57d6f",
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "reagendamento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "reagendamento"
             }
           ]
         },
@@ -591,7 +664,7 @@
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\", \"voltar\" ou \"retornar\".",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".",
         "options": {}
       },
       "name": "Enviar Menu Inicial1",
@@ -599,7 +672,7 @@
       "typeVersion": 1,
       "position": [
         0,
-        544
+        656
       ],
       "id": "6a4027ab-b258-4203-a8af-29cbaad62d60",
       "credentials": {
@@ -787,7 +860,7 @@
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\", \"voltar\" ou \"retornar\".",
+        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".",
         "options": {}
       },
       "name": "Enviar Menu Inicial2",
@@ -819,24 +892,6 @@
               "id": "08e37ee4-b4d4-4290-93e2-d1f7f9ec8d21",
               "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
               "rightValue": "menu",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            },
-            {
-              "id": "6d27df10-1b90-498d-88b2-f41c5d78e747",
-              "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
-              "rightValue": "voltar",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            },
-            {
-              "id": "f5c2cb8f-b9d5-47a5-9139-a01bebf6a84f",
-              "leftValue": "={{ $json.mensagem }}",
-              "rightValue": "retornar",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -892,8 +947,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        0,
-        160
+        176,
+        16
       ],
       "id": "2dd5390a-9d3b-4feb-b4a9-bdadf9a7180d",
       "name": "Iniciar duvidas",
@@ -913,8 +968,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        176,
-        160
+        352,
+        16
       ],
       "id": "ce6659ee-8364-41d5-8823-55e7f90207f5",
       "name": "Mudar estado para faq",
@@ -1078,8 +1133,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        736,
-        224
+        1296,
+        -64
       ],
       "id": "a6db0eac-8100-4ea8-a6de-2189a45dacba",
       "name": "Mudar estado para cancelamento",
@@ -1098,7 +1153,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        176,
+        544,
         352
       ],
       "id": "a2798276-971d-4972-8dc7-c5ce0f290b47",
@@ -1108,14 +1163,14 @@
       "parameters": {
         "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
         "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja cancelar?\nResponda com a numeração da sequência.",
+        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja cancelar?\nResponda com a enumeração da data.",
         "options": {}
       },
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        544,
-        224
+        1104,
+        -64
       ],
       "id": "552d34a3-7c52-4a59-806d-c4a6f7c230b4",
       "name": "Enviar datas para cancelar",
@@ -1137,15 +1192,15 @@
           "cachedResultName": "mateussmesquita@gmail.com"
         },
         "returnAll": true,
-        "timeMax": "={{ $now.plus({ month: 1 }) }}",
+        "timeMax": "={{ $now.plus({ year: 1 }) }}",
         "options": {
-          "query": "={{ $json.telefone }}"
+          "query": "={{ $('Sair menu').item.json.telefone }}"
         }
       },
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        0,
+        352,
         352
       ],
       "id": "49b44129-f8ce-4b9b-8c73-683d95d7f712",
@@ -1376,8 +1431,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        336,
-        352
+        928,
+        64
       ],
       "id": "bceba4c6-6997-47d9-a7d2-138d32e33d6d",
       "name": "If tem datas"
@@ -1392,8 +1447,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        544,
-        480
+        1104,
+        192
       ],
       "id": "ab1577cd-f267-4474-a563-7dc400f43104",
       "name": "Sem datas",
@@ -1874,6 +1929,177 @@
           "name": "Twilio account"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cc9bb3aa-5a10-4466-8f3b-e457df97e110",
+              "leftValue": "={{ $input.item.json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        672
+      ],
+      "id": "73a6f80a-3aab-4419-9b34-0dd423692831",
+      "name": "If tem datas1"
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Extrair Estado Atual').item.json.to }}",
+        "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
+        "message": "=Não encontrei nenhuma data marcada para seu número {{ $('Extrair Estado Atual').item.json.telefone.split(9) }}.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        784
+      ],
+      "id": "2e132d26-351d-43db-aa0e-5d182480b7c1",
+      "name": "Sem datas1",
+      "credentials": {
+        "twilioApi": {
+          "id": "ddFRhWOm3Qjlq0FB",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nreturn [{json:\n  {\n    outputIndex: $prevNode.outputIndex\n  }  \n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        352
+      ],
+      "id": "5a57f2a2-c5f1-4783-9ae5-1b5b58419de9",
+      "name": "Retorna output index"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "91903c41-3134-44c0-ac4b-ce8627618824",
+              "leftValue": "={{ $('Retorna output index').item.json.outputIndex }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "7d9b02cd-aedc-435b-9075-79dd54713ef5",
+              "leftValue": "={{ $('Retorna output index').item.json.outputIndex }}",
+              "rightValue": 6,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        352
+      ],
+      "id": "800dee10-b46d-4088-ba03-dfdb5cba5698",
+      "name": "If cancelamento"
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
+        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
+        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja reagendar?\nResponda com a enumeração da data.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        512
+      ],
+      "id": "eb5bbee8-112a-49d8-aa86-2a8f860303f8",
+      "name": "Enviar datas para reagendar",
+      "executeOnce": true,
+      "credentials": {
+        "twilioApi": {
+          "id": "ddFRhWOm3Qjlq0FB",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "conversas",
+          "mode": "list",
+          "cachedResultName": "conversas"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "telefone",
+        "valueToMatchOn": "={{ $('Extrair Estado Atual').first().json.telefone }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "estado",
+              "value": "reagendamento"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1280,
+        512
+      ],
+      "id": "d831754b-a17f-4652-8e30-d691ad1f177b",
+      "name": "Mudar estado para reagendamento",
+      "credentials": {
+        "mySql": {
+          "id": "DCPMzUgNxYudexuH",
+          "name": "MySQL account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -2012,14 +2238,28 @@
         ],
         [
           {
-            "node": "Get many events1",
+            "node": "Retorna output index",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Get many events1",
+            "node": "Retorna output index",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retorna output index",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retorna output index",
             "type": "main",
             "index": 0
           }
@@ -2055,7 +2295,8 @@
             "type": "main",
             "index": 0
           }
-        ]
+        ],
+        []
       ]
     },
     "If estado menu": {
@@ -2274,7 +2515,7 @@
       "main": [
         [
           {
-            "node": "If tem datas",
+            "node": "If cancelamento",
             "type": "main",
             "index": 0
           }
@@ -2572,13 +2813,71 @@
           }
         ]
       ]
+    },
+    "If tem datas1": {
+      "main": [
+        [
+          {
+            "node": "Enviar datas para reagendar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sem datas1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna output index": {
+      "main": [
+        [
+          {
+            "node": "Get many events1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If cancelamento": {
+      "main": [
+        [
+          {
+            "node": "If tem datas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If tem datas1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar datas para reagendar": {
+      "main": [
+        [
+          {
+            "node": "Mudar estado para reagendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "3138cd72-e500-45c4-8b25-b8379675271c",
+  "versionId": "98af8080-c843-4e4f-8875-b0ae97a3f908",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

@@ -93,7 +93,12 @@
     },
     {
       "parameters": {
-        "calendar": "primary",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
         "start": "={{ $('Transformação de dadoss').item.json.data_google_calendar_start }}",
         "end": "={{ $('Transformação de dadoss').item.json.data_google_calendar_end }}",
         "additionalFields": {
@@ -930,7 +935,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let output = $input.first().json.text || '';\noutput = output\n  .replace(/```json/i, '')\n  .replace(/```/g, '')\n  .trim();\nconst dados = JSON.parse(output);\n\nfunction capitalizeEachWord(sentence) {\n  return sentence.split(' ').map(word => {\n    if (word.length === 0) { // Handle empty strings if any\n      return '';\n    }\n    return word.charAt(0).toUpperCase() + word.slice(1);\n  }).join(' ');\n}\ntry {\n  const dataInicial = new Date(dados.data).toISOString();\n    \n  let dataFinal = new Date(dados.data);\n  dataFinal.setHours(dataFinal.getHours() + 1);\n  \n  \n  const dataStart = new Date(dados.data);\n  const formatador = new Intl.DateTimeFormat('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    timeZone: 'America/Sao_Paulo'\n  });\n  const dataFormatada = formatador.format(dataStart).replace(',', '');\n  \n  const dataFormatadaMYSQL = new Date(dados.data).toISOString().replace('T', ' ').slice(0,19)\n  \n  return [{\n    json: {\n      nome: capitalizeEachWord(dados.nome) || $('Buscar Estado').first().json.nome,\n      dataOk: dados.dataOk,\n      data_google_calendar_start: dataInicial,\n      data_google_calendar_end: dataFinal.toISOString(),\n      data_a_exibir: dataFormatada,\n      data_mysql: dataFormatadaMYSQL,\n      telefone: $('Extrair Dados WhatsApp').first().json.to,\n      to: $('Extrair Dados WhatsApp').first().json.telefone\n    }\n  }];\n} catch (error) {\n  return [{json: {\n    dataOk: false,\n    nome: capitalizeEachWord(dados.nome) || $('Buscar Estado').first().json.nome,\n    telefone: $('Extrair Dados WhatsApp').first().json.to,\n    to: $('Extrair Dados WhatsApp').first().json.telefone\n  }}]\n}"
+        "jsCode": "let output = $input.first().json.text || '';\noutput = output\n  .replace(/```json/i, '')\n  .replace(/```/g, '')\n  .trim();\nconst dados = JSON.parse(output);\n\nfunction capitalizeEachWord(sentence) {\n  return sentence.split(' ').map(word => {\n    if (word.length === 0) { // Handle empty strings if any\n      return '';\n    }\n    return word.charAt(0).toUpperCase() + word.slice(1);\n  }).join(' ');\n}\ntry {\n  const dataInicial = new Date(dados.data).toISOString();\n    \n  let dataFinal = new Date(dados.data);\n  dataFinal.setHours(dataFinal.getHours() + 1);\n  \n  \n  const dataStart = new Date(dados.data);\n  const formatador = new Intl.DateTimeFormat('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    timeZone: 'America/Sao_Paulo'\n  });\n  const dataFormatada = formatador.format(dataStart).replace(',', '');\n  \n  const dataFormatadaMYSQL = new Date(dados.data).toISOString().replace('T', ' ').slice(0,19)\n  \n  return [{\n    json: {\n      nome: capitalizeEachWord(dados.nome) || $('Buscar Estado').first().json.nome,\n      dataOk: dados.dataOk,\n      data_google_calendar_start: dataInicial,\n      data_google_calendar_end: dataFinal.toISOString(),\n      data_a_exibir: dataFormatada,\n      data_mysql: dataFormatadaMYSQL,\n      telefone: $('Extrair Dados WhatsApp').first().json.to,\n      to: $('Extrair Dados WhatsApp').first().json.telefone\n    }\n  }];\n} catch (error) {\n  return [{json: {\n    dataOk: false,\n    nome: capitalizeEachWord(dados.nome) || $('Buscar Estado').first().json.nome,\n    telefone: $('Extrair Dados WhatsApp').first().json.to,\n    to: $('Extrair Dados WhatsApp').first().json.telefone\n  }}];\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1138,8 +1143,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1440,
-        -80
+        1488,
+        112
       ],
       "id": "a6db0eac-8100-4ea8-a6de-2189a45dacba",
       "name": "Mudar estado para cancelamento",
@@ -1174,8 +1179,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        1248,
-        -80
+        1296,
+        112
       ],
       "id": "552d34a3-7c52-4a59-806d-c4a6f7c230b4",
       "name": "Enviar datas para cancelar",
@@ -1217,21 +1222,6 @@
           "name": "Google Calendar account"
         }
       }
-    },
-    {
-      "parameters": {
-        "content": "e tbm adicionar opção de reagendar\n\ntbm trigger para avisar evento updated",
-        "height": 240,
-        "width": 256
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -480,
-        2048
-      ],
-      "typeVersion": 1,
-      "id": "05523615-476a-4512-a7c6-89d492bca41b",
-      "name": "Sticky Note"
     },
     {
       "parameters": {
@@ -1390,7 +1380,7 @@
       "parameters": {
         "from": "={{ $('Transformação de dadoss').first().json.telefone }}",
         "to": "={{ $('Transformação de dadoss').first().json.to }}",
-        "message": "=✅ Agendamento confirmado!\n{{ $('Transformação de dadoss').first().json.nome }} em {{ $('Transformação de dadoss').first().json.data_a_exibir }}",
+        "message": "=✅ Agendamento confirmado!\n{{\n$('Transformação de dadoss').item.json.nome\n?\n`${$('Transformação de dadoss').first().json.nome} para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n:\n`Para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n}}",
         "options": {}
       },
       "name": "Confirmar Agendamento",
@@ -1436,8 +1426,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1072,
-        48
+        896,
+        336
       ],
       "id": "bceba4c6-6997-47d9-a7d2-138d32e33d6d",
       "name": "If tem datas"
@@ -1452,8 +1442,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        1248,
-        176
+        1088,
+        464
       ],
       "id": "ab1577cd-f267-4474-a563-7dc400f43104",
       "name": "Sem datas",
@@ -1668,7 +1658,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}};"
+        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n}).replace(',', '')\n}};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1681,7 +1671,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n})\n}};"
+        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n}).replace(',', '')\n}};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1695,7 +1685,7 @@
     {
       "parameters": {
         "content": "## Triggers adicionais",
-        "height": 960,
+        "height": 1168,
         "width": 976
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -1795,7 +1785,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1504
+        1712
       ],
       "id": "f80ffb48-f1cd-48e2-9d4b-7bacf44be6b7",
       "name": "Lembrete 1 dia antes"
@@ -1810,7 +1800,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1504
+        1712
       ],
       "id": "7570918a-2be0-403a-8603-1d61b7e6cf57",
       "name": "Select datas agendadas amanha",
@@ -1829,7 +1819,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1504
+        1712
       ],
       "id": "2ef65faf-5333-4b2c-baa8-328d47c92554",
       "name": "Formatar os dados"
@@ -1847,7 +1837,7 @@
       "typeVersion": 1,
       "position": [
         -864,
-        1504
+        1712
       ],
       "id": "82b48da1-c579-4005-a5b7-96b0d5a9ec1f",
       "name": "Enviar aviso",
@@ -1872,7 +1862,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1696
+        1904
       ],
       "id": "ae7cddca-c917-4899-a178-dec53980544f",
       "name": "Lembrete no dia"
@@ -1887,7 +1877,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1696
+        1904
       ],
       "id": "6046f4b0-1c50-474a-9a75-b7d386d1094d",
       "name": "Select datas agendadas hoje",
@@ -1906,7 +1896,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1696
+        1904
       ],
       "id": "d115e17a-f942-4618-8e95-9da1f2c604c1",
       "name": "Formatar os dados1"
@@ -1924,66 +1914,10 @@
       "typeVersion": 1,
       "position": [
         -864,
-        1696
+        1904
       ],
       "id": "91f92e22-8c14-486a-a3f9-d2054318287c",
       "name": "Enviar aviso1",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "cc9bb3aa-5a10-4466-8f3b-e457df97e110",
-              "leftValue": "={{ $input.item.json }}",
-              "rightValue": "",
-              "operator": {
-                "type": "object",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1056,
-        656
-      ],
-      "id": "73a6f80a-3aab-4419-9b34-0dd423692831",
-      "name": "If tem datas1"
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Extrair Estado Atual').item.json.to }}",
-        "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
-        "message": "=Não encontrei nenhuma data marcada para seu número {{ $('Extrair Estado Atual').item.json.telefone.split(9) }}.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1232,
-        768
-      ],
-      "id": "2e132d26-351d-43db-aa0e-5d182480b7c1",
-      "name": "Sem datas1",
       "credentials": {
         "twilioApi": {
           "id": "ddFRhWOm3Qjlq0FB",
@@ -2040,8 +1974,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        864,
-        336
+        1088,
+        224
       ],
       "id": "800dee10-b46d-4088-ba03-dfdb5cba5698",
       "name": "If cancelamento"
@@ -2056,8 +1990,8 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        1232,
-        496
+        1296,
+        320
       ],
       "id": "eb5bbee8-112a-49d8-aa86-2a8f860303f8",
       "name": "Enviar datas para reagendar",
@@ -2094,8 +2028,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1424,
-        496
+        1488,
+        320
       ],
       "id": "d831754b-a17f-4652-8e30-d691ad1f177b",
       "name": "Mudar estado para reagendamento",
@@ -2317,7 +2251,11 @@
           "mode": "list",
           "cachedResultName": "mateussmesquita@gmail.com"
         },
-        "updateFields": {}
+        "eventId": "={{ $('Buscar Estado').item.json.historico.id }}",
+        "updateFields": {
+          "end": "={{ $('Transformação de dadoss').item.json.data_google_calendar_end }}",
+          "start": "={{ $('Transformação de dadoss').item.json.data_google_calendar_start }}"
+        }
       },
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
@@ -2333,6 +2271,165 @@
           "name": "Google Calendar account"
         }
       }
+    },
+    {
+      "parameters": {
+        "from": "={{ $('Transformação de dadoss').first().json.telefone }}",
+        "to": "={{ $('Transformação de dadoss').first().json.to }}",
+        "message": "=✅ Remarcado com sucesso!\n{{\n$('Transformação de dadoss').item.json.nome\n?\n`${$('Transformação de dadoss').first().json.nome} para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n:\n`Para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n}}",
+        "options": {}
+      },
+      "name": "Confirmar reagendamento",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        960
+      ],
+      "id": "c21be6d3-5174-4e41-85d0-435fed45c586",
+      "credentials": {
+        "twilioApi": {
+          "id": "ddFRhWOm3Qjlq0FB",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update conversas\nset estado = 'menu', historico = null\nwhere telefone = '{{ $('Extrair Estado Atual').item.json.telefone }}';\n\nupdate datas_agendadas\nset status = 'cancelado'\nwhere evento_id = '{{ $('Buscar Estado').item.json.historico.id }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        2480,
+        960
+      ],
+      "id": "647b4e8d-4453-4cbb-b5b8-35bcdaeab6be",
+      "name": "Update estado historico status",
+      "credentials": {
+        "mySql": {
+          "id": "DCPMzUgNxYudexuH",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into datas_agendadas (conversas_telefone, `data`, evento_id)\nvalues ('{{ $('Extrair Dados WhatsApp').item.json.telefone }}',\n  DATE_SUB('{{ $('Transformação de dadoss').item.json.data_mysql }}', INTERVAL 3 HOUR),\n  '{{ $('Buscar Estado').item.json.historico.id }}');",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        2672,
+        960
+      ],
+      "id": "6d94d86d-040c-4f5a-9887-67b75bca5a8d",
+      "name": "Insert into datas_agendadas1",
+      "credentials": {
+        "mySql": {
+          "id": "DCPMzUgNxYudexuH",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Trigger evento atualizado').first().json.creator.email }}",
+        "subject": "=Agendamento remarcado de {{ $json.dataAnterior }} para {{ $json.dataAtual }}",
+        "emailType": "text",
+        "message": "={{ $('Trigger evento atualizado').first().json.summary }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -864,
+        1520
+      ],
+      "id": "f9428b0f-ba2f-4634-ae20-e3d81b5bf60d",
+      "name": "Send a message2",
+      "webhookId": "de654d40-b863-4c9f-b1f4-140f63e30056",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "d0mnV1TzVQ706o6A",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "triggerOn": "eventUpdated",
+        "options": {
+          "matchTerm": "Consulta"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        1520
+      ],
+      "id": "ecd79ab4-cfe5-4eb1-b193-25bbe58070a9",
+      "name": "Trigger evento atualizado",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select *\nfrom datas_agendadas\nwhere evento_id = '{{ $json.id }}'\n  and status = 'cancelado'\norder by `data`;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -1280,
+        1520
+      ],
+      "id": "67efc35f-d2a5-4898-a123-650a7beab3c6",
+      "name": "Select datas canceladas",
+      "credentials": {
+        "mySql": {
+          "id": "DCPMzUgNxYudexuH",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataISO = new Date($('Trigger evento atualizado').first().json.start.dateTime);\n\nconst dataSql = new Date($('Select datas canceladas').all().at(-1).json.data);\n\nconst formatador = new Intl.DateTimeFormat('pt-BR', {year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false});\n\nconst dataAntiga = formatador.format(dataSql);\n\nreturn {\"json\": {\n  \"dataAtual\": dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'\n  }).replace(',', ''),\n  \"dataAnterior\": dataAntiga.replace(',', '')\n}};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        1520
+      ],
+      "id": "b8c881d1-5cd8-4044-8192-9ef4a67a1aac",
+      "name": "Formatar datas"
     }
   ],
   "pinData": {},
@@ -2762,7 +2859,7 @@
       "main": [
         [
           {
-            "node": "If cancelamento",
+            "node": "If tem datas",
             "type": "main",
             "index": 0
           }
@@ -2875,7 +2972,7 @@
       "main": [
         [
           {
-            "node": "Enviar datas para cancelar",
+            "node": "If cancelamento",
             "type": "main",
             "index": 0
           }
@@ -3061,24 +3158,6 @@
         ]
       ]
     },
-    "If tem datas1": {
-      "main": [
-        [
-          {
-            "node": "Enviar datas para reagendar",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Sem datas1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Retorna output index": {
       "main": [
         [
@@ -3094,14 +3173,14 @@
       "main": [
         [
           {
-            "node": "If tem datas",
+            "node": "Enviar datas para cancelar",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "If tem datas1",
+            "node": "Enviar datas para reagendar",
             "type": "main",
             "index": 0
           }
@@ -3187,13 +3266,79 @@
           }
         ]
       ]
+    },
+    "Update an event": {
+      "main": [
+        [
+          {
+            "node": "Confirmar reagendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar reagendamento": {
+      "main": [
+        [
+          {
+            "node": "Update estado historico status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update estado historico status": {
+      "main": [
+        [
+          {
+            "node": "Insert into datas_agendadas1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger evento atualizado": {
+      "main": [
+        [
+          {
+            "node": "Select datas canceladas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select datas canceladas": {
+      "main": [
+        [
+          {
+            "node": "Formatar datas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar datas": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "5c59c837-ce73-491c-954f-2572c71604c2",
+  "versionId": "ef8ac76e-a426-4a39-9023-664c9baf5d42",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

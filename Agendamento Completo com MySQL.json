@@ -2430,6 +2430,95 @@
       ],
       "id": "b8c881d1-5cd8-4044-8192-9ef4a67a1aac",
       "name": "Formatar datas"
+    },
+    {
+      "parameters": {
+        "path": "whatsapp-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1472,
+        224
+      ],
+      "id": "9ad98754-bc6b-46f9-a710-646e379cf8b7",
+      "name": "Webhook",
+      "webhookId": "704e4820-5efa-4e3a-8d8b-abbecd232b1f"
+    },
+    {
+      "parameters": {
+        "jsCode": "const query = $json[\"query\"];\nconst verify_token = \"meu_token_webhook\"; // o mesmo token que você colocou na Meta\n\nif (query[\"hub.mode\"] === \"subscribe\" && query[\"hub.verify_token\"] === verify_token) {\n  return [{\n    json: {\n      challenge: query[\"hub.challenge\"]\n    }\n  }];\n} else {\n  return [{\n    json: {\n      error: \"Token inválido\"\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1264,
+        224
+      ],
+      "id": "bb234c37-bcfc-4a23-905d-82d52096fc24",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.challenge }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -1056,
+        224
+      ],
+      "id": "b50184b5-de8e-423f-b8ef-f70d4fa506a2",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "content": "## Configurar webhook no developers.facebook.com",
+        "height": 272,
+        "width": 720
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1536,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "b4f0f33c-ea40-4931-8507-5eb69a698e2b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        336,
+        688
+      ],
+      "id": "c2f2d7f0-11a4-4780-906d-2c1aa77da5c3",
+      "name": "HTTP Request"
     }
   ],
   "pinData": {},
@@ -3332,13 +3421,35 @@
           }
         ]
       ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ef8ac76e-a426-4a39-9023-664c9baf5d42",
+  "versionId": "0a9e240a-5891-43e7-afcc-7146a6d06ab5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

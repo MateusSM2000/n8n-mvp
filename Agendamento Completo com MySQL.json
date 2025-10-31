@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "functionCode": "return [{json:{telefone:$json.body.From, mensagem:$json.body.Body?.trim().toLowerCase(), to:$json.body.To}}];"
+        "functionCode": "return [{json: {\n  telefone: $json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"from\"],\n  mensagem: $json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"text\"][\"body\"].trim().toLowerCase()\n}}];"
       },
       "name": "Extrair Dados WhatsApp",
       "type": "n8n-nodes-base.function",
@@ -123,29 +123,7 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".",
-        "options": {}
-      },
-      "name": "Enviar Menu Inicial",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        -624,
-        464
-      ],
-      "id": "9961f25f-f6cb-4f1a-b77a-2d7f6efb1d77",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "functionCode": "return [{json:{estado: $json.estado, telefone: $('Extrair Dados WhatsApp').item.json.telefone, mensagem: $('Extrair Dados WhatsApp').item.json.mensagem, to: $('Extrair Dados WhatsApp').item.json.to}}];"
+        "functionCode": "return [{json:{estado: $json.estado, telefone: $('Extrair Dados WhatsApp').item.json.telefone, mensagem: $('Extrair Dados WhatsApp').item.json.mensagem, }}];"
       },
       "name": "Extrair Estado Atual",
       "type": "n8n-nodes-base.function",
@@ -158,28 +136,6 @@
     },
     {
       "parameters": {
-        "from": "={{$json.to}}",
-        "to": "={{$json.telefone}}",
-        "message": "=Trabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nPor favor, digite seu nome, data e horário que deseja reservar.",
-        "options": {}
-      },
-      "name": "Pedir nome e data",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        320,
-        -160
-      ],
-      "id": "d0a1320e-f71f-4278-9194-e7bb829e7c36",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update conversas\nset estado = 'agendamento'\nwhere telefone = '{{ $('Extrair Estado Atual').item.json.telefone }}';",
         "options": {}
@@ -188,7 +144,7 @@
       "typeVersion": 2.5,
       "position": [
         496,
-        -160
+        -176
       ],
       "id": "5ce66f12-95a4-47cd-95a6-3de7f9ffbddb",
       "name": "Mudar estado para agendamento",
@@ -637,7 +593,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\",\n  \"dataOk\": \"...\"\n}\n\nA propriedade \"dataOk\" deve ser preenchida com valor booleano. 'true' se a data extraída estiver dentro do dia da semana e horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair data e hora, preencha \"dataOk\" com 'false'. Se a data extraída for no passado ou em um feriado (estamos localizados em Limeira, SP - Brasil), preencha \"dataOk\" com 'false'.\n\nMensagem: {{ $('Opções estados').item.json.mensagem }}",
+        "text": "=Você é um assistente de agendamento.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\",\n  \"dataOk\": \"...\"\n}\n\nA propriedade \"dataOk\" deve ser preenchida com valor booleano. 'true' se a data extraída estiver dentro do dia da semana e horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair data E hora, preencha \"dataOk\" com 'false' (se conseguir extrair apenas um dos dois, \"dataOk\" ainda deve ser 'false'). Se a data extraída for no passado ou em um feriado (estamos localizados em Limeira, SP - Brasil), preencha \"dataOk\" com 'false'.\n\nMensagem: {{ $('Opções estados').item.json.mensagem }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -666,49 +622,6 @@
         "googlePalmApi": {
           "id": "mwJIDNjXa72pv5wt",
           "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update conversas\nset estado = \"menu\",\nwhere telefone = \"{{ $('Extrair Dados WhatsApp').item.json.telefone }}\";",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.5,
-      "position": [
-        2672,
-        736
-      ],
-      "id": "a0553e44-b4bc-4532-9c4b-5e487f33342a",
-      "name": "retornar estado menu",
-      "credentials": {
-        "mySql": {
-          "id": "DCPMzUgNxYudexuH",
-          "name": "MySQL account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".",
-        "options": {}
-      },
-      "name": "Enviar Menu Inicial1",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        144,
-        640
-      ],
-      "id": "6a4027ab-b258-4203-a8af-29cbaad62d60",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
         }
       }
     },
@@ -811,7 +724,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento.\nEsses são os eventos já marcados no dia:\n\n{{ JSON.stringify($json[\"eventos\"], null, 2) }}\n\nCom base nesses eventos, indique horários alternativos que ainda estão livres no mesmo dia (entre 08:00 e 18:00, no fuso horário de São Paulo). Como as consultas duram em média 1 hora, indique os horários livres que em dentro de 1 hora não haverá conflito com outros eventos.\nResponda apenas como se estivesse respondendo diretamente ao cliente (sem conter frases como \"Claro! Aqui está a resposta para o cliente\"), com uma frase simples explicando que o horário que ele pediu já se encontra agendado e informando quais intervalos de tempo estão disponíveis para agendamento, e também avise para o cliente enviar a próxima mensagem contendo a data e horário escolhido para agendamento. O nome do cliente é {{ $('Consultar nome').item.json.nome }}. A primeira palavra de sua resposta deve ser o nome do cliente caso for informado, se não, omita isso e continue com o restante da frase normalmente.",
+        "text": "=Você é um assistente de agendamento.\nEsses são os eventos já marcados no dia:\n\n{{ JSON.stringify($json[\"eventos\"], null, 2) }}\n\nCom base nesses eventos, indique horários alternativos que ainda estão livres no mesmo dia (entre 08:00 e 18:00, no fuso horário de São Paulo). Como as consultas duram em média 1 hora, indique os horários livres que em dentro de 1 hora não haverá conflito com outros eventos.\nResponda apenas como se estivesse respondendo diretamente ao cliente (sem conter frases como \"Claro! Aqui está a resposta para o cliente\"), com uma frase simples explicando que o horário que ele pediu já se encontra agendado e informando quais intervalos de tempo estão disponíveis para agendamento, e também avise para o cliente enviar a próxima mensagem contendo a data e horário escolhido para agendamento. O nome do cliente é {{ $('Consultar nome').first().json.nome }}. A primeira palavra de sua resposta deve ser o nome do cliente caso for informado, se não, omita isso e continue com o restante da frase normalmente.",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -840,50 +753,6 @@
         "googlePalmApi": {
           "id": "mwJIDNjXa72pv5wt",
           "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Transformação de dadoss').first().json.telefone }}",
-        "to": "={{ $('Transformação de dadoss').first().json.to }}",
-        "message": "={{ $json.text }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        2928,
-        1232
-      ],
-      "id": "1d211ef9-e8d2-4ff9-a683-1f84e43a02c0",
-      "name": "Horários alternativos",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "Olá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".",
-        "options": {}
-      },
-      "name": "Enviar Menu Inicial2",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        -48,
-        912
-      ],
-      "id": "4da38c9e-86f3-472e-ad43-ef9f71538b75",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
         }
       }
     },
@@ -949,28 +818,6 @@
     },
     {
       "parameters": {
-        "from": "={{ $json.to }}",
-        "to": "={{ $json.telefone }}",
-        "message": "Ok! Me conte quais são suas dúvidas.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        320,
-        0
-      ],
-      "id": "2dd5390a-9d3b-4feb-b4a9-bdadf9a7180d",
-      "name": "Iniciar duvidas",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update conversas\nset estado = \"faq\"\nwhere telefone = \"{{ $('Extrair Estado Atual').item.json.telefone }}\";",
         "options": {}
@@ -1014,7 +861,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente virtual de atendimento no WhatsApp para um escritório de advocacia criminal.\nResponda de forma informativa às dúvidas do cliente ({{ $('Buscar Estado').item.json.nome }}). Não indique término da conversa nas suas respotas, deixe claro que caso houver mais dúvidas o cliente pode perguntar. Se já consta histórico da conversa no JSON, não precisa começar sua respota com cumprimento.\nUse o contexto da conversa abaixo para entender a pergunta atual.\n\nHistórico da conversa em JSON:\n{{ JSON.stringify($json[\"historico\"], null, 2) }}\n\nPergunta/mensagem mais recente:\n{{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
+        "text": "=Você é um assistente virtual de atendimento no WhatsApp para um escritório de advocacia criminal localizado em Limeira - SP, Brasil. Hoje é {{ $now }}\nResponda de forma informativa às dúvidas do cliente ({{ $('Buscar Estado').item.json.nome }}). Não indique término da conversa nas suas respotas, deixe claro que caso houver mais dúvidas o cliente pode perguntar. Se já consta histórico da conversa no JSON, não precisa começar sua respota com cumprimento.\nUse o contexto da conversa abaixo para entender a pergunta atual.\n\nHistórico da conversa em JSON:\n{{ JSON.stringify($json[\"historico\"], null, 2) }}\n\nPergunta/mensagem mais recente:\n{{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -1058,65 +905,6 @@
       ],
       "id": "4b8b37f0-f107-4119-bff8-77cb29a29728",
       "name": "Adicionar msg ao historico"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "table": {
-          "__rl": true,
-          "value": "conversas",
-          "mode": "list",
-          "cachedResultName": "conversas"
-        },
-        "dataMode": "defineBelow",
-        "columnToMatchOn": "telefone",
-        "valueToMatchOn": "={{ $('Extrair Estado Atual').item.json.telefone }}",
-        "valuesToSend": {
-          "values": [
-            {
-              "column": "historico",
-              "value": "={{ $json.historico }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.5,
-      "position": [
-        1360,
-        1552
-      ],
-      "id": "f34b9b88-7b1b-498b-96bd-0fee5cb1b998",
-      "name": "Update rows in a table",
-      "credentials": {
-        "mySql": {
-          "id": "DCPMzUgNxYudexuH",
-          "name": "MySQL account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Extrair Estado Atual').item.json.to }}",
-        "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
-        "message": "={{ $('Basic LLM Chain2').item.json.text }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1568,
-        1552
-      ],
-      "id": "bd3d7dea-998d-4e7e-a48a-979b52970348",
-      "name": "Enviar msg da IA",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1259,28 +1047,6 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Extrair Estado Atual').item.json.to }}",
-        "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
-        "message": "=Desculpe{{ $('Transformação de dadoss').item.json.nome ? ` ${$('Transformação de dadoss').item.json.nome},` : ',' }} mas não trabalhamos neste horário que você escolheu.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nPor favor, envie uma nova mensagem com um horário válido.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1504,
-        1296
-      ],
-      "id": "d64935a5-5060-4114-bfb0-f0685af88e8f",
-      "name": "Enviar horarios validos",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -1378,28 +1144,6 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Transformação de dadoss').first().json.telefone }}",
-        "to": "={{ $('Transformação de dadoss').first().json.to }}",
-        "message": "=✅ Agendamento confirmado!\n{{\n$('Transformação de dadoss').item.json.nome\n?\n`${$('Transformação de dadoss').first().json.nome} para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n:\n`Para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n}}",
-        "options": {}
-      },
-      "name": "Confirmar Agendamento",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        2288,
-        736
-      ],
-      "id": "c6ab7a8c-9025-47f6-bceb-040e132e7f65",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -1431,28 +1175,6 @@
       ],
       "id": "bceba4c6-6997-47d9-a7d2-138d32e33d6d",
       "name": "If tem datas"
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Extrair Estado Atual').item.json.to }}",
-        "to": "={{ $('Extrair Estado Atual').item.json.telefone }}",
-        "message": "=Não encontrei nenhuma data marcada para seu número {{ $('Extrair Estado Atual').item.json.telefone.split(9) }}.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1088,
-        464
-      ],
-      "id": "ab1577cd-f267-4474-a563-7dc400f43104",
-      "name": "Sem datas",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1813,7 +1535,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5)\n}}));\n\nreturn dados;"
+        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5),\n  telefone: item.json.telefone\n}}));\n\nreturn dados;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1823,30 +1545,6 @@
       ],
       "id": "2ef65faf-5333-4b2c-baa8-328d47c92554",
       "name": "Formatar os dados"
-    },
-    {
-      "parameters": {
-        "from": "whatsapp:+14155238886",
-        "to": "={{ $('Select datas agendadas amanha').item.json.telefone }}",
-        "message": "=Olá {{ $json.nome }}! 👋\nLembrando que você tem um agendamento amanhã às {{ $json.data }}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.",
-        "options": {
-          "statusCallback": ""
-        }
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        -864,
-        1712
-      ],
-      "id": "82b48da1-c579-4005-a5b7-96b0d5a9ec1f",
-      "name": "Enviar aviso",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1890,7 +1588,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5)\n}}));\n\nreturn dados;"
+        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5),\n  telefone: item.json.telefone\n}}));\n\nreturn dados;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1900,30 +1598,6 @@
       ],
       "id": "d115e17a-f942-4618-8e95-9da1f2c604c1",
       "name": "Formatar os dados1"
-    },
-    {
-      "parameters": {
-        "from": "whatsapp:+14155238886",
-        "to": "={{ $('Select datas agendadas hoje').item.json.telefone }}",
-        "message": "=Olá {{ $json.nome }}! 👋\nLembrando que você tem um agendamento hoje às {{ $json.data }}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.",
-        "options": {
-          "statusCallback": ""
-        }
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        -864,
-        1904
-      ],
-      "id": "91f92e22-8c14-486a-a3f9-d2054318287c",
-      "name": "Enviar aviso1",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1979,29 +1653,6 @@
       ],
       "id": "800dee10-b46d-4088-ba03-dfdb5cba5698",
       "name": "If cancelamento"
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja reagendar?\nResponda com a enumeração da data.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1296,
-        320
-      ],
-      "id": "eb5bbee8-112a-49d8-aa86-2a8f860303f8",
-      "name": "Enviar datas para reagendar",
-      "executeOnce": true,
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
     },
     {
       "parameters": {
@@ -2509,19 +2160,766 @@
             }
           ]
         },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nOlá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".\n`\n} }}"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        336,
-        688
+        144,
+        608
       ],
       "id": "c2f2d7f0-11a4-4780-906d-2c1aa77da5c3",
-      "name": "HTTP Request"
+      "name": "Enviar menu"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nOlá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -592,
+        464
+      ],
+      "id": "bc55ac8d-efb7-4ecc-80fd-4e607b3fe42b",
+      "name": "Enviar menu1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nPor favor, digite seu nome, data e horário que deseja reservar.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        -176
+      ],
+      "id": "d6efdaa1-70a5-433f-bc15-c55d5e15b374",
+      "name": "Pedir nome e data"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nOlá 👋! Eu sou o assistente virtual.\nEscolha uma opção:\n1️⃣ - Agendar consulta\n2️⃣ - Tirar dúvidas\n3️⃣ - Cancelar agendamento\n4️⃣ - Reagendar consulta\n\nPara voltar a este menu durante o atendimento, basta enviar \"menu\".\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -48,
+        912
+      ],
+      "id": "66af8cd4-cce9-4002-924d-28b29de4abc7",
+      "name": "Enviar menu2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nDesculpe${$('Transformação de dadoss').item.json.nome ? `${$('Transformação de dadoss').item.json.nome},` : ','} mas não trabalhamos neste horário que você escolheu.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nPor favor, envie uma nova mensagem com data e horário válidos.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1504,
+        1312
+      ],
+      "id": "7882a05e-a9bb-455f-8315-2b5bf9728ab7",
+      "name": "Solicitar nova data e hora"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\n✅ Agendamento confirmado!\n${$('Transformação de dadoss').item.json.nome\n?\n`${$('Transformação de dadoss').first().json.nome} para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n:\n`Para ${$('Transformação de dadoss').first().json.data_a_exibir}`}\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2288,
+        736
+      ],
+      "id": "d5bd9729-8017-418c-86db-e604fd959a0e",
+      "name": "Confirmar agendamento"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "conversas",
+          "mode": "list",
+          "cachedResultName": "conversas"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "telefone",
+        "valueToMatchOn": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "estado",
+              "value": "menu"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        2656,
+        736
+      ],
+      "id": "7132479d-5f9e-4e87-b091-d67e84cd19da",
+      "name": "Update estado1",
+      "credentials": {
+        "mySql": {
+          "id": "DCPMzUgNxYudexuH",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').first().json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n$json.text\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2928,
+        1232
+      ],
+      "id": "6fcc0afc-c051-43d1-b818-5a3d6ad1a129",
+      "name": "Horarios alternativos"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body: \n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento amanhã às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        1712
+      ],
+      "id": "a98a9497-c34e-4fc6-90c4-a2b524a04fef",
+      "name": "Enviar aviso"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body: \n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento hoje às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        1904
+      ],
+      "id": "9a0d29e7-5695-4d18-962c-9dde71d8eee9",
+      "name": "Enviar aviso2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nOk! Me conte quais são suas dúvidas.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        0
+      ],
+      "id": "da938df6-24d1-4dd3-aa3b-05883f90d622",
+      "name": "Pedir nome e data1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "conversas",
+          "mode": "list",
+          "cachedResultName": "conversas"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "telefone",
+        "valueToMatchOn": "={{ $('Extrair Estado Atual').item.json.telefone }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "historico",
+              "value": "={{ $json.historico }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1344,
+        1552
+      ],
+      "id": "f34b9b88-7b1b-498b-96bd-0fee5cb1b998",
+      "name": "Update historico1",
+      "credentials": {
+        "mySql": {
+          "id": "DCPMzUgNxYudexuH",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').first().json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n$('Basic LLM Chain2').item.json.text\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1536,
+        1552
+      ],
+      "id": "1a4f41e4-0549-4859-97b9-cfcc814b3a33",
+      "name": "Enviar msg da IA"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nNão encontrei nenhuma data marcada para seu número ${$('Extrair Estado Atual').item.json.telefone}.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1088,
+        512
+      ],
+      "id": "1293d79c-2858-4102-818c-4d54adfee167",
+      "name": "Sem datas"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nEncontrei as seguintes datas marcadas para seu número ${$('Extrair Dados WhatsApp').item.json.telefone}:\n\n${$input.all().map((item, index) => `${index + 1} - ${item.json.data}`).join('\\n')}\n\nQual data deseja reagendar?\nResponda com a enumeração da data.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1296,
+        320
+      ],
+      "id": "4749d3b5-154e-4c97-bb96-384522832ed1",
+      "name": "Enviar datas para reagendar",
+      "executeOnce": true
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Webhook IN": [
+      {
+        "json": {
+          "headers": {
+            "host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
+            "user-agent": "facebookexternalua",
+            "content-length": "498",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip",
+            "content-type": "application/json",
+            "x-forwarded-for": "2a03:2880:12ff:47::",
+            "x-forwarded-host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
+            "x-forwarded-proto": "https",
+            "x-hub-signature": "sha1=fe650a110efd276303c8237879ff4ae2b4fc7832",
+            "x-hub-signature-256": "sha256=2e6a7cad24b245901a0343bec7420f2b923b1a43fd544d3d5db2f0c08f132150"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "object": "whatsapp_business_account",
+            "entry": [
+              {
+                "id": "1485481985861913",
+                "changes": [
+                  {
+                    "value": {
+                      "messaging_product": "whatsapp",
+                      "metadata": {
+                        "display_phone_number": "551930610140",
+                        "phone_number_id": "914808141706009"
+                      },
+                      "contacts": [
+                        {
+                          "profile": {
+                            "name": "Mateus Schmidt Mesquita"
+                          },
+                          "wa_id": "5519996643834"
+                        }
+                      ],
+                      "messages": [
+                        {
+                          "from": "5519996643834",
+                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGQ0VDRjIzRUE5NjM3NDQxNThDAA==",
+                          "timestamp": "1761845447",
+                          "text": {
+                            "body": "reagendar"
+                          },
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "field": "messages"
+                  }
+                ]
+              }
+            ]
+          },
+          "webhookUrl": "http://localhost:5678/webhook/whatsapp-webhook",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
   "connections": {
     "Webhook IN": {
       "main": [
@@ -2578,7 +2976,7 @@
       "main": [
         [
           {
-            "node": "Enviar Menu Inicial",
+            "node": "Enviar menu1",
             "type": "main",
             "index": 0
           }
@@ -2589,7 +2987,7 @@
       "main": [
         [
           {
-            "node": "Confirmar Agendamento",
+            "node": "Confirmar agendamento",
             "type": "main",
             "index": 0
           }
@@ -2601,17 +2999,6 @@
         [
           {
             "node": "If estado menu",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Pedir nome e data": {
-      "main": [
-        [
-          {
-            "node": "Mudar estado para agendamento",
             "type": "main",
             "index": 0
           }
@@ -2636,28 +3023,21 @@
         ],
         [
           {
-            "node": "Iniciar duvidas",
+            "node": "Pedir nome e data1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Iniciar duvidas",
+            "node": "Pedir nome e data1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Iniciar duvidas",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Retorna output index",
+            "node": "Pedir nome e data1",
             "type": "main",
             "index": 0
           }
@@ -2685,7 +3065,14 @@
         ],
         [
           {
-            "node": "Enviar Menu Inicial1",
+            "node": "Retorna output index",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar menu",
             "type": "main",
             "index": 0
           }
@@ -2819,18 +3206,7 @@
       "main": [
         [
           {
-            "node": "Horários alternativos",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enviar Menu Inicial2": {
-      "main": [
-        [
-          {
-            "node": "Update estado e historico",
+            "node": "Horarios alternativos",
             "type": "main",
             "index": 0
           }
@@ -2841,7 +3217,7 @@
       "main": [
         [
           {
-            "node": "Enviar Menu Inicial2",
+            "node": "Enviar menu2",
             "type": "main",
             "index": 0
           }
@@ -2876,17 +3252,6 @@
           }
         ],
         []
-      ]
-    },
-    "Iniciar duvidas": {
-      "main": [
-        [
-          {
-            "node": "Mudar estado para faq",
-            "type": "main",
-            "index": 0
-          }
-        ]
       ]
     },
     "Buscar historico de conversas": {
@@ -2926,18 +3291,7 @@
       "main": [
         [
           {
-            "node": "Update rows in a table",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Update rows in a table": {
-      "main": [
-        [
-          {
-            "node": "Enviar msg da IA",
+            "node": "Update historico1",
             "type": "main",
             "index": 0
           }
@@ -2988,7 +3342,7 @@
         ],
         [
           {
-            "node": "Enviar horarios validos",
+            "node": "Solicitar nova data e hora",
             "type": "main",
             "index": 0
           }
@@ -3039,18 +3393,7 @@
       "main": [
         [
           {
-            "node": "retornar estado menu",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Confirmar Agendamento": {
-      "main": [
-        [
-          {
-            "node": "Insert into datas_agendadas",
+            "node": "Update estado1",
             "type": "main",
             "index": 0
           }
@@ -3240,7 +3583,7 @@
       "main": [
         [
           {
-            "node": "Enviar aviso1",
+            "node": "Enviar aviso2",
             "type": "main",
             "index": 0
           }
@@ -3270,17 +3613,6 @@
         [
           {
             "node": "Enviar datas para reagendar",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enviar datas para reagendar": {
-      "main": [
-        [
-          {
-            "node": "Mudar estado para reagendamento",
             "type": "main",
             "index": 0
           }
@@ -3443,13 +3775,79 @@
           }
         ]
       ]
+    },
+    "Pedir nome e data": {
+      "main": [
+        [
+          {
+            "node": "Mudar estado para agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar menu2": {
+      "main": [
+        [
+          {
+            "node": "Update estado e historico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar agendamento": {
+      "main": [
+        [
+          {
+            "node": "Insert into datas_agendadas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pedir nome e data1": {
+      "main": [
+        [
+          {
+            "node": "Mudar estado para faq",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update historico1": {
+      "main": [
+        [
+          {
+            "node": "Enviar msg da IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar datas para reagendar": {
+      "main": [
+        [
+          {
+            "node": "Mudar estado para reagendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "0a9e240a-5891-43e7-afcc-7146a6d06ab5",
+  "versionId": "ae5f14ef-8bb4-433b-8c5a-1551fc62aa8e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

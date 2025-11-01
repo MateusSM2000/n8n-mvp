@@ -959,29 +959,6 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "=Encontrei as seguintes datas marcadas para seu número {{ $('Extrair Dados WhatsApp').item.json.telefone.slice(9) }}:\n\n{{ $input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n') }}\n\nQual data deseja cancelar?\nResponda com a enumeração da data.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1296,
-        112
-      ],
-      "id": "552d34a3-7c52-4a59-806d-c4a6f7c230b4",
-      "name": "Enviar datas para cancelar",
-      "executeOnce": true,
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "getAll",
         "calendar": {
           "__rl": true,
@@ -1275,30 +1252,8 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Extrair Dados WhatsApp').first().json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').first().json.telefone }}",
-        "message": "=Sua consulta no dia {{ $('Retorna id e formata msg').item.json.dataMSG }} foi cancelada com sucesso.\n\nObrigado!",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1472,
-        1952
-      ],
-      "id": "84176d24-2c8d-4977-9464-e944e8590b08",
-      "name": "Cancelamento confirmado",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
-        "query": "update conversas\nset estado = 'menu'\nwhere telefone = '{{ $json.to }}';",
+        "query": "update conversas\nset estado = 'menu'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -1318,29 +1273,7 @@
     },
     {
       "parameters": {
-        "from": "={{ $('Opções estados').item.json.to }}",
-        "to": "={{ $('Opções estados').item.json.telefone }}",
-        "message": "Por favor, envie a enumeração correta da data que deseja desmarcar.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1072,
-        2192
-      ],
-      "id": "cc95a022-90a6-49b7-8b8c-db1a20a172d2",
-      "name": "Enviar data correta",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const msgFormatada = $('Extrair Dados WhatsApp').first().json.mensagem.slice(0, 1);\n\nconst msgFormatadaInt = parseInt(msgFormatada);\n\nconst dataISO = new Date($input.all()[msgFormatadaInt - 1].json.start.dateTime);\n\nreturn [{json: {\n  id: $input.all()[msgFormatadaInt - 1].json.id,\n  dataMSG: dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'})\n}}];"
+        "jsCode": "const msgFormatada = $('Extrair Dados WhatsApp').first().json.mensagem.slice(0, 1);\n\nconst msgFormatadaInt = parseInt(msgFormatada);\n\nconst dataISO = new Date($input.all()[msgFormatadaInt - 1].json.start.dateTime);\n\nreturn [{json: {\n  id: $input.all()[msgFormatadaInt - 1].json.id,\n  dataMSG: dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'}).replace(',', '')\n}}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1724,7 +1657,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const msgFormatada = $('Extrair Dados WhatsApp').first().json.mensagem.slice(0, 1);\n\nconst msgFormatadaInt = parseInt(msgFormatada);\n\nconst dataISO = new Date($input.all()[msgFormatadaInt - 1].json.start.dateTime);\n\nreturn [{json: {\n  id: {\n    id: $input.all()[msgFormatadaInt - 1].json.id},\n  dataMSG: dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'})\n}}];"
+        "jsCode": "const msgFormatada = $('Extrair Dados WhatsApp').first().json.mensagem.slice(0, 1);\n\nconst msgFormatadaInt = parseInt(msgFormatada);\n\nconst dataISO = new Date($input.all()[msgFormatadaInt - 1].json.start.dateTime);\n\nreturn [{json: {\n  id: {\n    id: $input.all()[msgFormatadaInt - 1].json.id},\n  dataMSG: dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'}).replace(',', '')\n}}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1735,50 +1668,6 @@
       "id": "1980e164-ff09-4c22-87f6-06394e2aa261",
       "name": "Retorna id e formata msg1",
       "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Opções estados').item.json.to }}",
-        "to": "={{ $('Opções estados').item.json.telefone }}",
-        "message": "Por favor, envie a enumeração correta da data que deseja reagendar.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1040,
-        2736
-      ],
-      "id": "7152a9a7-34ed-4e12-8b0a-91b6d43222fb",
-      "name": "Enviar data correta1",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Extrair Dados WhatsApp').item.json.to }}",
-        "to": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}",
-        "message": "=Trabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nVocê quer remarcar seu agendamento do dia {{ $('Retorna id e formata msg1').item.json.dataMSG }} para que data e horário?",
-        "options": {}
-      },
-      "name": "Pedir data reagendar",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        1216,
-        2448
-      ],
-      "id": "92c8e8d8-e74a-45de-bbf5-08948aa46386",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1812,7 +1701,7 @@
         },
         "dataMode": "defineBelow",
         "columnToMatchOn": "telefone",
-        "valueToMatchOn": "={{ $('Extrair Estado Atual').item.json.telefone }}",
+        "valueToMatchOn": "={{ $('Extrair Estado Atual').first().json.telefone }}",
         "valuesToSend": {
           "values": [
             {
@@ -1841,7 +1730,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update conversas\nset estado = 'reagendamento2'\nwhere telefone = '{{ $('Extrair Estado Atual').item.json.telefone }}';",
+        "query": "update conversas\nset estado = 'reagendamento2'\nwhere telefone = '{{ $('Extrair Estado Atual').first().json.telefone }}';",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -1920,28 +1809,6 @@
         "googleCalendarOAuth2Api": {
           "id": "OW5Fz1MJL38TiSw3",
           "name": "Google Calendar account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "from": "={{ $('Transformação de dadoss').first().json.telefone }}",
-        "to": "={{ $('Transformação de dadoss').first().json.to }}",
-        "message": "=✅ Remarcado com sucesso!\n{{\n$('Transformação de dadoss').item.json.nome\n?\n`${$('Transformação de dadoss').first().json.nome} para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n:\n`Para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n}}",
-        "options": {}
-      },
-      "name": "Confirmar reagendamento",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [
-        2288,
-        960
-      ],
-      "id": "c21be6d3-5174-4e41-85d0-435fed45c586",
-      "credentials": {
-        "twilioApi": {
-          "id": "ddFRhWOm3Qjlq0FB",
-          "name": "Twilio account"
         }
       }
     },
@@ -2854,6 +2721,301 @@
       "id": "4749d3b5-154e-4c97-bb96-384522832ed1",
       "name": "Enviar datas para reagendar",
       "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').first().json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nPor favor, envie a enumeração correta da data que deseja reagendar.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        2736
+      ],
+      "id": "00a2e33c-e0b8-4bf0-b69f-f6a303595516",
+      "name": "Solicitar data correta"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').first().json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nData a remarcar: ${$('Retorna id e formata msg1').item.json.dataMSG}\nEnvie a data e horário que deseja agendar.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1216,
+        2448
+      ],
+      "id": "dea2cc88-498b-41ee-80e5-93032cec9a17",
+      "name": "Pedir data reagendar"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\n✅ Remarcado com sucesso!\n${\n$('Transformação de dadoss').item.json.nome\n?\n`${$('Transformação de dadoss').first().json.nome} para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n:\n`Para ${$('Transformação de dadoss').first().json.data_a_exibir}`\n}\n`\n}\n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2288,
+        960
+      ],
+      "id": "df9f97b2-4430-419b-93cf-0019d00db74a",
+      "name": "Confirmar reagendamento"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nEncontrei as seguintes datas marcadas para seu número ${$('Extrair Dados WhatsApp').item.json.telefone}:\n\n${$input.all().map((item, index) => `${index +1 } - ${item.json.data}`).join('\\n')}\n\nQual data deseja cancelar?\nResponda com a enumeração da data.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1296,
+        112
+      ],
+      "id": "edb9428c-1b63-42db-b53c-2090b5df2df2",
+      "name": "Enviar datas para cancelar",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').first().json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nPor favor, envie a enumeração correta da data que deseja cancelar.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1072,
+        2192
+      ],
+      "id": "db4566b8-34f4-4c34-a322-96932538bca7",
+      "name": "Solicitar data correta1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Estado Atual').first().json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\n✅ Sua consulta no dia ${$('Retorna id e formata msg').item.json.dataMSG} foi cancelada com sucesso!\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        1952
+      ],
+      "id": "b613de54-5ff3-439c-8b25-871884dc0b5f",
+      "name": "Confirmar cancelamento"
     }
   ],
   "pinData": {
@@ -2902,7 +3064,7 @@
                           "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGQ0VDRjIzRUE5NjM3NDQxNThDAA==",
                           "timestamp": "1761845447",
                           "text": {
-                            "body": "reagendar"
+                            "body": " 2 -"
                           },
                           "type": "text"
                         }
@@ -3309,17 +3471,6 @@
         ]
       ]
     },
-    "Enviar datas para cancelar": {
-      "main": [
-        [
-          {
-            "node": "Mudar estado para cancelamento",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get many events1": {
       "main": [
         [
@@ -3444,18 +3595,7 @@
       "main": [
         [
           {
-            "node": "Cancelamento confirmado",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cancelamento confirmado": {
-      "main": [
-        [
-          {
-            "node": "Update estado menu",
+            "node": "Confirmar cancelamento",
             "type": "main",
             "index": 0
           }
@@ -3473,7 +3613,7 @@
         ],
         [
           {
-            "node": "Enviar data correta",
+            "node": "Solicitar data correta1",
             "type": "main",
             "index": 0
           }
@@ -3641,7 +3781,7 @@
         ],
         [
           {
-            "node": "Enviar data correta1",
+            "node": "Solicitar data correta",
             "type": "main",
             "index": 0
           }
@@ -3653,17 +3793,6 @@
         [
           {
             "node": "Pedir data reagendar",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Pedir data reagendar": {
-      "main": [
-        [
-          {
-            "node": "Update estado",
             "type": "main",
             "index": 0
           }
@@ -3693,17 +3822,6 @@
         [
           {
             "node": "Confirmar reagendamento",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Confirmar reagendamento": {
-      "main": [
-        [
-          {
-            "node": "Update estado historico status",
             "type": "main",
             "index": 0
           }
@@ -3841,13 +3959,57 @@
           }
         ]
       ]
+    },
+    "Pedir data reagendar": {
+      "main": [
+        [
+          {
+            "node": "Update estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar reagendamento": {
+      "main": [
+        [
+          {
+            "node": "Update estado historico status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar datas para cancelar": {
+      "main": [
+        [
+          {
+            "node": "Mudar estado para cancelamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar cancelamento": {
+      "main": [
+        [
+          {
+            "node": "Update estado menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ae5f14ef-8bb4-433b-8c5a-1551fc62aa8e",
+  "versionId": "f66077e1-ca05-442c-b5f4-180e2ecd8683",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

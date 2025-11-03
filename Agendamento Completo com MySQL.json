@@ -1431,7 +1431,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 5
+              "triggerAtHour": 11,
+              "triggerAtMinute": 49
             }
           ]
         }
@@ -2408,26 +2409,8 @@
           ]
         },
         "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "messaging_product",
-              "value": "whatsapp"
-            },
-            {
-              "name": "to",
-              "value": "={{ $json.telefone }}"
-            },
-            {
-              "name": "type",
-              "value": "text"
-            },
-            {
-              "name": "text",
-              "value": "={{ {body: \n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento amanhã às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
-            }
-          ]
-        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.telefone }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"lembrete_1_dia_antes\",\n    \"language\": { \"code\": \"pt_BR\" },\n    \"components\": [\n      {\n        \"type\": \"body\",\n        \"parameters\": [\n          { \"type\": \"text\", \"text\": \"{{ $json.nome }}\" },\n          { \"type\": \"text\", \"text\": \"{{ $json.data }}\" }\n        ]\n      }\n    ]\n  }\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -2457,26 +2440,8 @@
           ]
         },
         "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "messaging_product",
-              "value": "whatsapp"
-            },
-            {
-              "name": "to",
-              "value": "={{ $json.telefone }}"
-            },
-            {
-              "name": "type",
-              "value": "text"
-            },
-            {
-              "name": "text",
-              "value": "={{ {body: \n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento hoje às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
-            }
-          ]
-        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.telefone }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"lembrete_no_dia\",\n    \"language\": { \"code\": \"pt_BR\" },\n    \"components\": [\n      {\n        \"type\": \"body\",\n        \"parameters\": [\n          { \"type\": \"text\", \"text\": \"{{ $json.nome }}\" },\n          { \"type\": \"text\", \"text\": \"{{ $json.data }}\" }\n        ]\n      }\n    ]\n  }\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -3078,6 +3043,23 @@
           },
           "webhookUrl": "http://localhost:5678/webhook/whatsapp-webhook",
           "executionMode": "production"
+        }
+      }
+    ],
+    "Lembrete 1 dia antes": [
+      {
+        "json": {
+          "timestamp": "2025-11-03T11:49:25.014-03:00",
+          "Readable date": "November 3rd 2025, 11:49:25 am",
+          "Readable time": "11:49:25 am",
+          "Day of week": "Monday",
+          "Year": "2025",
+          "Month": "November",
+          "Day of month": "03",
+          "Hour": "11",
+          "Minute": "49",
+          "Second": "25",
+          "Timezone": "America/Sao_Paulo (UTC-03:00)"
         }
       }
     ]
@@ -4009,7 +3991,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "f66077e1-ca05-442c-b5f4-180e2ecd8683",
+  "versionId": "cdcc0644-c120-4ef2-ad72-91318757d9b1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

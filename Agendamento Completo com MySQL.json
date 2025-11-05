@@ -11,8 +11,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -1472,
-        656
+        -1616,
+        720
       ],
       "webhookId": "whatsapp-webhook",
       "id": "8f3e6a43-9396-440c-a8e2-21729c054199"
@@ -25,8 +25,8 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -1280,
-        656
+        -1424,
+        720
       ],
       "id": "768dc22a-14d9-484d-b66d-e9a74e15f694"
     },
@@ -39,8 +39,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -1104,
-        656
+        -1248,
+        720
       ],
       "id": "fcfe0085-7ea5-4b3b-9d55-c6f171cc2f79",
       "alwaysOutputData": true,
@@ -66,8 +66,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -944,
-        656
+        -1088,
+        720
       ],
       "id": "6cd9f360-6762-4be0-9558-c66857f9fd3f"
     },
@@ -80,7 +80,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -768,
+        -928,
         464
       ],
       "id": "395c14a6-dca9-4972-ac63-de322bfb5000",
@@ -130,7 +130,7 @@
       "typeVersion": 1,
       "position": [
         -752,
-        672
+        736
       ],
       "id": "c6d8fd1c-d5d9-450a-8323-3643af47309d"
     },
@@ -143,8 +143,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        496,
-        -176
+        1504,
+        -400
       ],
       "id": "5ce66f12-95a4-47cd-95a6-3de7f9ffbddb",
       "name": "Mudar estado para agendamento",
@@ -169,7 +169,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "1",
                     "operator": {
                       "type": "string",
@@ -194,11 +194,11 @@
                 "conditions": [
                   {
                     "id": "f1b96e06-7c04-4cfd-ae2d-9fdc3f0acf00",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "agendar",
                     "operator": {
                       "type": "string",
-                      "operation": "equals"
+                      "operation": "contains"
                     }
                   }
                 ],
@@ -218,7 +218,7 @@
                 "conditions": [
                   {
                     "id": "e97a6ee4-b2c5-4cf5-a2f1-7f1817646784",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "2",
                     "operator": {
                       "type": "string",
@@ -242,7 +242,7 @@
                 "conditions": [
                   {
                     "id": "88aa86ed-d571-4ec6-8e7d-47d5759c33bf",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "duvida",
                     "operator": {
                       "type": "string",
@@ -266,7 +266,7 @@
                 "conditions": [
                   {
                     "id": "e10c0678-68bf-4094-9c12-af9894adab68",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "dúvida",
                     "operator": {
                       "type": "string",
@@ -290,7 +290,7 @@
                 "conditions": [
                   {
                     "id": "25431c5d-31ab-44d0-9f47-97c0f70271fb",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "3",
                     "operator": {
                       "type": "string",
@@ -314,7 +314,7 @@
                 "conditions": [
                   {
                     "id": "13a65774-ece6-473a-8fea-732562dd9249",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "cancelar",
                     "operator": {
                       "type": "string",
@@ -338,11 +338,11 @@
                 "conditions": [
                   {
                     "id": "33b91e79-19b4-47e9-b34f-2862cd95882e",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "reagendar",
                     "operator": {
                       "type": "string",
-                      "operation": "contains"
+                      "operation": "equals"
                     }
                   }
                 ],
@@ -362,7 +362,7 @@
                 "conditions": [
                   {
                     "id": "8d168af5-dd61-4786-8485-e73186a71c62",
-                    "leftValue": "={{ $json.mensagem }}",
+                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
                     "rightValue": "4",
                     "operator": {
                       "type": "string",
@@ -408,8 +408,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -288,
-        160
+        688,
+        -112
       ],
       "id": "e85117c1-73a0-4c1a-8d1d-8c69ea038bb5",
       "name": "Sair menu"
@@ -585,7 +585,7 @@
       "typeVersion": 2.2,
       "position": [
         -560,
-        672
+        736
       ],
       "id": "e2addea0-71e0-48e6-884d-bc3233005b23",
       "name": "If estado menu"
@@ -593,7 +593,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\",\n  \"dataOk\": \"...\"\n}\n\nA propriedade \"dataOk\" deve ser preenchida com valor booleano. 'true' se a data extraída estiver dentro do dia da semana e horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair data E hora, preencha \"dataOk\" com 'false' (se conseguir extrair apenas um dos dois, \"dataOk\" ainda deve ser 'false'). Se a data extraída for no passado ou em um feriado (estamos localizados em Limeira, SP - Brasil), preencha \"dataOk\" com 'false'.\n\nMensagem: {{ $('Opções estados').item.json.mensagem }}",
+        "text": "=Você é um assistente de agendamento.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\",\n  \"dataOk\": \"...\"\n}\n\nA propriedade \"dataOk\" deve ser preenchida com valor booleano. 'true' se a data extraída estiver dentro do dia da semana e horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair data E hora, preencha \"dataOk\" com 'false' (se conseguir extrair apenas um dos dois, \"dataOk\" ainda deve ser 'false'). Se a data extraída for no passado ou em um feriado (estamos localizados em Limeira, SP - Brasil), preencha \"dataOk\" com 'false'.\n\nMensagem: {{ $('Extrair Estado Atual').item.json.mensagem }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -825,8 +825,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        496,
-        0
+        1504,
+        -224
       ],
       "id": "ce6659ee-8364-41d5-8823-55e7f90207f5",
       "name": "Mudar estado para faq",
@@ -931,8 +931,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1488,
-        112
+        2496,
+        -112
       ],
       "id": "a6db0eac-8100-4ea8-a6de-2189a45dacba",
       "name": "Mudar estado para cancelamento",
@@ -951,8 +951,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        688,
-        336
+        1696,
+        112
       ],
       "id": "a2798276-971d-4972-8dc7-c5ce0f290b47",
       "name": "Formatar data para envio"
@@ -975,8 +975,8 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        496,
-        336
+        1504,
+        112
       ],
       "id": "49b44129-f8ce-4b9b-8c73-683d95d7f712",
       "name": "Get many events1",
@@ -1147,8 +1147,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        896,
-        336
+        1904,
+        112
       ],
       "id": "bceba4c6-6997-47d9-a7d2-138d32e33d6d",
       "name": "If tem datas"
@@ -1340,7 +1340,7 @@
     {
       "parameters": {
         "content": "## Triggers adicionais",
-        "height": 1168,
+        "height": 1408,
         "width": 976
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -1432,7 +1432,7 @@
           "interval": [
             {
               "triggerAtHour": 11,
-              "triggerAtMinute": 49
+              "triggerAtMinute": 50
             }
           ]
         }
@@ -1441,7 +1441,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1712
+        1792
       ],
       "id": "f80ffb48-f1cd-48e2-9d4b-7bacf44be6b7",
       "name": "Lembrete 1 dia antes"
@@ -1456,7 +1456,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1712
+        1792
       ],
       "id": "7570918a-2be0-403a-8603-1d61b7e6cf57",
       "name": "Select datas agendadas amanha",
@@ -1475,7 +1475,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1712
+        1792
       ],
       "id": "2ef65faf-5333-4b2c-baa8-328d47c92554",
       "name": "Formatar os dados"
@@ -1494,7 +1494,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1904
+        2064
       ],
       "id": "ae7cddca-c917-4899-a178-dec53980544f",
       "name": "Lembrete no dia"
@@ -1509,7 +1509,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1904
+        2064
       ],
       "id": "6046f4b0-1c50-474a-9a75-b7d386d1094d",
       "name": "Select datas agendadas hoje",
@@ -1528,7 +1528,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1904
+        2064
       ],
       "id": "d115e17a-f942-4618-8e95-9da1f2c604c1",
       "name": "Formatar os dados1"
@@ -1540,8 +1540,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        320,
-        336
+        1328,
+        112
       ],
       "id": "5a57f2a2-c5f1-4783-9ae5-1b5b58419de9",
       "name": "Retorna output index"
@@ -1582,8 +1582,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1088,
-        224
+        2096,
+        0
       ],
       "id": "800dee10-b46d-4088-ba03-dfdb5cba5698",
       "name": "If cancelamento"
@@ -1613,8 +1613,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1488,
-        320
+        2496,
+        96
       ],
       "id": "d831754b-a17f-4652-8e30-d691ad1f177b",
       "name": "Mudar estado para reagendamento",
@@ -1919,7 +1919,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select *\nfrom datas_agendadas\nwhere evento_id = '{{ $json.id }}'\n  and status = 'cancelado'\norder by `data`;",
+        "query": "select *\nfrom datas_agendadas\nwhere evento_id = '{{ $json.id }}'\n  and status = 'cancelado'\norder by id;",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -1959,8 +1959,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1472,
-        224
+        -1568,
+        -32
       ],
       "id": "9ad98754-bc6b-46f9-a710-646e379cf8b7",
       "name": "Webhook",
@@ -1973,8 +1973,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1264,
-        224
+        -1360,
+        -32
       ],
       "id": "bb234c37-bcfc-4a23-905d-82d52096fc24",
       "name": "Code in JavaScript"
@@ -1990,8 +1990,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        -1056,
-        224
+        -1152,
+        -32
       ],
       "id": "b50184b5-de8e-423f-b8ef-f70d4fa506a2",
       "name": "Respond to Webhook"
@@ -2004,8 +2004,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1536,
-        144
+        -1632,
+        -112
       ],
       "typeVersion": 1,
       "id": "b4f0f33c-ea40-4931-8507-5eb69a698e2b",
@@ -2054,8 +2054,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        144,
-        608
+        1152,
+        384
       ],
       "id": "c2f2d7f0-11a4-4780-906d-2c1aa77da5c3",
       "name": "Enviar menu"
@@ -2103,8 +2103,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -592,
-        464
+        -704,
+        560
       ],
       "id": "bc55ac8d-efb7-4ecc-80fd-4e607b3fe42b",
       "name": "Enviar menu1"
@@ -2152,8 +2152,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        320,
-        -176
+        1328,
+        -400
       ],
       "id": "d6efdaa1-70a5-433f-bc15-c55d5e15b374",
       "name": "Pedir nome e data"
@@ -2417,7 +2417,7 @@
       "typeVersion": 4.2,
       "position": [
         -864,
-        1712
+        1680
       ],
       "id": "a98a9497-c34e-4fc6-90c4-a2b524a04fef",
       "name": "Enviar aviso"
@@ -2448,7 +2448,7 @@
       "typeVersion": 4.2,
       "position": [
         -864,
-        1904
+        2064
       ],
       "id": "9a0d29e7-5695-4d18-962c-9dde71d8eee9",
       "name": "Enviar aviso2"
@@ -2496,8 +2496,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        320,
-        0
+        1328,
+        -224
       ],
       "id": "da938df6-24d1-4dd3-aa3b-05883f90d622",
       "name": "Pedir nome e data1"
@@ -2631,8 +2631,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1088,
-        512
+        2096,
+        288
       ],
       "id": "1293d79c-2858-4102-818c-4d54adfee167",
       "name": "Sem datas"
@@ -2680,8 +2680,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1296,
-        320
+        2304,
+        96
       ],
       "id": "4749d3b5-154e-4c97-bb96-384522832ed1",
       "name": "Enviar datas para reagendar",
@@ -2877,8 +2877,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1296,
-        112
+        2304,
+        -112
       ],
       "id": "edb9428c-1b63-42db-b53c-2090b5df2df2",
       "name": "Enviar datas para cancelar",
@@ -2981,6 +2981,198 @@
       ],
       "id": "b613de54-5ff3-439c-8b25-871884dc0b5f",
       "name": "Confirmar cancelamento"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento amanhã às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        1856
+      ],
+      "id": "70db5615-f40c-4d10-858b-2c2bb5c4df44",
+      "name": "Enviar aviso1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento hoje às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        2208
+      ],
+      "id": "fa5a72ce-77ff-45df-b20f-b253ab4b9eac",
+      "name": "Enviar aviso3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=O cliente enviou a mensagem abaixo. Responda SOMENTE com um JSON no formato:\n{\n  \"agendar\": ...\n}\n\n\"agendar\" é um valor booleano. Preencha com 'true' somente se TODAS as condições a seguir forem verdadeiras: o cliente deixou explícito que quer agendar/marcar um horário; presença de data; presença de hora.\n\nMensagem: {{ $json.mensagem }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -272,
+        400
+      ],
+      "id": "199c744e-ba37-4562-886d-c68930c70498",
+      "name": "Basic LLM Chain5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        544
+      ],
+      "id": "abb4bd18-7841-4d5c-9f0e-cd038f4d7306",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mwJIDNjXa72pv5wt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1350a8b1-d999-42dc-a40a-8ec7bea6ff90",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        400
+      ],
+      "id": "350e05ca-9bd0-4a50-ada3-227c9f5300a8",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        400
+      ],
+      "id": "2daa03cb-19d3-4d5b-9917-c8625d7d6b1f",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "content": "## desse jeito pode mandar menu 2 vezes"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -848,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "502d7283-8d28-4899-934e-780d9898911c",
+      "name": "Sticky Note2"
     }
   ],
   "pinData": {
@@ -3029,7 +3221,7 @@
                           "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGQ0VDRjIzRUE5NjM3NDQxNThDAA==",
                           "timestamp": "1761845447",
                           "text": {
-                            "body": " 2 -"
+                            "body": "Quero marcar as 15hrs do dia 5"
                           },
                           "type": "text"
                         }
@@ -3121,6 +3313,11 @@
         [
           {
             "node": "Enviar menu1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain5",
             "type": "main",
             "index": 0
           }
@@ -3266,7 +3463,7 @@
       "main": [
         [
           {
-            "node": "Sair menu",
+            "node": "Basic LLM Chain5",
             "type": "main",
             "index": 0
           }
@@ -3985,13 +4182,64 @@
           }
         ]
       ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain5": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sair menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "cdcc0644-c120-4ef2-ad72-91318757d9b1",
+  "versionId": "4a5726ff-a5b6-4f0a-9950-a0490d7d4b30",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

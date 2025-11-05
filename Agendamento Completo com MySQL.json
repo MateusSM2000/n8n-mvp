@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
       "position": [
-        2096,
+        2304,
         736
       ],
       "id": "5c646a89-1a86-4821-a4dd-9a6b6b983941",
@@ -143,7 +143,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1504,
+        2128,
         -400
       ],
       "id": "5ce66f12-95a4-47cd-95a6-3de7f9ffbddb",
@@ -169,7 +169,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "1",
                     "operator": {
                       "type": "string",
@@ -194,7 +194,7 @@
                 "conditions": [
                   {
                     "id": "f1b96e06-7c04-4cfd-ae2d-9fdc3f0acf00",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "agendar",
                     "operator": {
                       "type": "string",
@@ -218,7 +218,7 @@
                 "conditions": [
                   {
                     "id": "e97a6ee4-b2c5-4cf5-a2f1-7f1817646784",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "2",
                     "operator": {
                       "type": "string",
@@ -242,7 +242,7 @@
                 "conditions": [
                   {
                     "id": "88aa86ed-d571-4ec6-8e7d-47d5759c33bf",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "duvida",
                     "operator": {
                       "type": "string",
@@ -266,7 +266,7 @@
                 "conditions": [
                   {
                     "id": "e10c0678-68bf-4094-9c12-af9894adab68",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "dúvida",
                     "operator": {
                       "type": "string",
@@ -290,7 +290,7 @@
                 "conditions": [
                   {
                     "id": "25431c5d-31ab-44d0-9f47-97c0f70271fb",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "3",
                     "operator": {
                       "type": "string",
@@ -314,7 +314,7 @@
                 "conditions": [
                   {
                     "id": "13a65774-ece6-473a-8fea-732562dd9249",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "cancelar",
                     "operator": {
                       "type": "string",
@@ -338,7 +338,7 @@
                 "conditions": [
                   {
                     "id": "33b91e79-19b4-47e9-b34f-2862cd95882e",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "reagendar",
                     "operator": {
                       "type": "string",
@@ -362,7 +362,7 @@
                 "conditions": [
                   {
                     "id": "8d168af5-dd61-4786-8485-e73186a71c62",
-                    "leftValue": "={{ $('If estado menu').item.json.mensagem }}",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "4",
                     "operator": {
                       "type": "string",
@@ -408,7 +408,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        688,
+        896,
         -112
       ],
       "id": "e85117c1-73a0-4c1a-8d1d-8c69ea038bb5",
@@ -593,13 +593,13 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\",\n  \"dataOk\": \"...\"\n}\n\nA propriedade \"dataOk\" deve ser preenchida com valor booleano. 'true' se a data extraída estiver dentro do dia da semana e horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair data E hora, preencha \"dataOk\" com 'false' (se conseguir extrair apenas um dos dois, \"dataOk\" ainda deve ser 'false'). Se a data extraída for no passado ou em um feriado (estamos localizados em Limeira, SP - Brasil), preencha \"dataOk\" com 'false'.\n\nMensagem: {{ $('Extrair Estado Atual').item.json.mensagem }}",
+        "text": "=Você é um assistente de agendamento.\nTrabalhamos de segunda-feira à sexta-feira, das 08:00 às 18:00.\nHoje é {{ $now.toISO() }} (fuso horário de São Paulo).\n\nExtraia o nome da pessoa e a data/hora da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA data deve ser convertida para o formato ISO 8601 (YYYY-MM-DDTHH:MM:SS-03:00).\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"data\": \"...\",\n  \"dataOk\": \"...\"\n}\n\nA propriedade \"dataOk\" deve ser preenchida com valor booleano. 'true' se a data extraída estiver dentro do dia da semana e horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair data E hora, preencha \"dataOk\" com 'false' (se conseguir extrair apenas um dos dois, \"dataOk\" ainda deve ser 'false'). Se a data extraída for no passado ou em um feriado (estamos localizados em Limeira, SP - Brasil), preencha \"dataOk\" com 'false'.\n\nMensagem: {{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        640,
+        848,
         1168
       ],
       "id": "94193279-41cd-4bbb-bdde-0267e09a34ed",
@@ -613,7 +613,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        640,
+        848,
         1328
       ],
       "id": "3c82a776-b4e6-413c-b347-21b78b762605",
@@ -641,7 +641,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1504,
+        1712,
         1040
       ],
       "id": "1a098c4c-44dd-4704-a49e-737289c39aa3",
@@ -670,7 +670,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        2272,
+        2480,
         1232
       ],
       "id": "b49dfd8b-7329-44f2-a2ea-3fb48ade53c1",
@@ -689,7 +689,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2080,
+        2288,
         1232
       ],
       "id": "0c041b80-6dbd-4f0c-8bf7-648841ccd67b",
@@ -730,7 +730,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        2624,
+        2832,
         1232
       ],
       "id": "b8dba269-8bb5-4ace-a6cb-033a7897ef54",
@@ -744,7 +744,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        2624,
+        2832,
         1392
       ],
       "id": "bf4f4141-29c3-40b3-b53e-e30ccf7c8143",
@@ -796,7 +796,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2448,
+        2656,
         1232
       ],
       "id": "9ccb0434-537e-46a9-999c-8587c52f3ec2",
@@ -809,7 +809,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        944,
+        1152,
         1168
       ],
       "id": "b656afdf-2ab0-402e-8298-262f8d5a92df",
@@ -825,7 +825,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1504,
+        2128,
         -224
       ],
       "id": "ce6659ee-8364-41d5-8823-55e7f90207f5",
@@ -931,7 +931,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2496,
+        3120,
         -112
       ],
       "id": "a6db0eac-8100-4ea8-a6de-2189a45dacba",
@@ -951,7 +951,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1696,
+        2320,
         112
       ],
       "id": "a2798276-971d-4972-8dc7-c5ce0f290b47",
@@ -975,7 +975,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1504,
+        2128,
         112
       ],
       "id": "49b44129-f8ce-4b9b-8c73-683d95d7f712",
@@ -1016,7 +1016,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1296,
+        1504,
         1168
       ],
       "id": "2056586f-d3c0-471c-bc0a-ffefe72bf345",
@@ -1050,7 +1050,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1680,
+        1888,
         1040
       ],
       "id": "b9357e92-bdff-42ab-aa1c-ef6547f897bf",
@@ -1065,7 +1065,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1120,
+        1328,
         1168
       ],
       "id": "e0311f85-2f62-4fde-a47e-f464bb793c0f",
@@ -1086,7 +1086,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1888,
+        2096,
         1232
       ],
       "id": "3b39385d-b3b9-4aab-88ee-5f7ae3e624fb",
@@ -1107,7 +1107,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2480,
+        2688,
         736
       ],
       "id": "0d93c745-b360-4b02-8b3a-23506144f298",
@@ -1147,7 +1147,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1904,
+        2528,
         112
       ],
       "id": "bceba4c6-6997-47d9-a7d2-138d32e33d6d",
@@ -1340,7 +1340,7 @@
     {
       "parameters": {
         "content": "## Triggers adicionais",
-        "height": 1408,
+        "height": 1232,
         "width": 976
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -1431,8 +1431,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 11,
-              "triggerAtMinute": 50
+              "triggerAtHour": 15,
+              "triggerAtMinute": 46
             }
           ]
         }
@@ -1441,7 +1441,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1792
+        1744
       ],
       "id": "f80ffb48-f1cd-48e2-9d4b-7bacf44be6b7",
       "name": "Lembrete 1 dia antes"
@@ -1456,7 +1456,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1792
+        1744
       ],
       "id": "7570918a-2be0-403a-8603-1d61b7e6cf57",
       "name": "Select datas agendadas amanha",
@@ -1475,7 +1475,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1792
+        1744
       ],
       "id": "2ef65faf-5333-4b2c-baa8-328d47c92554",
       "name": "Formatar os dados"
@@ -1485,7 +1485,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 5
+              "triggerAtHour": 15,
+              "triggerAtMinute": 46
             }
           ]
         }
@@ -1494,7 +1495,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        2064
+        1984
       ],
       "id": "ae7cddca-c917-4899-a178-dec53980544f",
       "name": "Lembrete no dia"
@@ -1509,7 +1510,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        2064
+        1984
       ],
       "id": "6046f4b0-1c50-474a-9a75-b7d386d1094d",
       "name": "Select datas agendadas hoje",
@@ -1528,7 +1529,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        2064
+        1984
       ],
       "id": "d115e17a-f942-4618-8e95-9da1f2c604c1",
       "name": "Formatar os dados1"
@@ -1540,7 +1541,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1328,
+        1952,
         112
       ],
       "id": "5a57f2a2-c5f1-4783-9ae5-1b5b58419de9",
@@ -1582,7 +1583,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2096,
+        2720,
         0
       ],
       "id": "800dee10-b46d-4088-ba03-dfdb5cba5698",
@@ -1613,7 +1614,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2496,
+        3120,
         96
       ],
       "id": "d831754b-a17f-4652-8e30-d691ad1f177b",
@@ -1777,7 +1778,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1888,
+        2096,
         848
       ],
       "id": "31289759-825c-47b7-b5b8-224583b4dcd0",
@@ -1801,7 +1802,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        2096,
+        2304,
         960
       ],
       "id": "7846c91c-d017-4486-8796-d2d3c3dcc66c",
@@ -1822,7 +1823,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2480,
+        2688,
         960
       ],
       "id": "647b4e8d-4453-4cbb-b5b8-35bcdaeab6be",
@@ -1843,7 +1844,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2672,
+        2880,
         960
       ],
       "id": "6d94d86d-040c-4f5a-9887-67b75bca5a8d",
@@ -2037,7 +2038,7 @@
             },
             {
               "name": "to",
-              "value": "={{ $json.telefone }}"
+              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
             },
             {
               "name": "type",
@@ -2054,8 +2055,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1152,
-        384
+        1376,
+        528
       ],
       "id": "c2f2d7f0-11a4-4780-906d-2c1aa77da5c3",
       "name": "Enviar menu"
@@ -2152,7 +2153,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1328,
+        1952,
         -400
       ],
       "id": "d6efdaa1-70a5-433f-bc15-c55d5e15b374",
@@ -2250,7 +2251,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1504,
+        1712,
         1312
       ],
       "id": "7882a05e-a9bb-455f-8315-2b5bf9728ab7",
@@ -2299,7 +2300,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2288,
+        2496,
         736
       ],
       "id": "d5bd9729-8017-418c-86db-e604fd959a0e",
@@ -2330,7 +2331,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2656,
+        2864,
         736
       ],
       "id": "7132479d-5f9e-4e87-b091-d67e84cd19da",
@@ -2385,73 +2386,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2928,
+        3136,
         1232
       ],
       "id": "6fcc0afc-c051-43d1-b818-5a3d6ad1a129",
       "name": "Horarios alternativos"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.telefone }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"lembrete_1_dia_antes\",\n    \"language\": { \"code\": \"pt_BR\" },\n    \"components\": [\n      {\n        \"type\": \"body\",\n        \"parameters\": [\n          { \"type\": \"text\", \"text\": \"{{ $json.nome }}\" },\n          { \"type\": \"text\", \"text\": \"{{ $json.data }}\" }\n        ]\n      }\n    ]\n  }\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -864,
-        1680
-      ],
-      "id": "a98a9497-c34e-4fc6-90c4-a2b524a04fef",
-      "name": "Enviar aviso"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.telefone }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"lembrete_no_dia\",\n    \"language\": { \"code\": \"pt_BR\" },\n    \"components\": [\n      {\n        \"type\": \"body\",\n        \"parameters\": [\n          { \"type\": \"text\", \"text\": \"{{ $json.nome }}\" },\n          { \"type\": \"text\", \"text\": \"{{ $json.data }}\" }\n        ]\n      }\n    ]\n  }\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -864,
-        2064
-      ],
-      "id": "9a0d29e7-5695-4d18-962c-9dde71d8eee9",
-      "name": "Enviar aviso2"
     },
     {
       "parameters": {
@@ -2496,7 +2435,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1328,
+        1952,
         -224
       ],
       "id": "da938df6-24d1-4dd3-aa3b-05883f90d622",
@@ -2631,7 +2570,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2096,
+        2720,
         288
       ],
       "id": "1293d79c-2858-4102-818c-4d54adfee167",
@@ -2680,7 +2619,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2304,
+        2928,
         96
       ],
       "id": "4749d3b5-154e-4c97-bb96-384522832ed1",
@@ -2828,7 +2767,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2288,
+        2496,
         960
       ],
       "id": "df9f97b2-4430-419b-93cf-0019d00db74a",
@@ -2877,7 +2816,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2304,
+        2928,
         -112
       ],
       "id": "edb9428c-1b63-42db-b53c-2090b5df2df2",
@@ -2984,104 +2923,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "messaging_product",
-              "value": "whatsapp"
-            },
-            {
-              "name": "to",
-              "value": "={{ $json.telefone }}"
-            },
-            {
-              "name": "type",
-              "value": "text"
-            },
-            {
-              "name": "text",
-              "value": "={{ {body:\n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento amanhã às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -864,
-        1856
-      ],
-      "id": "70db5615-f40c-4d10-858b-2c2bb5c4df44",
-      "name": "Enviar aviso1"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "messaging_product",
-              "value": "whatsapp"
-            },
-            {
-              "name": "to",
-              "value": "={{ $json.telefone }}"
-            },
-            {
-              "name": "type",
-              "value": "text"
-            },
-            {
-              "name": "text",
-              "value": "={{ {body:\n`\nOlá ${$json.nome}! 👋\nLembrando que você tem um agendamento hoje às ${$json.data}.\nSe precisar remarcar ou cancelar, é só me avisar por aqui.\n`\n} }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -864,
-        2208
-      ],
-      "id": "fa5a72ce-77ff-45df-b20f-b253ab4b9eac",
-      "name": "Enviar aviso3"
-    },
-    {
-      "parameters": {
         "promptType": "define",
         "text": "=O cliente enviou a mensagem abaixo. Responda SOMENTE com um JSON no formato:\n{\n  \"agendar\": ...\n}\n\n\"agendar\" é um valor booleano. Preencha com 'true' somente se TODAS as condições a seguir forem verdadeiras: o cliente deixou explícito que quer agendar/marcar um horário; presença de data; presença de hora.\n\nMensagem: {{ $json.mensagem }}",
         "batching": {}
@@ -3116,6 +2957,144 @@
     },
     {
       "parameters": {
+        "content": "## desse jeito pode mandar menu 2 vezes"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -848,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "502d7283-8d28-4899-934e-780d9898911c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "template"
+            },
+            {
+              "name": "template",
+              "value": "={{\n{\n  name: \"lembrete_1_dia_antes\",\n  language: {code: \"pt_BR\"},\n  components: [\n    {\n      type: \"body\",\n      parameters: [\n        {\n          type: \"text\",\n          text: `${$json.nome}`,\n          parameter_name: \"nome\"\n        },\n        {\n          type: \"text\",\n          text: `${$json.data}`,\n          parameter_name: \"data\"\n        }\n      ]\n    }\n  ]\n}\n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        1744
+      ],
+      "id": "92768fb2-9c13-46e6-8528-061563bbe2bd",
+      "name": "Enviar aviso"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "template"
+            },
+            {
+              "name": "template",
+              "value": "={{\n{\n  name: \"lembrete_no_dia\",\n  language: {code: \"pt_BR\"},\n  components: [\n    {\n      type: \"body\",\n      parameters: [\n        {\n          type: \"text\",\n          text: `${$json.nome}`,\n          parameter_name: \"nome\"\n        },\n        {\n          type: \"text\",\n          text: `${$json.data}`,\n          parameter_name: \"data\"\n        }\n      ]\n    }\n  ]\n}\n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        1984
+      ],
+      "id": "e59f9a31-b0f3-42af-9b05-a22fb532ce00",
+      "name": "Enviar aviso5"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{\n  test: $(\"Criar Novo Usuário\").all()\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        432
+      ],
+      "id": "0e42b65e-345c-4623-9e8a-7e1f4e471b25",
+      "name": "Verifica se criou usuario",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = $input.first().json.text || '';\noutput = output\n  .replace(/```json/i, '')\n  .replace(/```/g, '')\n  .trim();\nconst dados = JSON.parse(output);\n\nreturn [{json: {\n  agendar: dados.agendar\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        400
+      ],
+      "id": "2daa03cb-19d3-4d5b-9917-c8625d7d6b1f",
+      "name": "Trata o texto"
+    },
+    {
+      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -3126,12 +3105,12 @@
           "conditions": [
             {
               "id": "1350a8b1-d999-42dc-a40a-8ec7bea6ff90",
-              "leftValue": "",
+              "leftValue": "={{ $json.agendar }}",
               "rightValue": "",
               "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
               }
             }
           ],
@@ -3146,33 +3125,28 @@
         400
       ],
       "id": "350e05ca-9bd0-4a50-ada3-227c9f5300a8",
-      "name": "If"
+      "name": "If quer agendar"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "operation": "executeQuery",
+        "query": "update conversas\nset estado = 'agendamento'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').item.json.telefone }}';",
+        "options": {}
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
       "position": [
-        80,
-        400
+        608,
+        736
       ],
-      "id": "2daa03cb-19d3-4d5b-9917-c8625d7d6b1f",
-      "name": "Code in JavaScript1"
-    },
-    {
-      "parameters": {
-        "content": "## desse jeito pode mandar menu 2 vezes"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -848,
-        304
-      ],
-      "typeVersion": 1,
-      "id": "502d7283-8d28-4899-934e-780d9898911c",
-      "name": "Sticky Note2"
+      "id": "60c69f88-e749-47be-ad96-9e02f99fe2a6",
+      "name": "Update estado agendamento",
+      "credentials": {
+        "mySql": {
+          "id": "DCPMzUgNxYudexuH",
+          "name": "MySQL account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -3221,7 +3195,7 @@
                           "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGQ0VDRjIzRUE5NjM3NDQxNThDAA==",
                           "timestamp": "1761845447",
                           "text": {
-                            "body": "Quero marcar as 15hrs do dia 5"
+                            "body": "Boa tarde quero marcar um horário amanhã as 9hrs"
                           },
                           "type": "text"
                         }
@@ -3235,23 +3209,6 @@
           },
           "webhookUrl": "http://localhost:5678/webhook/whatsapp-webhook",
           "executionMode": "production"
-        }
-      }
-    ],
-    "Lembrete 1 dia antes": [
-      {
-        "json": {
-          "timestamp": "2025-11-03T11:49:25.014-03:00",
-          "Readable date": "November 3rd 2025, 11:49:25 am",
-          "Readable time": "11:49:25 am",
-          "Day of week": "Monday",
-          "Year": "2025",
-          "Month": "November",
-          "Day of month": "03",
-          "Hour": "11",
-          "Minute": "49",
-          "Second": "25",
-          "Timezone": "America/Sao_Paulo (UTC-03:00)"
         }
       }
     ]
@@ -3413,7 +3370,7 @@
         ],
         [
           {
-            "node": "Enviar menu",
+            "node": "Verifica se criou usuario",
             "type": "main",
             "index": 0
           }
@@ -3902,7 +3859,7 @@
       "main": [
         [
           {
-            "node": "Enviar aviso2",
+            "node": "Enviar aviso5",
             "type": "main",
             "index": 0
           }
@@ -4198,29 +4155,41 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
+            "node": "Trata o texto",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code in JavaScript1": {
+    "Verifica se criou usuario": {
       "main": [
+        [],
         [
           {
-            "node": "If",
+            "node": "Enviar menu",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If": {
+    "Trata o texto": {
       "main": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "If quer agendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If quer agendar": {
+      "main": [
+        [
+          {
+            "node": "Update estado agendamento",
             "type": "main",
             "index": 0
           }
@@ -4233,13 +4202,24 @@
           }
         ]
       ]
+    },
+    "Update estado agendamento": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "4a5726ff-a5b6-4f0a-9950-a0490d7d4b30",
+  "versionId": "b6592bbe-a394-4ae0-9bf2-fa55dd08734b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

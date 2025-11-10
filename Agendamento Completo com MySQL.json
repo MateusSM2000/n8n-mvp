@@ -80,8 +80,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -928,
-        464
+        -880,
+        512
       ],
       "id": "395c14a6-dca9-4972-ac63-de322bfb5000",
       "credentials": {
@@ -244,6 +244,30 @@
                     "id": "25431c5d-31ab-44d0-9f47-97c0f70271fb",
                     "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
                     "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancelamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d9c2eb8c-e40e-41bb-a300-f9f41a71514c",
+                    "leftValue": "={{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
+                    "rightValue": "desmarca",
                     "operator": {
                       "type": "string",
                       "operation": "contains"
@@ -457,7 +481,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "d9c2eb8c-e40e-41bb-a300-f9f41a71514c",
+                    "id": "ab46081a-f4d4-4914-a5cf-b0cb6784a86f",
                     "leftValue": "",
                     "rightValue": "",
                     "operator": {
@@ -821,7 +845,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento. Hoje é {{ $now }}.\nEsses são os eventos já marcados no dia ({{ $('Transformação de dadoss').first().json.data_google_calendar_start }}):\n\n{{ JSON.stringify($json[\"eventos\"], null, 2) }}\n\nCom base nesses eventos, indique horários alternativos que ainda estão livres no mesmo dia (entre 08:00 e 18:00, no fuso horário de São Paulo). Como as consultas duram em média 1 hora, indique os horários livres que em dentro de 1 hora não haverá conflito com outros eventos. Caso o dia em questão seja hoje mesmo, não indique horários no passado.\nResponda apenas como se estivesse respondendo diretamente ao cliente (sem conter frases como \"Claro! Aqui está a resposta para o cliente\"), com uma frase simples explicando que o horário que ele pediu já se encontra agendado e informando quais intervalos de tempo estão disponíveis para agendamento, e também avise para o cliente enviar a próxima mensagem contendo a data e horário escolhido para agendamento. Informe-o que se ele desejar marcar para outra data, enviar a mensagem \"menu\" para escolher outra data. O nome do cliente é {{ $('Consultar nome').first().json.nome }}. A primeira palavra de sua resposta deve ser o nome do cliente caso for informado, se não, omita isso e continue com o restante da frase normalmente.\n\nCaso não haja mais horários disponíveis no dia, avise-o para enviar a mensagem \"menu\" para agendar em outro dia.",
+        "text": "=Você é um assistente de agendamento. Hoje é {{ $now }}.\nEsses são os eventos já marcados no dia ({{ $('Transformação de dadoss').first().json.data_google_calendar_start }}):\n\n{{ JSON.stringify($json[\"eventos\"], null, 2) }}\n\nCom base nesses eventos, indique horários alternativos que ainda estão livres no mesmo dia (entre 08:00 e 18:00, no fuso horário de São Paulo). Como as consultas duram em média 1 hora, indique os horários livres que em dentro de 1 hora não haverá conflito com outros eventos. Caso o dia em questão seja hoje mesmo, não indique horários no passado.\nResponda apenas como se estivesse respondendo diretamente ao cliente (sem conter frases como \"Claro! Aqui está a resposta para o cliente\"), com uma frase simples explicando que o horário que ele pediu já se encontra agendado e informando quais intervalos de tempo estão disponíveis para agendamento, e também avise para o cliente enviar a próxima mensagem contendo a data e horário escolhido para agendamento. O nome do cliente é {{ $('Consultar nome').first().json.nome }}. A primeira palavra de sua resposta deve ser o nome do cliente caso for informado, se não, omita isso e continue com o restante da frase normalmente.",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -1156,7 +1180,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update conversas\nset nome = '{{ $json.nome }}'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').item.json.telefone }}';",
+        "query": "update conversas\nset nome = '{{ $json.nome ? `${$json.nome}` : ''}}'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').item.json.telefone }}';",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -1528,7 +1552,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 7
+              "triggerAtHour": 15,
+              "triggerAtMinute": 54
             }
           ]
         }
@@ -1581,7 +1606,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 19
+              "triggerAtHour": 15,
+              "triggerAtMinute": 54
             }
           ]
         }
@@ -1665,6 +1691,15 @@
               "id": "7d9b02cd-aedc-435b-9075-79dd54713ef5",
               "leftValue": "={{ $('Retorna output index').item.json.outputIndex }}",
               "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "6b8a9d39-747c-47ac-bda4-065b464a3f90",
+              "leftValue": "={{ $('Retorna output index').item.json.outputIndex }}",
+              "rightValue": 5,
               "operator": {
                 "type": "number",
                 "operation": "equals"
@@ -2192,7 +2227,7 @@
             },
             {
               "name": "to",
-              "value": "={{ $json.telefone }}"
+              "value": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}"
             },
             {
               "name": "type",
@@ -2209,8 +2244,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -704,
-        560
+        -672,
+        512
       ],
       "id": "bc55ac8d-efb7-4ecc-80fd-4e607b3fe42b",
       "name": "Enviar menu1"
@@ -2388,7 +2423,7 @@
             },
             {
               "name": "to",
-              "value": "={{ $('Extrair Estado Atual').item.json.telefone }}"
+              "value": "={{ $('Extrair Dados WhatsApp').item.json.telefone }}"
             },
             {
               "name": "type",
@@ -2980,7 +3015,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=O cliente enviou a mensagem abaixo. Responda SOMENTE com um JSON no formato:\n{\n  \"agendar\": '...',\n  \"agendarDia\": '...'\n}\n\n\"agendar\" é um valor booleano. Preencha com 'true' somente se TODAS as condições a seguir forem verdadeiras: o cliente deixou explícito que quer agendar/marcar um horário; presença de data; presença de hora. Caso contrário, preencha com 'false'.\n\n\"agendarDia\" é um valor booleano. Preencha com 'true' somente se TODAS as condições a seguir forem verdadeiras: o cliente deixou explícito que quer agendar/marcar um horário, com a presença de algum dia mas sem horário descrito. Caso contrário, preencha com 'false'.\n\nMensagem: {{ $json.mensagem }}",
+        "text": "=O cliente enviou a mensagem abaixo. Responda SOMENTE com um JSON no formato:\n{\n  \"agendar\": '...',\n  \"agendarDia\": '...'\n}\n\n\"agendar\" é um valor booleano. Preencha com 'true' somente se TODAS as condições a seguir forem verdadeiras: o cliente deixou explícito que quer agendar/marcar um horário; presença de data; presença de hora. Caso contrário, preencha com 'false'.\n\n\"agendarDia\" é um valor booleano. Preencha com 'true' somente se TODAS as condições a seguir forem verdadeiras: o cliente deixou explícito que quer agendar/marcar um horário, com a presença de algum dia mas sem horário descrito. Caso contrário, preencha com 'false'.\n\nMensagem: {{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -3233,7 +3268,7 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict",
+            "typeValidation": "loose",
             "version": 2
           },
           "conditions": [
@@ -3250,6 +3285,7 @@
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "type": "n8n-nodes-base.if",
@@ -3427,20 +3463,6 @@
       ],
       "id": "284935f9-b81d-4601-bd57-90a41e195062",
       "name": "Solicitar nova data e hora1"
-    },
-    {
-      "parameters": {
-        "content": "## testar com cel mamis agendar em 1 envio e dps flando apenaso dia\n\ntestar reagendamento dnv",
-        "width": 448
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -864,
-        224
-      ],
-      "typeVersion": 1,
-      "id": "62b5f151-29b8-41eb-8764-9e9600e0342c",
-      "name": "Sticky Note2"
     },
     {
       "parameters": {
@@ -3634,7 +3656,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um assistente de agendamento.\nTrabalhamos das 08:00 às 18:00. Realizamos apenas consulta com duração de 1 hora.\n\nExtraia o nome da pessoa e horário da mensagem abaixo. Caso não haja nome para extrair, deixe uma string vazia.\nA hora deve ser convertida exatamente para esse formato 'THH:MM:SS-03:00'.\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"hora\": \"...\",\n  \"horaOk\": \"...\"\n}\n\nA propriedade \"horaOk\" deve ser preenchida com valor booleano. 'true' se o horário extraído somado com a duração da consulta estiver dentro do horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair o horário, preencha \"horaOk\" com 'false' e \"hora\" com uma string vazia.\nMensagem: {{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
+        "text": "=Você é um assistente de agendamento.\nTrabalhamos das 08:00 às 18:00. Realizamos apenas consulta com duração de 1 hora.\n\nExtraia o nome da pessoa e horário da mensagem abaixo. Caso não haja nome para extrair, preencha com uma string vazia.\nA hora deve ser convertida exatamente para esse formato 'THH:MM:SS-03:00'.\n\nResponda SOMENTE com um JSON no formato:\n{\n  \"nome\": \"...\",\n  \"hora\": \"...\",\n  \"horaOk\": \"...\"\n}\n\nA propriedade \"horaOk\" deve ser preenchida com valor booleano. 'true' se o horário extraído somado com a duração da consulta estiver dentro do horário em que trabalhamos, e 'false' se estiver fora. Caso nâo consiga extrair o horário, preencha \"horaOk\" com 'false' e \"hora\" com uma string vazia.\nMensagem: {{ $('Extrair Dados WhatsApp').item.json.mensagem }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -3828,7 +3850,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update conversas\nset nome = '{{ $json.nome }}'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').item.json.telefone }}';",
+        "query": "update conversas\nset nome = '{{ $json.nome ? `${$json.nome}` : '' }}'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').item.json.telefone }}';",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -4389,15 +4411,15 @@
           "headers": {
             "host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "user-agent": "facebookexternalua",
-            "content-length": "495",
+            "content-length": "513",
             "accept": "*/*",
             "accept-encoding": "deflate, gzip",
             "content-type": "application/json",
-            "x-forwarded-for": "2a03:2880:21ff:1::",
+            "x-forwarded-for": "2a03:2880:10ff:46::",
             "x-forwarded-host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "x-forwarded-proto": "https",
-            "x-hub-signature": "sha1=b90975b4d573b8d55a9552ecabeec0eb8ee51573",
-            "x-hub-signature-256": "sha256=e071568b672aa5571054b4567697f47588510eb1d98e88c13974216eca23e8ef"
+            "x-hub-signature": "sha1=9c7e7e70a921222ee130847e515fd6495e0ae74a",
+            "x-hub-signature-256": "sha256=64d1f0106e9e5712882ff29315e48447a542f778d305e26948da202b3225c751"
           },
           "params": {},
           "query": {},
@@ -4425,10 +4447,10 @@
                       "messages": [
                         {
                           "from": "5519996643834",
-                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGRUMzMDFGRDg4Q0NBRjMxQzUxAA==",
-                          "timestamp": "1762535830",
+                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYIEFDMTBCNkE0MDY2RDM3RDEzMDVGNkUwRDJGNUM2MjJDAA==",
+                          "timestamp": "1762807269",
                           "text": {
-                            "body": "Pode ser as 17hrs?"
+                            "body": "Meio dia"
                           },
                           "type": "text"
                         }
@@ -4505,11 +4527,6 @@
             "node": "Enviar menu1",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Basic LLM Chain5",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -4538,6 +4555,13 @@
     },
     "Sair menu": {
       "main": [
+        [
+          {
+            "node": "Retorna output index",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Retorna output index",
@@ -5905,13 +5929,24 @@
           }
         ]
       ]
+    },
+    "Enviar menu1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "f473cea3-3f1b-4186-92e6-fc5a986b3b64",
+  "versionId": "c879dd57-36c8-431e-9307-aedebf5dc162",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

@@ -11,21 +11,21 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -1616,
-        720
+        -1952,
+        736
       ],
       "webhookId": "whatsapp-webhook",
       "id": "8f3e6a43-9396-440c-a8e2-21729c054199"
     },
     {
       "parameters": {
-        "functionCode": "return [{json: {\n  telefone: $json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"from\"],\n  mensagem: $json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"text\"][\"body\"].trim().toLowerCase()\n}}];"
+        "functionCode": "if ($node['Webhook IN'].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"type\"] == 'text') {\n  return [{json: {\n  telefone: $node[\"Webhook IN\"].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"from\"],\n  mensagem: $json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"text\"][\"body\"].trim().toLowerCase()\n}}];\n}\n\n\nif ($node['Webhook IN'].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"type\"] == 'audio') {\n  return [{json: {\n  telefone: $node[\"Webhook IN\"].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"from\"],\n  mensagem: $json[\"candidates\"][\"0\"][\"content\"][\"parts\"][\"0\"][\"text\"].trim().toLowerCase()\n}}];\n}"
       },
       "name": "Extrair Dados WhatsApp",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -1424,
+        -1008,
         720
       ],
       "id": "768dc22a-14d9-484d-b66d-e9a74e15f694"
@@ -39,7 +39,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -1248,
+        -832,
         720
       ],
       "id": "fcfe0085-7ea5-4b3b-9d55-c6f171cc2f79",
@@ -66,7 +66,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1088,
+        -672,
         720
       ],
       "id": "6cd9f360-6762-4be0-9558-c66857f9fd3f"
@@ -80,7 +80,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -880,
+        -464,
         512
       ],
       "id": "395c14a6-dca9-4972-ac63-de322bfb5000",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
       "position": [
-        3264,
+        3680,
         1056
       ],
       "id": "5c646a89-1a86-4821-a4dd-9a6b6b983941",
@@ -129,7 +129,7 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -752,
+        -336,
         736
       ],
       "id": "c6d8fd1c-d5d9-450a-8323-3643af47309d"
@@ -143,7 +143,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2448,
+        2864,
         -48
       ],
       "id": "5ce66f12-95a4-47cd-95a6-3de7f9ffbddb",
@@ -504,7 +504,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        1440,
+        1856,
         -64
       ],
       "id": "e85117c1-73a0-4c1a-8d1d-8c69ea038bb5",
@@ -671,7 +671,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -48,
+        368,
         1184
       ],
       "id": "8f0225c6-47fe-4e5c-881e-c49d5903e7c1",
@@ -705,7 +705,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -560,
+        -144,
         736
       ],
       "id": "e2addea0-71e0-48e6-884d-bc3233005b23",
@@ -720,7 +720,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        1408,
+        1824,
         1520
       ],
       "id": "94193279-41cd-4bbb-bdde-0267e09a34ed",
@@ -734,7 +734,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        1408,
+        1824,
         1680
       ],
       "id": "3c82a776-b4e6-413c-b347-21b78b762605",
@@ -762,7 +762,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        2272,
+        2688,
         1392
       ],
       "id": "1a098c4c-44dd-4704-a49e-737289c39aa3",
@@ -791,7 +791,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        3376,
+        3792,
         1920
       ],
       "id": "b49dfd8b-7329-44f2-a2ea-3fb48ade53c1",
@@ -810,7 +810,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3184,
+        3600,
         1920
       ],
       "id": "0c041b80-6dbd-4f0c-8bf7-648841ccd67b",
@@ -830,7 +830,7 @@
       "typeVersion": 2.1,
       "position": [
         -1088,
-        1104
+        1536
       ],
       "id": "3fc1d4d9-88a4-4b18-9752-e3d3fcba06e2",
       "name": "Send a message",
@@ -851,7 +851,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        3728,
+        4144,
         1920
       ],
       "id": "b8dba269-8bb5-4ace-a6cb-033a7897ef54",
@@ -865,7 +865,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        3728,
+        4144,
         2080
       ],
       "id": "bf4f4141-29c3-40b3-b53e-e30ccf7c8143",
@@ -904,7 +904,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -320,
+        96,
         1040
       ],
       "id": "4fb99e4f-0aca-4830-b8fb-ec1d834a6bfe",
@@ -917,7 +917,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3552,
+        3968,
         1920
       ],
       "id": "9ccb0434-537e-46a9-999c-8587c52f3ec2",
@@ -930,7 +930,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1712,
+        2128,
         1520
       ],
       "id": "b656afdf-2ab0-402e-8298-262f8d5a92df",
@@ -946,7 +946,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2448,
+        2864,
         128
       ],
       "id": "ce6659ee-8364-41d5-8823-55e7f90207f5",
@@ -967,7 +967,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        784,
+        1200,
         1904
       ],
       "id": "67367e07-4a3c-4ccf-a1be-f1b8fcf2db86",
@@ -988,7 +988,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        992,
+        1408,
         1904
       ],
       "id": "56de5bcd-cf8a-4f01-8931-0483e9826ae2",
@@ -1002,7 +1002,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        992,
+        1408,
         2080
       ],
       "id": "2e6caa40-4e39-4f5f-8297-4cc05d5f6a7c",
@@ -1021,7 +1021,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1296,
+        1712,
         1904
       ],
       "id": "4b8b37f0-f107-4119-bff8-77cb29a29728",
@@ -1052,7 +1052,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        3312,
+        3728,
         -592
       ],
       "id": "a6db0eac-8100-4ea8-a6de-2189a45dacba",
@@ -1072,7 +1072,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2512,
+        2928,
         -368
       ],
       "id": "a2798276-971d-4972-8dc7-c5ce0f290b47",
@@ -1096,7 +1096,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        2320,
+        2736,
         -368
       ],
       "id": "49b44129-f8ce-4b9b-8c73-683d95d7f712",
@@ -1137,7 +1137,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2064,
+        2480,
         1520
       ],
       "id": "2056586f-d3c0-471c-bc0a-ffefe72bf345",
@@ -1171,7 +1171,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2448,
+        2864,
         1392
       ],
       "id": "b9357e92-bdff-42ab-aa1c-ef6547f897bf",
@@ -1186,7 +1186,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1888,
+        2304,
         1520
       ],
       "id": "e0311f85-2f62-4fde-a47e-f464bb793c0f",
@@ -1207,7 +1207,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2992,
+        3408,
         1920
       ],
       "id": "3b39385d-b3b9-4aab-88ee-5f7ae3e624fb",
@@ -1228,7 +1228,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        3648,
+        4064,
         1056
       ],
       "id": "0d93c745-b360-4b02-8b3a-23506144f298",
@@ -1268,7 +1268,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2720,
+        3136,
         -368
       ],
       "id": "bceba4c6-6997-47d9-a7d2-138d32e33d6d",
@@ -1292,7 +1292,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        784,
+        1200,
         2432
       ],
       "id": "546299a4-5f83-4316-b57e-1633a748e00d",
@@ -1322,7 +1322,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1216,
+        1632,
         2304
       ],
       "id": "cf50e4e1-2033-4561-9f94-6c185f8e5095",
@@ -1359,7 +1359,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1408,
+        1824,
         2304
       ],
       "id": "fb4fffe5-a577-4fd9-8738-4ae0d50524da",
@@ -1380,7 +1380,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1824,
+        2240,
         2304
       ],
       "id": "8c2aea58-656c-4637-a580-becbfa98c296",
@@ -1399,7 +1399,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        976,
+        1392,
         2432
       ],
       "id": "30818d67-8c8c-4180-add1-e5d81f7bd58b",
@@ -1420,7 +1420,7 @@
       "typeVersion": 2.1,
       "position": [
         -1072,
-        1296
+        1728
       ],
       "id": "27bcb7f1-1e5e-45a9-8ef6-96348f65a913",
       "name": "Send a message1",
@@ -1440,7 +1440,7 @@
       "typeVersion": 2,
       "position": [
         -1280,
-        1296
+        1728
       ],
       "id": "4b16cb0f-feaa-492b-845a-f5f1939b4ef0",
       "name": "Formatar data"
@@ -1453,7 +1453,7 @@
       "typeVersion": 2,
       "position": [
         -1280,
-        1104
+        1536
       ],
       "id": "ed396717-30dd-4400-9f4b-082055e44c0b",
       "name": "Formatar data1"
@@ -1467,7 +1467,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         -1600,
-        960
+        1392
       ],
       "typeVersion": 1,
       "id": "ff3ce847-7c30-48d6-a68b-c55e35bf0140",
@@ -1499,7 +1499,7 @@
       "typeVersion": 1,
       "position": [
         -1488,
-        1104
+        1536
       ],
       "id": "bc03ff96-50fc-422a-a52e-b2d5bc3c4974",
       "name": "Trigger evento criado",
@@ -1536,7 +1536,7 @@
       "typeVersion": 1,
       "position": [
         -1488,
-        1296
+        1728
       ],
       "id": "9246e11f-19dd-467a-a2d5-8272b73a87d0",
       "name": "Trigger evento cancelado",
@@ -1562,7 +1562,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1744
+        2176
       ],
       "id": "f80ffb48-f1cd-48e2-9d4b-7bacf44be6b7",
       "name": "Lembrete 1 dia antes"
@@ -1577,7 +1577,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1744
+        2176
       ],
       "id": "7570918a-2be0-403a-8603-1d61b7e6cf57",
       "name": "Select datas agendadas amanha",
@@ -1596,7 +1596,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1744
+        2176
       ],
       "id": "2ef65faf-5333-4b2c-baa8-328d47c92554",
       "name": "Formatar os dados"
@@ -1616,7 +1616,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1984
+        2416
       ],
       "id": "ae7cddca-c917-4899-a178-dec53980544f",
       "name": "Lembrete no dia"
@@ -1631,7 +1631,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1984
+        2416
       ],
       "id": "6046f4b0-1c50-474a-9a75-b7d386d1094d",
       "name": "Select datas agendadas hoje",
@@ -1650,7 +1650,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1984
+        2416
       ],
       "id": "d115e17a-f942-4618-8e95-9da1f2c604c1",
       "name": "Formatar os dados1"
@@ -1662,7 +1662,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2144,
+        2560,
         -368
       ],
       "id": "5a57f2a2-c5f1-4783-9ae5-1b5b58419de9",
@@ -1713,7 +1713,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2912,
+        3328,
         -480
       ],
       "id": "800dee10-b46d-4088-ba03-dfdb5cba5698",
@@ -1744,7 +1744,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        3312,
+        3728,
         -384
       ],
       "id": "d831754b-a17f-4652-8e30-d691ad1f177b",
@@ -1774,7 +1774,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        784,
+        1200,
         2944
       ],
       "id": "43ff5a87-2156-4670-8b93-90b1fe14ad61",
@@ -1794,7 +1794,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        976,
+        1392,
         2944
       ],
       "id": "1980e164-ff09-4c22-87f6-06394e2aa261",
@@ -1810,7 +1810,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        128,
+        544,
         912
       ],
       "id": "3ea062f2-f97c-4898-b384-1ef634e3a804",
@@ -1847,7 +1847,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1184,
+        1600,
         2800
       ],
       "id": "fb634a41-63ea-40a0-ad87-604a584abd32",
@@ -1868,7 +1868,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1552,
+        1968,
         2800
       ],
       "id": "515628fb-74a4-4c7d-9648-a75bf5164d66",
@@ -1918,7 +1918,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3056,
+        3472,
         1168
       ],
       "id": "31289759-825c-47b7-b5b8-224583b4dcd0",
@@ -1942,7 +1942,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        3264,
+        3680,
         1280
       ],
       "id": "7846c91c-d017-4486-8796-d2d3c3dcc66c",
@@ -1963,7 +1963,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        3648,
+        4064,
         1280
       ],
       "id": "647b4e8d-4453-4cbb-b5b8-35bcdaeab6be",
@@ -1984,7 +1984,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        3840,
+        4256,
         1280
       ],
       "id": "6d94d86d-040c-4f5a-9887-67b75bca5a8d",
@@ -2010,7 +2010,7 @@
       "typeVersion": 2.1,
       "position": [
         -864,
-        1520
+        1952
       ],
       "id": "f9428b0f-ba2f-4634-ae20-e3d81b5bf60d",
       "name": "Send a message2",
@@ -2046,7 +2046,7 @@
       "typeVersion": 1,
       "position": [
         -1488,
-        1520
+        1952
       ],
       "id": "ecd79ab4-cfe5-4eb1-b193-25bbe58070a9",
       "name": "Trigger evento atualizado",
@@ -2067,7 +2067,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1520
+        1952
       ],
       "id": "67efc35f-d2a5-4898-a123-650a7beab3c6",
       "name": "Select datas canceladas",
@@ -2086,7 +2086,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1520
+        1952
       ],
       "id": "b8c881d1-5cd8-4044-8192-9ef4a67a1aac",
       "name": "Formatar datas"
@@ -2195,7 +2195,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2208,
+        2624,
         368
       ],
       "id": "c2f2d7f0-11a4-4780-906d-2c1aa77da5c3",
@@ -2244,7 +2244,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -672,
+        -256,
         512
       ],
       "id": "bc55ac8d-efb7-4ecc-80fd-4e607b3fe42b",
@@ -2293,7 +2293,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2272,
+        2688,
         -48
       ],
       "id": "d6efdaa1-70a5-433f-bc15-c55d5e15b374",
@@ -2342,7 +2342,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -48,
+        368,
         912
       ],
       "id": "66af8cd4-cce9-4002-924d-28b29de4abc7",
@@ -2391,7 +2391,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2272,
+        2688,
         1664
       ],
       "id": "7882a05e-a9bb-455f-8315-2b5bf9728ab7",
@@ -2440,7 +2440,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3456,
+        3872,
         1056
       ],
       "id": "d5bd9729-8017-418c-86db-e604fd959a0e",
@@ -2471,7 +2471,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        3824,
+        4240,
         1056
       ],
       "id": "7132479d-5f9e-4e87-b091-d67e84cd19da",
@@ -2526,7 +2526,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4032,
+        4448,
         1920
       ],
       "id": "6fcc0afc-c051-43d1-b818-5a3d6ad1a129",
@@ -2557,7 +2557,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1488,
+        1904,
         1904
       ],
       "id": "f34b9b88-7b1b-498b-96bd-0fee5cb1b998",
@@ -2612,7 +2612,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1680,
+        2096,
         1904
       ],
       "id": "1a4f41e4-0549-4859-97b9-cfcc814b3a33",
@@ -2661,7 +2661,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2912,
+        3328,
         -192
       ],
       "id": "1293d79c-2858-4102-818c-4d54adfee167",
@@ -2710,7 +2710,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3120,
+        3536,
         -384
       ],
       "id": "4749d3b5-154e-4c97-bb96-384522832ed1",
@@ -2760,7 +2760,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1184,
+        1600,
         3088
       ],
       "id": "00a2e33c-e0b8-4bf0-b69f-f6a303595516",
@@ -2809,7 +2809,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1360,
+        1776,
         2800
       ],
       "id": "dea2cc88-498b-41ee-80e5-93032cec9a17",
@@ -2858,7 +2858,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3456,
+        3872,
         1280
       ],
       "id": "df9f97b2-4430-419b-93cf-0019d00db74a",
@@ -2907,7 +2907,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3120,
+        3536,
         -592
       ],
       "id": "edb9428c-1b63-42db-b53c-2090b5df2df2",
@@ -2957,7 +2957,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1216,
+        1632,
         2544
       ],
       "id": "db4566b8-34f4-4c34-a322-96932538bca7",
@@ -3006,7 +3006,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1616,
+        2032,
         2304
       ],
       "id": "b613de54-5ff3-439c-8b25-871884dc0b5f",
@@ -3021,7 +3021,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -368,
+        48,
         544
       ],
       "id": "199c744e-ba37-4562-886d-c68930c70498",
@@ -3034,7 +3034,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -368,
+        48,
         688
       ],
       "id": "abb4bd18-7841-4d5c-9f0e-cd038f4d7306",
@@ -3090,7 +3090,7 @@
       "typeVersion": 4.2,
       "position": [
         -864,
-        1744
+        2176
       ],
       "id": "92768fb2-9c13-46e6-8528-061563bbe2bd",
       "name": "Enviar aviso"
@@ -3139,7 +3139,7 @@
       "typeVersion": 4.2,
       "position": [
         -864,
-        1984
+        2416
       ],
       "id": "e59f9a31-b0f3-42af-9b05-a22fb532ce00",
       "name": "Enviar aviso5"
@@ -3151,7 +3151,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1872,
+        2288,
         352
       ],
       "id": "0e42b65e-345c-4623-9e8a-7e1f4e471b25",
@@ -3165,7 +3165,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -80,
+        336,
         544
       ],
       "id": "2daa03cb-19d3-4d5b-9917-c8625d7d6b1f",
@@ -3180,7 +3180,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        848,
+        1264,
         1232
       ],
       "id": "60c69f88-e749-47be-ad96-9e02f99fe2a6",
@@ -3201,7 +3201,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2864,
+        3280,
         1168
       ],
       "id": "b96ade24-1a76-4b3e-9a00-cea7f00d1682",
@@ -3256,7 +3256,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2272,
+        2688,
         128
       ],
       "id": "da938df6-24d1-4dd3-aa3b-05883f90d622",
@@ -3291,7 +3291,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        128,
+        544,
         544
       ],
       "id": "350e05ca-9bd0-4a50-ada3-227c9f5300a8",
@@ -3326,7 +3326,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        592,
+        1008,
         272
       ],
       "id": "6ee77b99-63b7-46d3-af1d-64d53bb5a2d4",
@@ -3341,7 +3341,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        928,
+        1344,
         -720
       ],
       "id": "fe97248e-34dd-4fbc-9b99-61675167ea2e",
@@ -3355,7 +3355,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        928,
+        1344,
         -560
       ],
       "id": "9cd5285b-3b27-4c4f-9479-17d745a061c7",
@@ -3374,7 +3374,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1264,
+        1680,
         -720
       ],
       "id": "039f42ff-cdfe-43f5-acab-c174ef6aac03",
@@ -3409,7 +3409,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1456,
+        1872,
         -720
       ],
       "id": "6207c22c-5bfc-4ae0-9c47-03c0c35343be",
@@ -3458,7 +3458,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1680,
+        2096,
         -544
       ],
       "id": "284935f9-b81d-4601-bd57-90a41e195062",
@@ -3473,7 +3473,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1888,
+        2304,
         -544
       ],
       "id": "8d751e35-9776-4d24-89a8-cc6f9b763690",
@@ -3502,7 +3502,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1680,
+        2096,
         -848
       ],
       "id": "bcaa8042-7f17-4c32-a070-de1f627325ce",
@@ -3524,7 +3524,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        2032,
+        2448,
         -848
       ],
       "id": "06471107-c117-46de-a46d-c85e38bc8995",
@@ -3538,7 +3538,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        2032,
+        2448,
         -688
       ],
       "id": "8b2301ca-db0b-450f-bff9-e45cbd1c9f12",
@@ -3557,7 +3557,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1856,
+        2272,
         -848
       ],
       "id": "a08a8e22-c08e-49a9-85f2-454d9f26db22",
@@ -3606,7 +3606,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2336,
+        2752,
         -848
       ],
       "id": "c7ec78d0-d156-40b0-acf4-8b74056a4e4c",
@@ -3641,7 +3641,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2528,
+        2944,
         -848
       ],
       "id": "46d94b40-6c98-408b-9141-324730b2a890",
@@ -3662,7 +3662,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        736,
+        1152,
         768
       ],
       "id": "47241173-ef46-4a58-b51d-d80ce4fe6e88",
@@ -3676,7 +3676,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        736,
+        1152,
         928
       ],
       "id": "5205d143-4508-445d-827c-b41be104b434",
@@ -3716,7 +3716,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1360,
+        1776,
         768
       ],
       "id": "7dd72cec-374b-4981-9098-59814832bb43",
@@ -3765,7 +3765,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1552,
+        1968,
         912
       ],
       "id": "a282585e-a01d-4eff-990a-de56e1e06fae",
@@ -3778,7 +3778,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1024,
+        1440,
         768
       ],
       "id": "b04ac817-7afa-4562-8fec-acab741355af",
@@ -3801,7 +3801,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1584,
+        2000,
         688
       ],
       "id": "ef2ea8fb-0a86-46c4-9fb3-0292d6eb1993",
@@ -3841,7 +3841,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1760,
+        2176,
         688
       ],
       "id": "d77028a1-d8e8-44af-b279-448d470b819a",
@@ -3856,7 +3856,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1200,
+        1616,
         768
       ],
       "id": "247e071b-0f05-44a7-ad03-a4a999dd5914",
@@ -3885,7 +3885,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        2368,
+        2784,
         800
       ],
       "id": "447181f1-0b29-4924-9943-ad61970b4ca6",
@@ -3904,7 +3904,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2176,
+        2592,
         800
       ],
       "id": "bdb136c6-44fa-4fcc-bef4-41601360e611",
@@ -3917,7 +3917,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2544,
+        2960,
         800
       ],
       "id": "170d066a-c469-4652-bdee-0aedbf8bb35f",
@@ -3932,7 +3932,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1984,
+        2400,
         800
       ],
       "id": "0d79360d-f2de-4de2-8b96-e562ca6926ff",
@@ -3987,7 +3987,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3024,
+        3440,
         800
       ],
       "id": "a8fb4dd6-b3d4-4bc8-a09a-12988718ec8a",
@@ -4002,7 +4002,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        2720,
+        3136,
         800
       ],
       "id": "d61c6a13-7ff5-4b93-9f53-65f3e9d9a4b2",
@@ -4016,7 +4016,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        2720,
+        3136,
         960
       ],
       "id": "900769af-5c90-4e7f-b66a-2e9c7d33cdec",
@@ -4047,7 +4047,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
       "position": [
-        1984,
+        2400,
         576
       ],
       "id": "9df804b4-774d-4542-ac7a-76789bd6684f",
@@ -4067,7 +4067,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2368,
+        2784,
         576
       ],
       "id": "642e7126-2f6e-4665-bdae-e49706d9bb60",
@@ -4122,7 +4122,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2176,
+        2592,
         576
       ],
       "id": "70bb6779-b4eb-4018-9173-f382d9f40a3e",
@@ -4157,7 +4157,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2544,
+        2960,
         576
       ],
       "id": "6193a518-f05c-44f1-a1b4-b3a3b78e64df",
@@ -4196,7 +4196,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2720,
+        3136,
         1632
       ],
       "id": "97bc957a-cb5a-43c8-a85c-1c1f27566fdc",
@@ -4219,7 +4219,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        3360,
+        3776,
         1552
       ],
       "id": "377d3d25-89ed-464b-95c3-597188b6b3b3",
@@ -4238,7 +4238,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3168,
+        3584,
         1552
       ],
       "id": "1d855693-9f40-4a45-97c1-cb92f982da35",
@@ -4253,7 +4253,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        3712,
+        4128,
         1552
       ],
       "id": "f8be0aa0-bba6-4366-918f-1a36842ebd77",
@@ -4267,7 +4267,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        3712,
+        4128,
         1712
       ],
       "id": "edc62de1-0c6e-4e7c-b56d-61ccfbf58ebf",
@@ -4286,7 +4286,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3536,
+        3952,
         1552
       ],
       "id": "68d0d24a-3603-4752-adc6-cb4bdd5ec8c0",
@@ -4301,7 +4301,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        2976,
+        3392,
         1552
       ],
       "id": "b7d59e75-8837-484b-9fab-5da886da736e",
@@ -4356,7 +4356,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4016,
+        4432,
         1552
       ],
       "id": "148e9bb6-fe7b-4eec-9b98-8c2973cc79f5",
@@ -4391,7 +4391,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        4224,
+        4640,
         1552
       ],
       "id": "3e2f67ed-2a01-45ec-ae7e-455489a5ae74",
@@ -4402,6 +4402,146 @@
           "name": "MySQL account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.messages[0].type }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d1c7337d-2db4-40b7-af13-1afa7ba0ebb1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dfd01a53-6dfc-4bbe-97a1-fc5c56b059f8",
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.messages[0].type }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "áudio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -1776,
+        736
+      ],
+      "id": "d37e21d2-c43b-460e-a007-c0e3e5f4908f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.body.entry[0].changes[0].value.messages[0].audio.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1584,
+        832
+      ],
+      "id": "0b3400e2-2124-42a2-9e32-94626f1599ea",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list",
+          "cachedResultName": "models/gemini-flash-latest"
+        },
+        "inputType": "binary",
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1216,
+        832
+      ],
+      "id": "5d9f523a-f1c9-4897-99e7-860cb8519b39",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mwJIDNjXa72pv5wt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1392,
+        832
+      ],
+      "id": "6fedb6ec-29f1-4da9-8bfa-a389dad25347",
+      "name": "HTTP Request1"
     }
   ],
   "pinData": {
@@ -4411,15 +4551,15 @@
           "headers": {
             "host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "user-agent": "facebookexternalua",
-            "content-length": "513",
+            "content-length": "491",
             "accept": "*/*",
             "accept-encoding": "deflate, gzip",
             "content-type": "application/json",
-            "x-forwarded-for": "2a03:2880:10ff:46::",
+            "x-forwarded-for": "2a03:2880:12ff:70::",
             "x-forwarded-host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "x-forwarded-proto": "https",
-            "x-hub-signature": "sha1=9c7e7e70a921222ee130847e515fd6495e0ae74a",
-            "x-hub-signature-256": "sha256=64d1f0106e9e5712882ff29315e48447a542f778d305e26948da202b3225c751"
+            "x-hub-signature": "sha1=3b999b52c24096943c9c3eca179fbf4f04bd4423",
+            "x-hub-signature-256": "sha256=28dabefe79b72e2709f5d9b9e8c2f4c3ce9a7ac9ee6362bbb63b6f7aa9252a48"
           },
           "params": {},
           "query": {},
@@ -4447,10 +4587,10 @@
                       "messages": [
                         {
                           "from": "5519996643834",
-                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYIEFDMTBCNkE0MDY2RDM3RDEzMDVGNkUwRDJGNUM2MjJDAA==",
-                          "timestamp": "1762807269",
+                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGRjRFNUZDQzc2QTM4OUUwNTI0AA==",
+                          "timestamp": "1762907977",
                           "text": {
-                            "body": "Meio dia"
+                            "body": "oi"
                           },
                           "type": "text"
                         }
@@ -4473,7 +4613,7 @@
       "main": [
         [
           {
-            "node": "Extrair Dados WhatsApp",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -5940,13 +6080,64 @@
           }
         ]
       ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c879dd57-36c8-431e-9307-aedebf5dc162",
+  "versionId": "79317765-fa89-4ddf-b03e-97ebfd153417",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

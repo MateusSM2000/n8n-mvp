@@ -1,0 +1,604 @@
+{
+  "name": "Agendamento Humanizado",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook",
+        "options": {}
+      },
+      "name": "Webhook IN",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -1648,
+        256
+      ],
+      "webhookId": "whatsapp-webhook",
+      "id": "7e21dd7c-8ecc-4a7d-ae93-d0fc2f46d20d"
+    },
+    {
+      "parameters": {
+        "functionCode": "if ($node['Webhook IN'].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"type\"] == 'text') {\n  return [{json: {\n  telefone: $node[\"Webhook IN\"].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"from\"],\n  mensagem: $json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"text\"][\"body\"]\n}}];\n}\n\n\nif ($node['Webhook IN'].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"type\"] == 'audio') {\n  return [{json: {\n  telefone: $node[\"Webhook IN\"].json[\"body\"][\"entry\"][\"0\"][\"changes\"][\"0\"][\"value\"][\"messages\"][\"0\"][\"from\"],\n  mensagem: $json[\"candidates\"][\"0\"][\"content\"][\"parts\"][\"0\"][\"text\"]\n}}];\n}"
+      },
+      "name": "Extrair Dados WhatsApp",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        240
+      ],
+      "id": "cf4f3f74-0237-41c0-af2f-d8829fb43939"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into conversas (telefone)\nvalues ('{{ $('Extrair Dados WhatsApp').item.json.telefone }}');"
+      },
+      "name": "Criar Novo Usuário",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        64,
+        128
+      ],
+      "id": "beb9dd0d-575d-419e-bb8a-5527897cf80e",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.messages[0].type }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d1c7337d-2db4-40b7-af13-1afa7ba0ebb1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dfd01a53-6dfc-4bbe-97a1-fc5c56b059f8",
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.messages[0].type }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "áudio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -1472,
+        256
+      ],
+      "id": "de2a727c-eb8b-4724-afd7-497245003dc6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.body.entry[0].changes[0].value.messages[0].audio.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1280,
+        352
+      ],
+      "id": "3a60cd24-3493-4b4c-be8a-2d5585114325",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list",
+          "cachedResultName": "models/gemini-flash-latest"
+        },
+        "inputType": "binary",
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -912,
+        352
+      ],
+      "id": "3e9dfcf1-3468-4b67-8923-2f0ae8f6ab7f",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mwJIDNjXa72pv5wt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1088,
+        352
+      ],
+      "id": "aca1a302-3d26-4628-a87e-70527caf9186",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT tipo, conteudo\nFROM mensagens\nWHERE conversas_id = (\n    SELECT id FROM conversas WHERE telefone = {{ $json.telefone }}\n)\nORDER BY criado_em DESC\nLIMIT 30;"
+      },
+      "name": "Buscar mensagens",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        240
+      ],
+      "id": "29ffd255-8dc3-4a9b-8766-d348ab72682f",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é o assistente virtual (agente) de uma corretora de seguros.\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente.\nCaso o cliente queira agendar algo, diga que pode fazer o agendamento e envie a data/horário no formato ISO.\nNão use linguagem robótica. Seja simpático e conciso.\n\nMensagens anteriores:\n{{ $('Junta as msgs').item.json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        256
+      ],
+      "id": "526095c5-a911-4ae9-a1d1-2c7fe68fb4b3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-flash-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        240,
+        416
+      ],
+      "id": "2d7a5c79-d82d-4c53-aa43-79fe913c2043",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mwJIDNjXa72pv5wt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const historico = $input.all().map(item => item.json)\n\nreturn [{json:{\n  historico: JSON.stringify(historico)\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        240
+      ],
+      "id": "5b4ae15b-f7d6-48c4-bbe2-32d76326f5b7",
+      "name": "Junta as msgs"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Extrair Dados WhatsApp').first().json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ {body:\n$('AI Agent').item.json.output\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        256
+      ],
+      "id": "ceaddb1c-cffc-4dcb-8bd1-216c526c6af7",
+      "name": "Enviar msg da IA"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'cliente',\n  '{{ $('Extrair Dados WhatsApp').first().json.mensagem }}'\n);\n\ninsert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'agente',\n  '{{ $json.output }}'\n);\n\nupdate conversas\nset ultima_interacao = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR)\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        592,
+        256
+      ],
+      "id": "fdd37df1-6334-4b14-bb7a-cb4d96170fe9",
+      "name": "Insert into mensagens Update conversas",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "05c8f79b-6271-4855-9e49-12164adf584c",
+              "leftValue": "={{ $('Buscar mensagens').first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        240
+      ],
+      "id": "84acea83-fecd-4984-9ae8-84704567d540",
+      "name": "If cliente nao existe"
+    }
+  ],
+  "pinData": {
+    "Webhook IN": [
+      {
+        "json": {
+          "headers": {
+            "host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
+            "user-agent": "facebookexternalua",
+            "content-length": "612",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip",
+            "content-type": "application/json",
+            "x-forwarded-for": "2a03:2880:10ff:7::",
+            "x-forwarded-host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
+            "x-forwarded-proto": "https",
+            "x-hub-signature": "sha1=36e6811402220440e7c372d9f51d3935dcb7de72",
+            "x-hub-signature-256": "sha256=7fa9691cf3f50eab801b253233f2ff05931a43a4aacb4241b04a4b77c8fb389b"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "object": "whatsapp_business_account",
+            "entry": [
+              {
+                "id": "1485481985861913",
+                "changes": [
+                  {
+                    "value": {
+                      "messaging_product": "whatsapp",
+                      "metadata": {
+                        "display_phone_number": "551930610140",
+                        "phone_number_id": "914808141706009"
+                      },
+                      "contacts": [
+                        {
+                          "profile": {
+                            "name": "Mateus Schmidt Mesquita"
+                          },
+                          "wa_id": "5519996643834"
+                        }
+                      ],
+                      "messages": [
+                        {
+                          "from": "5519996643834",
+                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGQjg4MTA2N0EyRTczRTA3MTM2AA==",
+                          "timestamp": "1763000656",
+                          "type": "audio",
+                          "audio": {
+                            "mime_type": "audio/ogg; codecs=opus",
+                            "sha256": "AXpnUKkltwrE0Nsjmx7YWrCaT9T2nkZF+OSa8V7ROjI=",
+                            "id": "1180269157538994",
+                            "voice": true
+                          }
+                        }
+                      ]
+                    },
+                    "field": "messages"
+                  }
+                ]
+              }
+            ]
+          },
+          "webhookUrl": "http://localhost:5678/webhook/whatsapp-webhook",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook IN": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Dados WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Buscar mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar mensagens": {
+      "main": [
+        [
+          {
+            "node": "Junta as msgs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Novo Usuário": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Junta as msgs": {
+      "main": [
+        [
+          {
+            "node": "If cliente nao existe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Insert into mensagens Update conversas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into mensagens Update conversas": {
+      "main": [
+        [
+          {
+            "node": "Enviar msg da IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If cliente nao existe": {
+      "main": [
+        [
+          {
+            "node": "Criar Novo Usuário",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "415b88ca-dced-47a2-a55a-7da0db2ed13b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"
+  },
+  "id": "tpQQxs74EIrt0yrP",
+  "tags": []
+}

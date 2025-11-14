@@ -214,7 +214,8 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é o assistente virtual (agente) de uma corretora de seguros.\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente.\nCaso o cliente queira agendar algo, diga que pode fazer o agendamento e envie a data/horário no formato ISO.\nNão use linguagem robótica. Seja simpático e conciso.\n\nMensagens anteriores:\n{{ $('Junta as msgs').item.json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
+        "text": "=Você é o assistente virtual (agente) de uma corretora de seguros. Estamos localizados em Limeira - SP, Brasil. Trabalhamos das 08:00 às 18:00, de segunda-feira à sexta-feira. Não trabalhamos em feriados. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar uma consulta presencial. Nossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora no horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos e feriados. Ao indicar horários, sempre deixe claro todos os horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas, e também use a ferramenta 'inserir_evento_db' para inserir uma linha no banco de dados com as informações do evento criado.\n\nMensagens anteriores:\n{{ $('Junta as msgs').item.json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
+        "hasOutputParser": true,
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -228,14 +229,14 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-flash-latest",
+        "modelName": "models/gemini-pro-latest",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        240,
-        416
+        0,
+        464
       ],
       "id": "2d7a5c79-d82d-4c53-aa43-79fe913c2043",
       "name": "Google Gemini Chat Model",
@@ -293,7 +294,7 @@
             },
             {
               "name": "text",
-              "value": "={{ {body:\n$('AI Agent').item.json.output\n} }}"
+              "value": "={{ {body:\n$('AI Agent').item.json.output.mensagem\n} }}"
             }
           ]
         },
@@ -307,27 +308,6 @@
       ],
       "id": "ceaddb1c-cffc-4dcb-8bd1-216c526c6af7",
       "name": "Enviar msg da IA"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "insert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'cliente',\n  '{{ $('Extrair Dados WhatsApp').first().json.mensagem }}'\n);\n\ninsert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'agente',\n  '{{ $json.output }}'\n);\n\nupdate conversas\nset ultima_interacao = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR)\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.5,
-      "position": [
-        592,
-        256
-      ],
-      "id": "fdd37df1-6334-4b14-bb7a-cb4d96170fe9",
-      "name": "Insert into mensagens Update conversas",
-      "credentials": {
-        "mySql": {
-          "id": "DcvAQcI7EEL7wn1u",
-          "name": "MySQL account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -362,6 +342,444 @@
       ],
       "id": "84acea83-fecd-4984-9ae8-84704567d540",
       "name": "If cliente nao existe"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n      \"nome\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"Nome do cliente\"\n      },\n      \"mensagem\": {\n          \"type\": \"string\",\n          \"description\": \"Mensagem a ser enviada ao cliente\"\n      }\n  }\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        512
+      ],
+      "id": "a4af6f30-2ba2-4c1b-aa08-5ccc676479c4",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use essa ferramenta para criar eventos no Google Calendar, para agendamento de consultas, quando apropriado.\n\nSaída esperada: lista contendo os dados do evento criado.",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', `Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'`, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `A data e horário na qual o cliente deseja agendar, adicionado de 1 hora.`, 'string') }}",
+        "additionalFields": {
+          "summary": "=Consulta {{ $fromAI('nome', 'Nome do cliente', 'string', '') }} {{ $('Extrair Dados WhatsApp').first().json.telefone }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        496
+      ],
+      "id": "f66bdbe1-fecd-4acb-ad15-390ad9ea2edb",
+      "name": "criar_evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Execute esta ferramenta somente após ser criado um evento no Google Calendar.\n\nEntrada esperada: {\"dataHora\": \"Data início no formato AAAA-MM-DD HH:MM:SS do evento criado no Google Calendar\", \"eventoId\": \"ID do evento criado no Google Calendar\"}",
+        "operation": "executeQuery",
+        "query": "insert into eventos_agendados (conversas_id, `data`, evento_id)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  '{{ $fromAI('dataHora', 'Data início no ormato AAAA-MM-DD HH:MM:SS do evento criado no Google Calendar') }}',\n  '{{ $fromAI('eventoId', 'ID do evento criado no Google Calendar') }}'\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySqlTool",
+      "typeVersion": 2.5,
+      "position": [
+        352,
+        512
+      ],
+      "id": "4f84ddc2-aed7-40ff-9378-8a64fdd1abbe",
+      "name": "inserir_evento_db",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'cliente',\n  '{{ $('Extrair Dados WhatsApp').first().json.mensagem }}'\n);\n\ninsert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'agente',\n  '{{ $json.output.mensagem }}'\n);\n\nupdate conversas\nset ultima_interacao = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR), nome = '{{ $json.output.nome ? `${$json.output.nome}` : '' }}'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        592,
+        256
+      ],
+      "id": "fdd37df1-6334-4b14-bb7a-cb4d96170fe9",
+      "name": "Insert into mensagens Update conversas Update nome",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use esta ferramenta quando precisar verificar se há eventos no Google Calendar em um intervalo de tempo.\n\nEntrada esperada: {\"data_inicio\": \"YYYY-MM-DDTHH:MM:SS-03:00\", \"data_fim\": \"YYYY-MM-DDTHH:MM:SS-03:00\"}\n\nSaída: lista de eventos encontrados (pode estar vazia).",
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', `Início da data para consultar, no formato 'YYYY-MM-DDTHH:MM:SS-03:00'.`, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', `Fim da data para consultar, no formato 'YYYY-MM-DDTHH:MM:SS-03:00'.`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        528
+      ],
+      "id": "0e7a5f41-0ac0-4b66-8d7a-de765ebe97e2",
+      "name": "consultar_eventos",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-pro-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        480,
+        672
+      ],
+      "id": "029ea7be-d4bb-4a0b-8c7c-5d8927e6b488",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mwJIDNjXa72pv5wt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Trigger evento criado').item.json.creator.email }}",
+        "subject": "=Agendamento confirmado {{ $json.data }}",
+        "emailType": "text",
+        "message": "={{ $('Trigger evento criado').item.json.summary }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1088,
+        928
+      ],
+      "id": "5d4be880-4c3b-417d-aa2e-99f826e12abb",
+      "name": "Send a message",
+      "webhookId": "d5bb4bea-d29b-41f8-98a1-bd986651d69d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "d0mnV1TzVQ706o6A",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n}).replace(',', '')\n}};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1280,
+        928
+      ],
+      "id": "7cd556d9-d09e-4522-b39a-9d1857410554",
+      "name": "Formatar data1"
+    },
+    {
+      "parameters": {
+        "content": "## Triggers adicionais",
+        "height": 1232,
+        "width": 976
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1600,
+        784
+      ],
+      "typeVersion": 1,
+      "id": "4f475cd0-122b-4b74-b232-d948dc216427",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 1,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "triggerOn": "eventCreated",
+        "options": {
+          "matchTerm": "Consulta"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        928
+      ],
+      "id": "71ed0145-60f7-4c84-8de7-efc2d899d38b",
+      "name": "Trigger evento criado",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 54
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1488,
+        1600
+      ],
+      "id": "1e8d33dd-51de-4402-bcd5-ea679375d1d9",
+      "name": "Lembrete 1 dia antes"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.nome, c.telefone, d.`data`\nfrom datas_agendadas as d\njoin conversas as c\non d.conversas_telefone = c.telefone\nwhere d.status = 'ativo'\n  and DATE(d.`data`) = DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -1280,
+        1600
+      ],
+      "id": "85a88f3d-9db1-4595-8796-550e27dd9075",
+      "name": "Select datas agendadas amanha",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5),\n  telefone: item.json.telefone\n}}));\n\nreturn dados;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        1600
+      ],
+      "id": "471c92c7-5212-461e-8655-e4579beb296f",
+      "name": "Formatar os dados"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 54
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1488,
+        1840
+      ],
+      "id": "520890a3-1627-4e46-b5b2-4aade60cf77f",
+      "name": "Lembrete no dia"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.nome, c.telefone, e.`data`\nfrom eventos_agendadas as e\njoin conversas as c\non d.conversas_telefone = c.telefone\nwhere d.status = 'ativo'\n  and DATE(d.`data`) = CURRENT_DATE();",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -1280,
+        1840
+      ],
+      "id": "b717c521-c231-4b7e-b019-98d384c1d767",
+      "name": "Select datas agendadas hoje",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dados = $input.all().map(item => ({json: {\n  nome: item.json.nome || 'cliente',\n  data: item.json.data.slice(11).slice(0, 5),\n  telefone: item.json.telefone\n}}));\n\nreturn dados;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        1840
+      ],
+      "id": "c1d74ab6-3810-4163-a238-cc8c099cbde6",
+      "name": "Formatar os dados1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "template"
+            },
+            {
+              "name": "template",
+              "value": "={{\n{\n  name: \"lembrete_1_dia_antes\",\n  language: {code: \"pt_BR\"},\n  components: [\n    {\n      type: \"body\",\n      parameters: [\n        {\n          type: \"text\",\n          text: `${$json.nome}`,\n          parameter_name: \"nome\"\n        },\n        {\n          type: \"text\",\n          text: `${$json.data}`,\n          parameter_name: \"data\"\n        }\n      ]\n    }\n  ]\n}\n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        1600
+      ],
+      "id": "c481cc82-906d-47f7-89a0-f46eb235c48c",
+      "name": "Enviar aviso"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/914808141706009/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAKzs9daS6ABP4eGJ0ODzLBWZBYPBKiZCoQ4lpm0K7Fg2O3Y3ZAieGxlGyt479droz9mh1xgn71ZBEVktoMQXbEuZBXCYvxxUdYhWOTpTeFxGEtcqXSSNj0r925fwYvsZCgTtMi3LpBlfbifMHY6xhI9yPCnSiJOWjDQoPrdYsae4RrmfmTPejLODPq7NcpSFajQZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.telefone }}"
+            },
+            {
+              "name": "type",
+              "value": "template"
+            },
+            {
+              "name": "template",
+              "value": "={{\n{\n  name: \"lembrete_no_dia\",\n  language: {code: \"pt_BR\"},\n  components: [\n    {\n      type: \"body\",\n      parameters: [\n        {\n          type: \"text\",\n          text: `${$json.nome}`,\n          parameter_name: \"nome\"\n        },\n        {\n          type: \"text\",\n          text: `${$json.data}`,\n          parameter_name: \"data\"\n        }\n      ]\n    }\n  ]\n}\n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        1840
+      ],
+      "id": "902c7c45-2c2b-45f6-b251-3a82b8ea09a1",
+      "name": "Enviar aviso5"
     }
   ],
   "pinData": {
@@ -371,15 +789,15 @@
           "headers": {
             "host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "user-agent": "facebookexternalua",
-            "content-length": "612",
+            "content-length": "518",
             "accept": "*/*",
             "accept-encoding": "deflate, gzip",
             "content-type": "application/json",
-            "x-forwarded-for": "2a03:2880:10ff:7::",
+            "x-forwarded-for": "2a03:2880:22ff:8::",
             "x-forwarded-host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "x-forwarded-proto": "https",
-            "x-hub-signature": "sha1=36e6811402220440e7c372d9f51d3935dcb7de72",
-            "x-hub-signature-256": "sha256=7fa9691cf3f50eab801b253233f2ff05931a43a4aacb4241b04a4b77c8fb389b"
+            "x-hub-signature": "sha1=dd7cc55c4c89d94d05990208caf6cb8a37db9ddd",
+            "x-hub-signature-256": "sha256=982ff40a3e4261238bedee335ad3b35e94527e58e119da7916e5f207d9e675d2"
           },
           "params": {},
           "query": {},
@@ -407,15 +825,12 @@
                       "messages": [
                         {
                           "from": "5519996643834",
-                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGQjg4MTA2N0EyRTczRTA3MTM2AA==",
-                          "timestamp": "1763000656",
-                          "type": "audio",
-                          "audio": {
-                            "mime_type": "audio/ogg; codecs=opus",
-                            "sha256": "AXpnUKkltwrE0Nsjmx7YWrCaT9T2nkZF+OSa8V7ROjI=",
-                            "id": "1180269157538994",
-                            "voice": true
-                          }
+                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGRDlBREQzNTQyQTI5NEVGNTc1AA==",
+                          "timestamp": "1763069615",
+                          "text": {
+                            "body": "seria melhor em alguma quarta"
+                          },
+                          "type": "text"
                         }
                       ]
                     },
@@ -553,18 +968,7 @@
       "main": [
         [
           {
-            "node": "Insert into mensagens Update conversas",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert into mensagens Update conversas": {
-      "main": [
-        [
-          {
-            "node": "Enviar msg da IA",
+            "node": "Insert into mensagens Update conversas Update nome",
             "type": "main",
             "index": 0
           }
@@ -588,13 +992,167 @@
           }
         ]
       ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "criar_evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "inserir_evento_db": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into mensagens Update conversas Update nome": {
+      "main": [
+        [
+          {
+            "node": "Enviar msg da IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "consultar_eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar data1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger evento criado": {
+      "main": [
+        [
+          {
+            "node": "Formatar data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lembrete 1 dia antes": {
+      "main": [
+        [
+          {
+            "node": "Select datas agendadas amanha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select datas agendadas amanha": {
+      "main": [
+        [
+          {
+            "node": "Formatar os dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar os dados": {
+      "main": [
+        [
+          {
+            "node": "Enviar aviso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lembrete no dia": {
+      "main": [
+        [
+          {
+            "node": "Select datas agendadas hoje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select datas agendadas hoje": {
+      "main": [
+        [
+          {
+            "node": "Formatar os dados1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar os dados1": {
+      "main": [
+        [
+          {
+            "node": "Enviar aviso5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "415b88ca-dced-47a2-a55a-7da0db2ed13b",
+  "versionId": "6d8fb8a0-5bc1-4195-b81a-77e626b96c1f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

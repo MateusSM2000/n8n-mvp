@@ -214,7 +214,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é o assistente virtual (agente) de uma corretora de seguros. Estamos localizados em Limeira - SP, Brasil. Trabalhamos das 08:00 às 18:00, de segunda-feira à sexta-feira. Não trabalhamos em feriados. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar uma consulta presencial. Nossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas, e também use a ferramenta 'inserir_evento_db' para inserir uma linha no banco de dados com as informações do evento criado.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $json.datas_agendadas }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário, e também use as ferramentas 'inserir_evento_db' e 'atualizar_evento_db' para inserir e atualizar o banco de dados com as informações do evento atualizado, respectivamente.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
+        "text": "=Você é o assistente virtual (agente) de uma corretora de seguros. Estamos localizados em Limeira - SP, Brasil. Trabalhamos das 08:00 às 18:00, de segunda-feira à sexta-feira. Não trabalhamos em feriados. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar uma consulta presencial. Nossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas, e também use a ferramenta 'inserir_evento_db' para inserir uma linha no banco de dados com as informações do evento criado.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $json.datas_agendadas }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário, e também use as ferramentas 'inserir_evento_db' e 'atualizar_evento_db' para inserir e atualizar o banco de dados com as informações do evento atualizado, respectivamente.\n\nPara o caso de o cliente querer cancelar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente cancelar sua consulta; a data de sua consulta para cancelar. Ao confirmar essas condições, execute a ferramenta 'deletar_evento' para deletar o evento no Google Calendar. Após deletar o evento no Google Calendar, confirme ao cliente que sua consulta foi cancelada com sucesso, e também use a ferramenta 'atualizar_evento_db' para atualizar o banco de dados com as informações do evento deletado.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
         "hasOutputParser": true,
         "options": {}
       },
@@ -235,8 +235,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -96,
-        480
+        -64,
+        640
       ],
       "id": "2d7a5c79-d82d-4c53-aa43-79fe913c2043",
       "name": "Google Gemini Chat Model",
@@ -352,8 +352,8 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        784,
-        480
+        944,
+        640
       ],
       "id": "a4af6f30-2ba2-4c1b-aa08-5ccc676479c4",
       "name": "Structured Output Parser"
@@ -361,7 +361,7 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Use essa ferramenta para criar eventos no Google Calendar, para agendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraIncial\": \"Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"nome\": \"Nome do cliente\"}\n\nSaída esperada: lista contendo os dados do evento criado.",
+        "toolDescription": "Use essa ferramenta para criar eventos no Google Calendar, para agendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"nome\": \"Nome do cliente\"}\n\nSaída esperada: lista contendo os dados do evento criado.",
         "calendar": {
           "__rl": true,
           "value": "mateussmesquita@gmail.com",
@@ -377,8 +377,8 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        48,
-        480
+        80,
+        640
       ],
       "id": "f66bdbe1-fecd-4acb-ad15-390ad9ea2edb",
       "name": "criar_evento",
@@ -400,8 +400,8 @@
       "type": "n8n-nodes-base.mySqlTool",
       "typeVersion": 2.5,
       "position": [
-        496,
-        480
+        656,
+        640
       ],
       "id": "4f84ddc2-aed7-40ff-9378-8a64fdd1abbe",
       "name": "inserir_evento_db",
@@ -452,8 +452,8 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        176,
-        480
+        208,
+        640
       ],
       "id": "0e7a5f41-0ac0-4b66-8d7a-de765ebe97e2",
       "name": "consultar_eventos",
@@ -472,8 +472,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        784,
-        640
+        944,
+        800
       ],
       "id": "029ea7be-d4bb-4a0b-8c7c-5d8927e6b488",
       "name": "Google Gemini Chat Model1",
@@ -819,16 +819,16 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Toda vez, após um reagendamento (evento atualizado) ser executado no Google Calendar, execute esta ferramenta para atualizar a linha que possui o ID do evento que foi atualizado no Google Calendar.\n\nEntrada esperada: {\"eventoId\": \"ID do evento que foi atualizado no Google Calendar\"}",
+        "toolDescription": "Toda vez, após um reagendamento ou cancelamento (evento atualizado ou deletado, respectivamente) ser executado no Google Calendar, execute esta ferramenta para atualizar a linha que possui o ID do evento que foi atualizado ou deletado no Google Calendar.\n\nEntrada esperada: {\"eventoId\": \"ID do evento que foi atualizado ou deletado no Google Calendar\"}",
         "operation": "executeQuery",
-        "query": "update eventos_agendados\nset status = 'cancelado'\nwhere evento_id = {{ $fromAI('eventoId', 'ID do evento que foi atualizado no Google Calendar', 'string') }};",
+        "query": "update eventos_agendados\nset status = 'cancelado'\nwhere evento_id = {{ $fromAI('eventoId', 'ID do evento que foi atualizado ou cancelado no Google Calendar', 'string') }};",
         "options": {}
       },
       "type": "n8n-nodes-base.mySqlTool",
       "typeVersion": 2.5,
       "position": [
-        656,
-        480
+        816,
+        640
       ],
       "id": "276d9350-db9f-4345-ad6e-5e7778a9c71e",
       "name": "atualizar_evento_db",
@@ -842,7 +842,7 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Use essa ferramenta para atualizar eventos no Google Calendar, para reagendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraIncial\": \"Nova data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"eventoId\": \"ID do evento no Google Calendar que o cliente deseja reagendar\"}\n\nSaída esperada: lista contendo os dados do evento atualizado.",
+        "toolDescription": "Use essa ferramenta para atualizar eventos no Google Calendar, para reagendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Nova data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"eventoId\": \"ID do evento no Google Calendar que o cliente deseja reagendar\"}\n\nSaída esperada: lista contendo os dados do evento atualizado.",
         "operation": "update",
         "calendar": {
           "__rl": true,
@@ -852,18 +852,47 @@
         },
         "eventId": "={{ $fromAI('eventoId', 'ID do evento no Google Calendar no qual o cliente quer reagendar', 'string') }}",
         "updateFields": {
-          "end": "",
-          "start": ""
+          "end": "={{ $fromAI('dataHoraFinal', 'Nova data e horário na qual o cliente deseja agendar, no formato YYYY-MM-DDTHH:mm:ssZ, acrescido de 1 hora', 'string') }}",
+          "start": "={{ $fromAI('dataHoraInicial', 'Nova data e horário na qual o cliente deseja agendar, convertendo para o formato YYYY-MM-DDTHH:mm:ssZ', 'string') }}"
         }
       },
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        336,
-        480
+        496,
+        640
       ],
-      "id": "39c9b6af-9233-4954-bdce-02abf732a36c",
+      "id": "ac64e1b5-c0e3-4210-91f8-33002846f02c",
       "name": "atualizar_evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use essa ferramenta para deletar eventos no Google Calendar, para cancelamento de consultas, quando apropriado.\n\nEntrada esperada: {\"eventoId\": \"ID do evento no Google Calendar no qual o cliente deseja cancelar\"}\n\nSaída esperada: lista contendo os dados do evento deletado.",
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', `ID do evento no Google Calendar no qual o cliente deseja cancelar.`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        640
+      ],
+      "id": "b3e9034d-8367-4c9a-8dc8-8fb47a608c48",
+      "name": "deletar_evento",
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "OW5Fz1MJL38TiSw3",
@@ -1280,13 +1309,24 @@
           }
         ]
       ]
+    },
+    "deletar_evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2a8bdaf5-9413-415b-b2c2-2f68546dd763",
+  "versionId": "90a95a9c-0773-4bce-981e-806ea7d54388",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

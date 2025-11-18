@@ -2060,7 +2060,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select *\nfrom datas_agendadas\nwhere evento_id = '{{ $json.id }}'\n  and status = 'cancelado'\norder by id;",
+        "query": "select `data`\nfrom datas_agendadas\nwhere evento_id = '{{ $json.id }}'\n  and status = 'cancelado'\norder by id;",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -6137,7 +6137,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "79317765-fa89-4ddf-b03e-97ebfd153417",
+  "versionId": "deaebb96-f49a-4ea9-a213-b61aa0e43000",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

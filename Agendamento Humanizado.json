@@ -193,7 +193,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT tipo, conteudo\nFROM mensagens\nWHERE conversas_id = (\n    SELECT id FROM conversas WHERE telefone = {{ $json.telefone }}\n)\nORDER BY criado_em DESC\nLIMIT 30;"
+        "query": "SELECT tipo, conteudo\nFROM mensagens\nWHERE conversas_id = (\n    SELECT id FROM conversas WHERE telefone = {{ $json.telefone }}\n)\nORDER BY id DESC\nLIMIT 30;"
       },
       "name": "Buscar mensagens",
       "type": "n8n-nodes-base.mySql",
@@ -214,9 +214,11 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é o assistente virtual (agente) de uma corretora de seguros. Estamos localizados em Limeira - SP, Brasil. Trabalhamos das 08:00 às 18:00, de segunda-feira à sexta-feira. Não trabalhamos em feriados. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar uma consulta presencial. Nossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas, e também use a ferramenta 'inserir_evento_db' para inserir uma linha no banco de dados com as informações do evento criado.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $json.datas_agendadas }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário, e também use as ferramentas 'inserir_evento_db' e 'atualizar_evento_db' para inserir e atualizar o banco de dados com as informações do evento atualizado, respectivamente.\n\nPara o caso de o cliente querer cancelar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente cancelar sua consulta; a data de sua consulta para cancelar. Ao confirmar essas condições, execute a ferramenta 'deletar_evento' para deletar o evento no Google Calendar. Após deletar o evento no Google Calendar, confirme ao cliente que sua consulta foi cancelada com sucesso, e também use a ferramenta 'atualizar_evento_db' para atualizar o banco de dados com as informações do evento deletado.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
+        "text": "=Você é o assistente virtual (agente) de uma corretora de seguros. Estamos localizados em Limeira - SP, Brasil. Trabalhamos das 08:00 às 18:00, de segunda-feira à sexta-feira. Não trabalhamos em feriados. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar uma consulta presencial. Nossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $json.datas_agendadas }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário.\n\nPara o caso de o cliente querer cancelar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente cancelar sua consulta; a data de sua consulta para cancelar. Ao confirmar essas condições, execute a ferramenta 'deletar_evento' para deletar o evento no Google Calendar. Após deletar o evento no Google Calendar, confirme ao cliente que sua consulta foi cancelada com sucesso.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
         "hasOutputParser": true,
-        "options": {}
+        "options": {
+          "returnIntermediateSteps": true
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -225,7 +227,9 @@
         240
       ],
       "id": "526095c5-a911-4ae9-a1d1-2c7fe68fb4b3",
-      "name": "AI Agent"
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -235,8 +239,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -64,
-        640
+        112,
+        592
       ],
       "id": "2d7a5c79-d82d-4c53-aa43-79fe913c2043",
       "name": "Google Gemini Chat Model",
@@ -303,7 +307,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1024,
+        1040,
         240
       ],
       "id": "ceaddb1c-cffc-4dcb-8bd1-216c526c6af7",
@@ -346,14 +350,14 @@
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n      \"nome\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"Nome do cliente se explícito na conversa\"\n      },\n      \"mensagem\": {\n          \"type\": \"string\",\n          \"description\": \"Mensagem a ser enviada ao cliente\"\n      }\n  }\n}",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n      \"nome\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"Nome do cliente se explícito na conversa\"\n      },\n      \"mensagem\": {\n          \"type\": \"string\",\n          \"description\": \"Mensagem a ser enviada ao cliente, não sendo necessário informar ID de eventos do Google Calendar\"\n      },\n      \"eventoId\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"ID do evento criado, atualizado ou deletado no Google Calendar\"\n      }\n  }\n}",
         "autoFix": true
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        944,
-        640
+        800,
+        592
       ],
       "id": "a4af6f30-2ba2-4c1b-aa08-5ccc676479c4",
       "name": "Structured Output Parser"
@@ -361,14 +365,14 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Use essa ferramenta para criar eventos no Google Calendar, para agendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"nome\": \"Nome do cliente\"}\n\nSaída esperada: lista contendo os dados do evento criado.",
+        "toolDescription": "Use essa ferramenta para criar eventos no Google Calendar, para agendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"nome\": \"Nome do cliente\"}\n\nSaída esperada: lista contendo os dados do evento criado.",
         "calendar": {
           "__rl": true,
           "value": "mateussmesquita@gmail.com",
           "mode": "list",
           "cachedResultName": "mateussmesquita@gmail.com"
         },
-        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', `Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'`, 'string') }}",
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', `Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'`, 'string') }}",
         "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `A data e horário na qual o cliente deseja agendar, adicionado de 1 hora.`, 'string') }}",
         "additionalFields": {
           "summary": "=Consulta {{ $fromAI('nome', 'Nome do cliente', 'string', '') }} {{ $('Extrair Dados WhatsApp').first().json.telefone }}"
@@ -377,8 +381,8 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        80,
-        640
+        256,
+        592
       ],
       "id": "f66bdbe1-fecd-4acb-ad15-390ad9ea2edb",
       "name": "criar_evento",
@@ -391,37 +395,14 @@
     },
     {
       "parameters": {
-        "descriptionType": "manual",
-        "toolDescription": "=Toda vez, após um agendamento ou reagendamento ser executado no Google Calendar, execute esta ferramenta para adicionar data e horário (agendamento) ou nova data e horário (reagendamento) e ID do evento ao banco de dados.\n\nEntrada esperada: {\"dataHora\": \"Data início no formato AAAA-MM-DD HH:MM:SS do evento criado ou atualizado no Google Calendar\", \"eventoId\": \"ID do evento criado ou atualizado no Google Calendar\"}",
         "operation": "executeQuery",
-        "query": "insert into eventos_agendados (conversas_id, `data`, evento_id)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  '{{ $fromAI('dataHora', 'Data início no ormato AAAA-MM-DD HH:MM:SS do evento criado ou atualizado no Google Calendar') }}',\n  '{{ $fromAI('eventoId', 'ID do evento criado ou atualizado no Google Calendar') }}'\n);",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySqlTool",
-      "typeVersion": 2.5,
-      "position": [
-        656,
-        640
-      ],
-      "id": "4f84ddc2-aed7-40ff-9378-8a64fdd1abbe",
-      "name": "inserir_evento_db",
-      "credentials": {
-        "mySql": {
-          "id": "DcvAQcI7EEL7wn1u",
-          "name": "MySQL account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "insert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'cliente',\n  '{{ $('Extrair Dados WhatsApp').first().json.mensagem }}'\n);\n\ninsert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'agente',\n  '{{ $json.output.mensagem }}'\n);\n\nupdate conversas\nset ultima_interacao = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR), nome = '{{ $json.output.nome ? `${$json.output.nome}` : '' }}'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
+        "query": "insert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'cliente',\n  '{{ $('Extrair Dados WhatsApp').first().json.mensagem }}'\n);\n\ninsert into mensagens (conversas_id, tipo, conteudo)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  'agente',\n  '{{ $('AI Agent').first().json.output.mensagem }}'\n);\n\nupdate conversas\nset ultima_interacao = DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR), nome = '{{ $('AI Agent').first().json.output.nome ? `${$('AI Agent').first().json.output.nome}` : '' }}'\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        784,
+        800,
         240
       ],
       "id": "fdd37df1-6334-4b14-bb7a-cb4d96170fe9",
@@ -452,8 +433,8 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        208,
-        640
+        384,
+        592
       ],
       "id": "0e7a5f41-0ac0-4b66-8d7a-de765ebe97e2",
       "name": "consultar_eventos",
@@ -472,8 +453,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        944,
-        800
+        800,
+        752
       ],
       "id": "029ea7be-d4bb-4a0b-8c7c-5d8927e6b488",
       "name": "Google Gemini Chat Model1",
@@ -644,7 +625,7 @@
       "typeVersion": 1.2,
       "position": [
         -1488,
-        1840
+        1824
       ],
       "id": "520890a3-1627-4e46-b5b2-4aade60cf77f",
       "name": "Lembrete no dia"
@@ -659,7 +640,7 @@
       "typeVersion": 2.5,
       "position": [
         -1280,
-        1840
+        1824
       ],
       "id": "b717c521-c231-4b7e-b019-98d384c1d767",
       "name": "Select datas agendadas hoje",
@@ -678,7 +659,7 @@
       "typeVersion": 2,
       "position": [
         -1072,
-        1840
+        1824
       ],
       "id": "c1d74ab6-3810-4163-a238-cc8c099cbde6",
       "name": "Formatar os dados1"
@@ -776,7 +757,7 @@
       "typeVersion": 4.2,
       "position": [
         -864,
-        1840
+        1824
       ],
       "id": "902c7c45-2c2b-45f6-b251-3a82b8ea09a1",
       "name": "Enviar aviso5"
@@ -819,61 +800,6 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Toda vez, após um reagendamento ou cancelamento (evento atualizado ou deletado, respectivamente) ser executado no Google Calendar, execute esta ferramenta para atualizar a linha que possui o ID do evento que foi atualizado ou deletado no Google Calendar.\n\nEntrada esperada: {\"eventoId\": \"ID do evento que foi atualizado ou deletado no Google Calendar\"}",
-        "operation": "executeQuery",
-        "query": "update eventos_agendados\nset status = 'cancelado'\nwhere evento_id = {{ $fromAI('eventoId', 'ID do evento que foi atualizado ou cancelado no Google Calendar', 'string') }};",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySqlTool",
-      "typeVersion": 2.5,
-      "position": [
-        816,
-        640
-      ],
-      "id": "276d9350-db9f-4345-ad6e-5e7778a9c71e",
-      "name": "atualizar_evento_db",
-      "credentials": {
-        "mySql": {
-          "id": "DcvAQcI7EEL7wn1u",
-          "name": "MySQL account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "descriptionType": "manual",
-        "toolDescription": "Use essa ferramenta para atualizar eventos no Google Calendar, para reagendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Nova data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ssZ'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"eventoId\": \"ID do evento no Google Calendar que o cliente deseja reagendar\"}\n\nSaída esperada: lista contendo os dados do evento atualizado.",
-        "operation": "update",
-        "calendar": {
-          "__rl": true,
-          "value": "mateussmesquita@gmail.com",
-          "mode": "list",
-          "cachedResultName": "mateussmesquita@gmail.com"
-        },
-        "eventId": "={{ $fromAI('eventoId', 'ID do evento no Google Calendar no qual o cliente quer reagendar', 'string') }}",
-        "updateFields": {
-          "end": "={{ $fromAI('dataHoraFinal', 'Nova data e horário na qual o cliente deseja agendar, no formato YYYY-MM-DDTHH:mm:ssZ, acrescido de 1 hora', 'string') }}",
-          "start": "={{ $fromAI('dataHoraInicial', 'Nova data e horário na qual o cliente deseja agendar, convertendo para o formato YYYY-MM-DDTHH:mm:ssZ', 'string') }}"
-        }
-      },
-      "type": "n8n-nodes-base.googleCalendarTool",
-      "typeVersion": 1.3,
-      "position": [
-        496,
-        640
-      ],
-      "id": "ac64e1b5-c0e3-4210-91f8-33002846f02c",
-      "name": "atualizar_evento",
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "OW5Fz1MJL38TiSw3",
-          "name": "Google Calendar account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "descriptionType": "manual",
         "toolDescription": "Use essa ferramenta para deletar eventos no Google Calendar, para cancelamento de consultas, quando apropriado.\n\nEntrada esperada: {\"eventoId\": \"ID do evento no Google Calendar no qual o cliente deseja cancelar\"}\n\nSaída esperada: lista contendo os dados do evento deletado.",
         "operation": "delete",
         "calendar": {
@@ -888,11 +814,429 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        352,
-        640
+        528,
+        592
       ],
       "id": "b3e9034d-8367-4c9a-8dc8-8fb47a608c48",
       "name": "deletar_evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Trigger evento cancelado').item.json.creator.email }}",
+        "subject": "=Agendamento cancelado {{ $json.data }}",
+        "emailType": "text",
+        "message": "={{ $('Trigger evento cancelado').item.json.summary }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1072,
+        1152
+      ],
+      "id": "e2192d8d-c3da-4806-bfaa-87835253fa8a",
+      "name": "Send a message1",
+      "webhookId": "de654d40-b863-4c9f-b1f4-140f63e30056",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "d0mnV1TzVQ706o6A",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataISO = new Date($input.first().json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n}).replace(',', '')\n}};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1280,
+        1152
+      ],
+      "id": "0ddd8bbe-19c8-428e-8b55-b75ac585f201",
+      "name": "Formatar data"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 1,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "triggerOn": "eventCancelled",
+        "options": {
+          "matchTerm": "Consulta"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        1152
+      ],
+      "id": "9104b517-f1bf-4bbc-83c4-cffeac6f53be",
+      "name": "Trigger evento cancelado",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Trigger evento atualizado').first().json.creator.email }}",
+        "subject": "=Agendamento remarcado de {{ $json.dataAnterior }} para {{ $json.dataAtual }}",
+        "emailType": "text",
+        "message": "={{ $('Trigger evento atualizado').first().json.summary }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -864,
+        1376
+      ],
+      "id": "22db95e9-4e27-41b8-a8e1-2a1515bc7daa",
+      "name": "Send a message2",
+      "webhookId": "de654d40-b863-4c9f-b1f4-140f63e30056",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "d0mnV1TzVQ706o6A",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "triggerOn": "eventUpdated",
+        "options": {
+          "matchTerm": "Consulta"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        1376
+      ],
+      "id": "037aca3e-f19c-42bd-8747-f320ee2754d6",
+      "name": "Trigger evento atualizado",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OW5Fz1MJL38TiSw3",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select `data`\nfrom eventos_agendados\nwhere evento_id = '{{ $json.id }}'\n  and status = 'cancelado'\norder by id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -1280,
+        1376
+      ],
+      "id": "dfc4ff0f-832f-47ee-a216-7031a3bf3697",
+      "name": "Select datas canceladas",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataISO = new Date($('Trigger evento atualizado').first().json.start.dateTime);\n\nconst dataSql = new Date($('Select datas canceladas').all().at(-1).json.data);\n\nconst formatador = new Intl.DateTimeFormat('pt-BR', {year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false});\n\nconst dataAntiga = formatador.format(dataSql);\n\nreturn {\"json\": {\n  \"dataAtual\": dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'\n  }).replace(',', ''),\n  \"dataAnterior\": dataAntiga.replace(',', '')\n}};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        1376
+      ],
+      "id": "7fdb7f0e-5941-4fd7-8516-b889bb07558d",
+      "name": "Formatar datas"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nreturn [{json: {\n  criar_evento: $input.first().json.intermediateSteps.some(item => item.action?.tool == 'criar_evento'),\n  atualizar_evento: $input.first().json.intermediateSteps.some(item => item.action?.tool == 'atualizar_evento'),\n  deletar_evento: $input.first().json.intermediateSteps.some(item => item.action?.tool == 'deletar_evento')\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -176
+      ],
+      "id": "413c3aca-ffb4-447f-a521-ba7fbf084f19",
+      "name": "Tools executados"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f4e70fbe-27c6-41fb-91b6-f48778f6c7bc",
+                    "leftValue": "={{ $json.criar_evento }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "criar_evento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "59ec5e05-0d79-4685-aae0-1139c41f97d4",
+                    "leftValue": "={{ $json.atualizar_evento }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "atualizar_evento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d7c10e5-eb6b-4069-b514-3c20a198fa3a",
+                    "leftValue": "={{ $json.deletar_evento }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "deletar_evento"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        992,
+        -192
+      ],
+      "id": "6e6e0728-bd1f-4150-b46f-e57f963ab731",
+      "name": "Tool executado"
+    },
+    {
+      "parameters": {
+        "jsCode": "let data = undefined;\n\nfor (const item of $(\"AI Agent\").first().json.intermediateSteps) {\n  if (item.action.tool == 'criar_evento') {\n    data = item.action.toolInput.Start.replace('T', ' ').slice(0, 19);\n  }\n}\n\nreturn [{json: {\n  data: data\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        -400
+      ],
+      "id": "210a2e1b-b291-44f6-ba71-65427612d1d7",
+      "name": "Retorna data"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into eventos_agendados (conversas_id, `data`, evento_id)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  '{{ $json.data }}',\n  '{{ $('AI Agent').first().json.output.eventoId }}'\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1472,
+        -400
+      ],
+      "id": "1ca53ed9-d8cf-4b3d-b7ce-de361c394eaa",
+      "name": "Insert into eventos_agendados",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update eventos_agendados\nset status = 'cancelado'\nwhere evento_id = '{{ $('AI Agent').first().json.output.eventoId }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1264,
+        16
+      ],
+      "id": "11bb2a3b-ccad-41ca-b164-f02982458b9e",
+      "name": "Update eventos_agendados",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let data = undefined;\n\nfor (const item of $(\"AI Agent\").first().json.intermediateSteps) {\n  if (item.action.tool == 'atualizar_evento') {\n    data = item.action.toolInput.dataHoraInicial.replace('T', ' ').slice(0, 19);\n  }\n}\n\nreturn [{json: {\n  data: data\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        -176
+      ],
+      "id": "551c9476-0e33-41c4-a7dc-0f9065adb50f",
+      "name": "Retorna data1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into eventos_agendados (conversas_id, `data`, evento_id)\nvalues (\n  (select id from conversas where telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}'),\n  '{{ $('Retorna data1').first().json.data }}',\n  '{{ $('AI Agent').first().json.output.eventoId }}'\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1632,
+        -176
+      ],
+      "id": "6ae7be9e-ee1e-4b30-b0d9-a329881d54e7",
+      "name": "Insert into eventos_agendados1",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update eventos_agendados\nset status = 'cancelado'\nwhere evento_id = '{{ $('AI Agent').first().json.output.eventoId }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1456,
+        -176
+      ],
+      "id": "be7400fa-0452-4515-9668-64b8f2b7a7ba",
+      "name": "Update eventos_agendados1",
+      "credentials": {
+        "mySql": {
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use essa ferramenta para atualizar eventos no Google Calendar, para reagendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Nova data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"eventoId\": \"ID do evento no Google Calendar que o cliente deseja reagendar\"}\n\nSaída esperada: lista contendo os dados do evento atualizado.",
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "mateussmesquita@gmail.com",
+          "mode": "list",
+          "cachedResultName": "mateussmesquita@gmail.com"
+        },
+        "eventId": "={{ $fromAI('eventoId', 'ID do evento no Google Calendar no qual o cliente quer reagendar', 'string') }}",
+        "updateFields": {
+          "end": "={{ $fromAI('dataHoraFinal', 'Nova data e horário na qual o cliente deseja agendar, no formato YYYY-MM-DDTHH:mm:ss-03:00, acrescido de 1 hora', 'string') }}",
+          "start": "={{ $fromAI('dataHoraInicial', 'Nova data e horário na qual o cliente deseja agendar, convertendo para o formato YYYY-MM-DDTHH:mm:ss-03:00', 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        672,
+        592
+      ],
+      "id": "18702e75-b01f-4616-9fbd-2d39aed6f53f",
+      "name": "atualizar_evento",
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "OW5Fz1MJL38TiSw3",
@@ -908,15 +1252,15 @@
           "headers": {
             "host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "user-agent": "facebookexternalua",
-            "content-length": "518",
+            "content-length": "527",
             "accept": "*/*",
             "accept-encoding": "deflate, gzip",
             "content-type": "application/json",
-            "x-forwarded-for": "2a03:2880:22ff:8::",
+            "x-forwarded-for": "2a03:2880:10ff:8::",
             "x-forwarded-host": "bethann-conciliable-unvibrantly.ngrok-free.dev",
             "x-forwarded-proto": "https",
-            "x-hub-signature": "sha1=dd7cc55c4c89d94d05990208caf6cb8a37db9ddd",
-            "x-hub-signature-256": "sha256=982ff40a3e4261238bedee335ad3b35e94527e58e119da7916e5f207d9e675d2"
+            "x-hub-signature": "sha1=cdd71bc40e4d71dd469024a5d76562168109399d",
+            "x-hub-signature-256": "sha256=2b28059d7e0ec869b403f82fe1629a11b8e2c07698c250b87142cd5c9ee55615"
           },
           "params": {},
           "query": {},
@@ -944,10 +1288,10 @@
                       "messages": [
                         {
                           "from": "5519996643834",
-                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGRDlBREQzNTQyQTI5NEVGNTc1AA==",
-                          "timestamp": "1763069615",
+                          "id": "wamid.HBgNNTUxOTk5NjY0MzgzNBUCABIYFDNGMTVEM0QzQTE2QjFERTAzREE5AA==",
+                          "timestamp": "1763528717",
                           "text": {
-                            "body": "seria melhor em alguma quarta"
+                            "body": "quero marcar uma consulta amanha as 15"
                           },
                           "type": "text"
                         }
@@ -1090,6 +1434,11 @@
             "node": "Insert into mensagens Update conversas Update nome",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Tools executados",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -1124,17 +1473,6 @@
       ]
     },
     "criar_evento": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "inserir_evento_db": {
       "ai_tool": [
         [
           {
@@ -1288,12 +1626,136 @@
         ]
       ]
     },
-    "atualizar_evento_db": {
+    "deletar_evento": {
       "ai_tool": [
         [
           {
             "node": "AI Agent",
             "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar data": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger evento cancelado": {
+      "main": [
+        [
+          {
+            "node": "Formatar data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger evento atualizado": {
+      "main": [
+        [
+          {
+            "node": "Select datas canceladas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select datas canceladas": {
+      "main": [
+        [
+          {
+            "node": "Formatar datas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar datas": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tools executados": {
+      "main": [
+        [
+          {
+            "node": "Tool executado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool executado": {
+      "main": [
+        [
+          {
+            "node": "Retorna data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retorna data1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update eventos_agendados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna data": {
+      "main": [
+        [
+          {
+            "node": "Insert into eventos_agendados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna data1": {
+      "main": [
+        [
+          {
+            "node": "Update eventos_agendados1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update eventos_agendados1": {
+      "main": [
+        [
+          {
+            "node": "Insert into eventos_agendados1",
+            "type": "main",
             "index": 0
           }
         ]
@@ -1309,24 +1771,13 @@
           }
         ]
       ]
-    },
-    "deletar_evento": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "90a95a9c-0773-4bce-981e-806ea7d54388",
+  "versionId": "bf18ec1b-3f56-46cd-a42c-fa668e5758b9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

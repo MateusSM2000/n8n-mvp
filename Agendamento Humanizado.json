@@ -467,10 +467,10 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $('Trigger evento criado').item.json.creator.email }}",
+        "sendTo": "={{ $('Trigger evento criado').first().json.creator.email }}",
         "subject": "=Agendamento confirmado {{ $json.data }}",
         "emailType": "text",
-        "message": "={{ $('Trigger evento criado').item.json.summary }}",
+        "message": "={{ $('Trigger evento criado').first().json.summary }}",
         "options": {
           "appendAttribution": false
         }
@@ -828,10 +828,10 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $('Trigger evento cancelado').item.json.creator.email }}",
+        "sendTo": "={{ $('Trigger evento cancelado').first().json.creator.email }}",
         "subject": "=Agendamento cancelado {{ $json.data }}",
         "emailType": "text",
-        "message": "={{ $('Trigger evento cancelado').item.json.summary }}",
+        "message": "={{ $('Trigger evento cancelado').first().json.summary }}",
         "options": {
           "appendAttribution": false
         }
@@ -1777,7 +1777,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "bf18ec1b-3f56-46cd-a42c-fa668e5758b9",
+  "versionId": "d8c37a00-5585-4521-8f6b-8216a1d922f2",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

@@ -3,3 +3,4 @@
 .idea/
 n8n_data/
 mysql_data/
+.env

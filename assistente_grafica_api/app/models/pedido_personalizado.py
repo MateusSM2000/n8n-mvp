@@ -1,6 +1,12 @@
-from sqlalchemy import Column, Integer, String, Text, JSON, Enum, DateTime
+from sqlalchemy import Column, Integer, String, Text, JSON, Enum as SAEnum, DateTime
 from sqlalchemy.sql import func
 from assistente_grafica_api.app.database import Base
+from enum import Enum
+
+class StatusPedido(str, Enum):
+    aberto = "aberto"
+    em_andamento = "em_andamento"
+    concluido = "concluido"
 
 class PedidoPersonalizado(Base):
     __tablename__ = "pedidos_personalizados"
@@ -11,6 +17,6 @@ class PedidoPersonalizado(Base):
     tema = Column(Text)
     instrucoes = Column(Text)
     urls_imagens_sugeridas = Column(JSON)
-    status = Column(Enum("aberto", "em_andamento", "concluido"), default="aberto")
+    status = Column(SAEnum(StatusPedido), default=StatusPedido.aberto)
     criado_em = Column(DateTime, server_default=func.now())
     atualizado_em = Column(DateTime, server_default=func.now(), onupdate=func.now())

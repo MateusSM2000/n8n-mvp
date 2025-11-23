@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DECIMAL, Boolean, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Text, DECIMAL, Boolean, ForeignKey, DateTime, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from assistente_grafica_api.app.database import Base
@@ -11,7 +11,7 @@ class Produto(Base):
     descricao = Column(Text)
     preco = Column(DECIMAL(10,2))
     categoria_id = Column(Integer, ForeignKey("categorias.id"))
-    url_imagem = Column(String(500))
+    url_imagem = Column(JSON)
     tem_estoque = Column(Boolean, default=True)
     estoque = Column(Integer, default=0)
     ativo = Column(Boolean, default=True)

@@ -1,17 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from assistente_grafica_api.app.database import SessionLocal
+from assistente_grafica_api.app.database import get_db
 from assistente_grafica_api.app import models, schemas
 
 router = APIRouter(prefix="/categorias", tags=["Categorias"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post("/", response_model=schemas.categoria.Categoria, status_code=status.HTTP_201_CREATED)

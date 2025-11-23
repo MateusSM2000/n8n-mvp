@@ -1,18 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from assistente_grafica_api.app.database import SessionLocal
+from assistente_grafica_api.app.database import get_db
 from assistente_grafica_api.app import models, schemas
 from typing import List
+from pydantic import HttpUrl
 from enum import Enum
 
 router = APIRouter(prefix="/personalizados", tags=["Pedidos Personalizados"])
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=schemas.pedido_personalizado.PedidoPersonalizado, status_code=status.HTTP_201_CREATED)
 def criar_pedido(pedido: schemas.pedido_personalizado.PedidoPersonalizadoCreate, db: Session = Depends(get_db)):
@@ -54,7 +50,7 @@ def atualizar_pedido(pedido_id: int, update: schemas.pedido_personalizado.Pedido
     return p
 
 @router.post("/{pedido_id}/imagens", response_model=schemas.pedido_personalizado.PedidoPersonalizado)
-def adicionar_imagens(pedido_id: int, imagens: List[schemas.pedido_personalizado.HttpUrl], db: Session = Depends(get_db)):
+def adicionar_imagens(pedido_id: int, imagens: List[HttpUrl], db: Session = Depends(get_db)):
     p = db.query(models.pedido_personalizado.PedidoPersonalizado).filter(models.pedido_personalizado.PedidoPersonalizado.id == pedido_id).first()
     if not p:
         raise HTTPException(status_code=404, detail="Pedido não encontrado.")

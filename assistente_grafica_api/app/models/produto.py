@@ -11,7 +11,7 @@ class Produto(Base):
     descricao = Column(Text)
     preco = Column(DECIMAL(10,2))
     categoria_id = Column(Integer, ForeignKey("categorias.id"))
-    url_imagem = Column(JSON)
+    imagens = Column(JSON)
     tem_estoque = Column(Boolean, default=True)
     estoque = Column(Integer, default=0)
     ativo = Column(Boolean, default=True)

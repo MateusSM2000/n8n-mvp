@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from assistente_grafica_api.app.database import SessionLocal
-from assistente_grafica_api.app.database import get_db
-from assistente_grafica_api.app import models, schemas
+from ..database import SessionLocal
+from ..database import get_db
+from .. import models, schemas
 
 router = APIRouter(prefix="/categorias", tags=["Categorias"])
 

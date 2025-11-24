@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from assistente_grafica_api.app.database import get_db
-from assistente_grafica_api.app.models.produto import Produto
-from assistente_grafica_api.app.models.categoria import Categoria
-from assistente_grafica_api.app.schemas.produto import (
+from ..database import get_db
+from ..models.produto import Produto
+from ..models.categoria import Categoria
+from ..schemas.produto import (
     ProdutoCreate,
     ProdutoUpdate,
     ProdutoResponse

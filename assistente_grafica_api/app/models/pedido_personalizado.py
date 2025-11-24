@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, JSON, Enum as SAEnum, DateTime
 from sqlalchemy.sql import func
-from assistente_grafica_api.app.database import Base
+from ..database import Base
 from enum import Enum
 
 class StatusPedido(str, Enum):

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, DECIMAL, Boolean, ForeignKey, DateTime, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from assistente_grafica_api.app.database import Base
+from ..database import Base
 
 class Produto(Base):
     __tablename__ = "produtos"

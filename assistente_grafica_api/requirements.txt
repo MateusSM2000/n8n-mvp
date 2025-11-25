@@ -1,0 +1,8 @@
+Django
+djangorestframework
+django-cors-headers
+Pillow
+pymysql
+drf-yasg
+django-environ
+django-jazzmin

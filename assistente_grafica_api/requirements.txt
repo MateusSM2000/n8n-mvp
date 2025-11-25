@@ -6,3 +6,4 @@ pymysql
 drf-yasg
 django-environ
 django-jazzmin
+cryptography

@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Categoria(models.Model):
+    id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
 
     def __str__(self):
@@ -10,6 +11,7 @@ class Categoria(models.Model):
 
 
 class Produto(models.Model):
+    id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     descricao = models.TextField(blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
@@ -24,6 +26,7 @@ class Produto(models.Model):
 
 
 class PedidoPersonalizado(models.Model):
+    id = models.AutoField(primary_key=True)
     telefone_cliente = models.CharField(max_length=20, blank=True, null=True)
     tipo_produto = models.CharField(max_length=255, blank=True, null=True)
     tema = models.TextField(blank=True, null=True)

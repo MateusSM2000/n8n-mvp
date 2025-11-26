@@ -39,7 +39,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG") == "true"
+DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -150,7 +150,7 @@ USE_TZ = True
 # STATIC & MEDIA
 # -------------------------
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
@@ -174,3 +174,85 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Rei do Print — Painel",
+    "site_header": "Rei do Print",
+    "site_brand": "Painel Administrativo — Rei do Print",
+    "welcome_sign": "Bem-vindo ao sistema da Rei do Print",
+    "copyright": "Rei do Print © 2025",
+    "search_model": ["core.Produto", "core.Categoria", "core.PedidoPersonalizado"],
+
+    # Logo e favicon
+    "site_logo_classes": "img-circle",
+    "site_logo": None,  # depois você coloca seu logo.png aqui se quiser
+    "site_icon": None,
+
+    # Layout
+    "show_ui_builder": False,
+    "navigation_expanded": True,
+    "topmenu_links": [
+        {"name": "Início", "url": "admin:index", "permissions": ["auth.view_user"]},
+    ],
+
+    # Menu lateral customizado
+    "order_with_respect_to": [
+        "core",
+        "auth",
+        "Usuarios",
+        "Grupos",
+    ],
+
+    "icons": {
+        "core.Produto": "fas fa-box",
+        "core.Categoria": "fas fa-tags",
+        "core.PedidoPersonalizado": "fas fa-paint-brush",
+
+        # coisas padrão do Django
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+
+    # Agrupamento mais profissional
+    "side_menu": {
+        "Produtos": [
+            {"app": "core", "models": ["produto", "categoria"]},
+        ],
+        "Personalizados": [
+            {"app": "core", "models": ["pedidopersonalizado"]},
+        ],
+        "Configurações": [
+            {"app": "auth", "models": ["user", "group"]},
+        ],
+    },
+
+    # Tema de cores
+    "custom_css": None,
+    "custom_js": None,
+    "use_google_fonts_cdn": True,
+
+    # Paleta personalizada Rei do Print
+    "theme": "default",
+    "dark_mode_theme": None,
+}
+
+# Paleta de cores personalizada para deixar o admin mais bonito
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",  # tema mais moderno
+    "navbar_small_text": False,
+    "footer_small_text": True,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark bg-primary",
+    "no_navbar_border": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": True,
+}

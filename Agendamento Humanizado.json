@@ -1228,8 +1228,8 @@
       "name": "Select datas canceladas",
       "credentials": {
         "mySql": {
-          "id": "Op5rAe6z6A07TgjU",
-          "name": "MySQL account 3"
+          "id": "DcvAQcI7EEL7wn1u",
+          "name": "MySQL account 2"
         }
       }
     },
@@ -1780,7 +1780,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1a6c8696-6988-4553-aaa8-c0ed40c0c615",
+  "versionId": "a16aafac-eaf3-4dfa-b390-c3f996fedfb9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import Categoria, Produto, PedidoPersonalizado
+from .models import Categoria, Produto, ProdutoImagem, PedidoPersonalizado
+
+
+class ProdutoImagemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProdutoImagem
+        fields = ["id", "imagem"]
+
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,9 +15,20 @@ class CategoriaSerializer(serializers.ModelSerializer):
 
 
 class ProdutoSerializer(serializers.ModelSerializer):
+    imagens = ProdutoImagemSerializer(many=True, read_only=True)
+
     class Meta:
         model = Produto
-        fields = "__all__"
+        fields = [
+            "id",
+            "nome",
+            "categoria",
+            "descricao",
+            "ativo",
+            "imagens",
+            "criado_em",
+            "atualizado_em"
+        ]
 
 
 class PedidoPersonalizadoSerializer(serializers.ModelSerializer):

@@ -214,7 +214,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é o assistente virtual (agente) da clínica odontológica Clínica Arcaro, endereço R. Prof. Rui Côrte Brilho, 199 - Chácara Antonieta, Limeira - SP, 13484-507. Trabalhamos das 08:00 às 19:00, de segunda-feira à sexta-feira. Não trabalhamos em feriados. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nA clínica presta os seguintes serviços: clínica geral (tratamentos), ortodontia (aparelhos) e harmonização facial.\n\nCaso não há histórico de mensagens, informe ao cliente que ele está conversando com um assistente virtual da clínica odontológica (Clínica Arcaro) e os serviços que prestamos.\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar um agendamento presencial. \n\nSua primeira etapa na conversa é verificar se o cliente já é paciente da clínica ou não. Caso o cliente não seja paciente, você deve marcar consultas para orçamentos. Se já é paciente, você deve agendar consultas de retorno para a continuidade do serviço que está sendo prestado ao cliente.\n\nNossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $json.datas_agendadas }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário.\n\nPara o caso de o cliente querer cancelar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente cancelar sua consulta; a data de sua consulta para cancelar. Ao confirmar essas condições, execute a ferramenta 'deletar_evento' para deletar o evento no Google Calendar. Após deletar o evento no Google Calendar, confirme ao cliente que sua consulta foi cancelada com sucesso.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
+        "text": "=Você é o assistente virtual (agente) da clínica odontológica Clínica Arcaro, endereço R. Prof. Rui Côrte Brilho, 199 - Chácara Antonieta, Limeira - SP, 13484-507. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nA clínica presta os seguintes serviços: clínica geral (tratamentos), ortodontia (aparelhos) e harmonização facial.\n\nPara cada tipo de serviços que realizamos, há um horário de atendimento\n\nPara ortodontia e harmonização, trabalhamos somente nos seguintes dias da semana e horários:\n- Terça-feiras das 14:30 às 18:45;\n- Quarta-feiras das 08:15 às 10:00 e das 14:30 às 18:45. Entre as 10:00 e 14:30 não trabalhamos.\n\nPara clínica geral, trabalhamos somente nos seguintes dias da semana e horários:\n- Segunda-feira à sexta-feira das 08:00 às 11:00 e das 14:00 às 18:30. Entre 11:00 e 14:00 não trabalhamos.\n\nCaso não há histórico de mensagens, informe ao cliente que ele está conversando com um assistente virtual da clínica odontológica (Clínica Arcaro) e seja nesse formato 'Realizamos serviços de ortodontia (aparelhos), clínica geral (restaurações), harmonização facial (botox). Qual desses serviços você gostaria de agendar?'\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar um agendamento presencial.\n\nSua primeira etapa na conversa é verificar se o cliente já é paciente da clínica ou não. Caso o cliente não seja paciente, você deve marcar consultas para orçamentos. Se já é paciente, você deve agendar consultas de retorno para a continuidade do serviço que está sendo prestado ao cliente.\n\nNossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário; nome completo. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $json.datas_agendadas }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário.\n\nPara o caso de o cliente querer cancelar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente cancelar sua consulta; a data de sua consulta para cancelar. Ao confirmar essas condições, execute a ferramenta 'deletar_evento' para deletar o evento no Google Calendar. Após deletar o evento no Google Calendar, confirme ao cliente que sua consulta foi cancelada com sucesso.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
         "hasOutputParser": true,
         "options": {
           "returnIntermediateSteps": true
@@ -467,48 +467,8 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $json.email }}",
-        "subject": "=Agendamento confirmado {{ $json.data }}",
-        "emailType": "text",
-        "message": "={{ $json.summary }}",
-        "options": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        -1808,
-        -720
-      ],
-      "id": "ad4cac3d-d322-4ca0-a609-1c3761e23623",
-      "name": "Send a message",
-      "webhookId": "d5bb4bea-d29b-41f8-98a1-bd986651d69d",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "d0mnV1TzVQ706o6A",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const dataISO = new Date($input.item.json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n}).replace(',', ''),\n  \"summary\": $json.summary,\n  \"email\": $json.creator.email\n}};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -2000,
-        -720
-      ],
-      "id": "f6454f67-0e78-4425-8fc6-f4296b4fb2bf",
-      "name": "Formatar data1"
-    },
-    {
-      "parameters": {
         "content": "## Triggers adicionais",
-        "height": 1232,
+        "height": 592,
         "width": 976
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -519,43 +479,6 @@
       "typeVersion": 1,
       "id": "642f6598-7884-4e11-a41f-9b5bb24b5674",
       "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyX",
-              "value": 1,
-              "unit": "minutes"
-            }
-          ]
-        },
-        "calendarId": {
-          "__rl": true,
-          "value": "mateussmesquita@gmail.com",
-          "mode": "list",
-          "cachedResultName": "mateussmesquita@gmail.com"
-        },
-        "triggerOn": "eventCreated",
-        "options": {
-          "matchTerm": "Consulta"
-        }
-      },
-      "type": "n8n-nodes-base.googleCalendarTrigger",
-      "typeVersion": 1,
-      "position": [
-        -2208,
-        -720
-      ],
-      "id": "0492d076-21ee-4feb-a240-89db61274a59",
-      "name": "Trigger evento criado",
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "OW5Fz1MJL38TiSw3",
-          "name": "Google Calendar account"
-        }
-      }
     },
     {
       "parameters": {
@@ -570,8 +493,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -2208,
-        -48
+        -2224,
+        -720
       ],
       "id": "c243f81d-379d-4305-89a3-2c4353d41c0c",
       "name": "Lembrete 1 dia antes"
@@ -585,8 +508,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -2000,
-        -48
+        -2016,
+        -720
       ],
       "id": "b33b6c26-e701-4a38-b51b-31efeeb39e05",
       "name": "Select datas agendadas amanha",
@@ -604,8 +527,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1792,
-        -48
+        -1808,
+        -720
       ],
       "id": "2da77cbe-5afa-47e6-9224-91c89494b8f4",
       "name": "Formatar os dados"
@@ -623,8 +546,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -2208,
-        176
+        -2224,
+        -496
       ],
       "id": "eeba1606-4c7c-4c4d-b7ed-3f062213212a",
       "name": "Lembrete no dia"
@@ -638,8 +561,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -2000,
-        176
+        -2016,
+        -496
       ],
       "id": "9f33116d-c96b-489c-aacc-7dbe3e6a0bc2",
       "name": "Select datas agendadas hoje",
@@ -657,8 +580,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1792,
-        176
+        -1808,
+        -496
       ],
       "id": "b70d455a-a7e1-45c0-a5ec-3bafba0a4dc9",
       "name": "Formatar os dados1"
@@ -706,8 +629,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1584,
-        -48
+        -1600,
+        -720
       ],
       "id": "97f02c5c-9738-4efa-ab57-f1e1e819abba",
       "name": "Enviar aviso"
@@ -755,8 +678,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1584,
-        176
+        -1600,
+        -496
       ],
       "id": "74eebf18-8af9-45f6-a169-56d118aad7fe",
       "name": "Enviar aviso5"
@@ -824,179 +747,6 @@
           "name": "Google Calendar account"
         }
       }
-    },
-    {
-      "parameters": {
-        "sendTo": "={{ $json.email }}",
-        "subject": "=Agendamento cancelado {{ $json.data }}",
-        "emailType": "text",
-        "message": "={{ $json.summary }}",
-        "options": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        -1792,
-        -496
-      ],
-      "id": "6a60c68b-9fbe-422e-9d66-cac90cc315e2",
-      "name": "Send a message1",
-      "webhookId": "de654d40-b863-4c9f-b1f4-140f63e30056",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "d0mnV1TzVQ706o6A",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const dataISO = new Date($input.item.json.start.dateTime);\n\nreturn {\"json\": {\n  \"data\": dataISO.toLocaleString('pt-BR', {\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'America/Sao_Paulo'\n}).replace(',', ''),\n  \"summary\": $json.summary,\n  \"email\": $json.creator.email\n}};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -2000,
-        -496
-      ],
-      "id": "29c2fa86-ed53-49e3-93fc-68c555b0f2e4",
-      "name": "Formatar data"
-    },
-    {
-      "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyX",
-              "value": 1,
-              "unit": "minutes"
-            }
-          ]
-        },
-        "calendarId": {
-          "__rl": true,
-          "value": "mateussmesquita@gmail.com",
-          "mode": "list",
-          "cachedResultName": "mateussmesquita@gmail.com"
-        },
-        "triggerOn": "eventCancelled",
-        "options": {
-          "matchTerm": "Consulta"
-        }
-      },
-      "type": "n8n-nodes-base.googleCalendarTrigger",
-      "typeVersion": 1,
-      "position": [
-        -2208,
-        -496
-      ],
-      "id": "7dc99812-6915-455f-945d-f7a91106d0d3",
-      "name": "Trigger evento cancelado",
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "OW5Fz1MJL38TiSw3",
-          "name": "Google Calendar account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "sendTo": "={{ $json.email }}",
-        "subject": "=Agendamento remarcado de {{ $json.dataAnterior }} para {{ $json.dataAtual }}",
-        "emailType": "text",
-        "message": "={{ $json.summary }}",
-        "options": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        -1584,
-        -272
-      ],
-      "id": "562f4974-b21f-452c-b12d-e64e4be42202",
-      "name": "Send a message2",
-      "webhookId": "de654d40-b863-4c9f-b1f4-140f63e30056",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "d0mnV1TzVQ706o6A",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyMinute"
-            }
-          ]
-        },
-        "calendarId": {
-          "__rl": true,
-          "value": "mateussmesquita@gmail.com",
-          "mode": "list",
-          "cachedResultName": "mateussmesquita@gmail.com"
-        },
-        "triggerOn": "eventUpdated",
-        "options": {
-          "matchTerm": "Consulta"
-        }
-      },
-      "type": "n8n-nodes-base.googleCalendarTrigger",
-      "typeVersion": 1,
-      "position": [
-        -2208,
-        -272
-      ],
-      "id": "b6f72bee-ac01-46de-aae6-7413a95f3fa9",
-      "name": "Trigger evento atualizado",
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "OW5Fz1MJL38TiSw3",
-          "name": "Google Calendar account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select `data`, '{{ $json.creator.email }}' as email, '{{ $json.summary }}' as summary, '{{ $json.start.dateTime }}' as startDateTime\nfrom eventos_agendados\nwhere evento_id = '{{ $json.id }}'\n  and status = 'cancelado'\norder by id DESC\nlimit 1;",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.5,
-      "position": [
-        -2000,
-        -272
-      ],
-      "id": "e2f080b7-a57a-46c8-a2ab-3691b157f4a2",
-      "name": "Select datas canceladas",
-      "credentials": {
-        "mySql": {
-          "id": "Op5rAe6z6A07TgjU",
-          "name": "MySQL account 3"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const dataISO = new Date($json.startDateTime);\n\n  const dataSql = new Date($json.data);\n\nconst formatador = new Intl.DateTimeFormat('pt-BR', {year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false});\n\nconst dataAntiga = formatador.format(dataSql);\n\nreturn {\"json\": {\n  \"dataAtual\": dataISO.toLocaleString('pt-BR', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: 'America/Sao_Paulo'\n  }).replace(',', ''),\n  \"dataAnterior\": dataAntiga.replace(',', ''),\n  \"email\": $json.email,\n  \"summary\": $json.summary\n}};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1792,
-        -272
-      ],
-      "id": "46eacb0d-2362-4af0-8127-29afe702c918",
-      "name": "Formatar datas"
     },
     {
       "parameters": {
@@ -1517,28 +1267,6 @@
         ]
       ]
     },
-    "Formatar data1": {
-      "main": [
-        [
-          {
-            "node": "Send a message",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Trigger evento criado": {
-      "main": [
-        [
-          {
-            "node": "Formatar data1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Lembrete 1 dia antes": {
       "main": [
         [
@@ -1638,61 +1366,6 @@
         ]
       ]
     },
-    "Formatar data": {
-      "main": [
-        [
-          {
-            "node": "Send a message1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Trigger evento cancelado": {
-      "main": [
-        [
-          {
-            "node": "Formatar data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Trigger evento atualizado": {
-      "main": [
-        [
-          {
-            "node": "Select datas canceladas",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Select datas canceladas": {
-      "main": [
-        [
-          {
-            "node": "Formatar datas",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Formatar datas": {
-      "main": [
-        [
-          {
-            "node": "Send a message2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Tools executados": {
       "main": [
         [
@@ -1778,7 +1451,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "73f65015-5d50-42d5-b130-1c7348579ec9",
+  "versionId": "eb98baef-fa35-4452-a933-ff5aae3fd5a4",
   "meta": {
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"
   },

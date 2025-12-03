@@ -39,8 +39,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -624,
-        -1584
+        -512,
+        -1616
       ],
       "id": "8406ba98-1358-419b-8104-625aa11dd874",
       "credentials": {
@@ -214,7 +214,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é o assistente virtual (agente) da clínica odontológica Clínica Arcaro, endereço R. Prof. Rui Côrte Brilho, 199 - Chácara Antonieta, Limeira - SP, 13484-507. Hoje é {{ $now }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nA clínica presta os seguintes serviços: clínica geral (tratamentos), ortodontia (aparelhos) e harmonização facial.\n\nPara cada tipo de serviços que realizamos, há um horário de atendimento\n\nPara ortodontia e harmonização, trabalhamos somente nos seguintes dias da semana e horários:\n- Terça-feiras das 14:30 às 18:45;\n- Quarta-feiras das 08:15 às 10:00 e das 14:30 às 18:45. Entre as 10:00 e 14:30 não trabalhamos.\n\nPara clínica geral, trabalhamos somente nos seguintes dias da semana e horários:\n- Segunda-feira à sexta-feira das 08:00 às 11:00 e das 14:00 às 18:30. Entre 11:00 e 14:00 não trabalhamos.\n\nCaso não há histórico de mensagens, informe ao cliente que ele está conversando com um assistente virtual da clínica odontológica (Clínica Arcaro) e seja nesse formato 'Realizamos serviços de ortodontia (aparelhos), clínica geral (restaurações), harmonização facial (botox). Qual desses serviços você gostaria de agendar?'\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar um agendamento presencial.\n\nSua primeira etapa na conversa é verificar se o cliente já é paciente da clínica ou não. Caso o cliente não seja paciente, você deve marcar consultas para orçamentos. Se já é paciente, você deve agendar consultas de retorno para a continuidade do serviço que está sendo prestado ao cliente.\n\nNossas consultas duram cerca de 1 hora. Para agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário; nome completo. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $json.datas_agendadas }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para a consulta de 1 hora na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário.\n\nPara o caso de o cliente querer cancelar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente cancelar sua consulta; a data de sua consulta para cancelar. Ao confirmar essas condições, execute a ferramenta 'deletar_evento' para deletar o evento no Google Calendar. Após deletar o evento no Google Calendar, confirme ao cliente que sua consulta foi cancelada com sucesso.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
+        "text": "=Você é o assistente virtual (agente) da clínica odontológica Clínica Arcaro, endereço R. Prof. Rui Côrte Brilho, 199 - Chácara Antonieta, Limeira - SP, 13484-507. Hoje é {{ $now }}. Você está conversando com o cliente {{ $('Select nome').isExecuted ? $('Select nome').first().json.nome : '' }}.\n\nSeu papel é conversar de forma natural, educada e objetiva com os clientes.\nVocê entende o contexto a partir das mensagens anteriores e responde de forma coerente. Não use linguagem robótica. Seja simpático e conciso.\n\nA clínica presta os seguintes serviços: clínica geral (tratamentos), ortodontia (aparelhos) e harmonização facial.\n\nPara cada tipo de serviços que realizamos, há um horário de atendimento.\n\nPara ortodontia e harmonização, trabalhamos somente nos seguintes dias da semana e horários:\n- Terça-feiras das 14:30 às 18:45;\n- Quarta-feiras das 08:15 às 10:00 e das 14:30 às 18:45. Entre as 10:00 e 14:30 não trabalhamos.\n\nPara clínica geral, trabalhamos somente nos seguintes dias da semana e horários:\n- Segunda-feira à sexta-feira das 08:00 às 11:00 e das 14:00 às 18:30. Entre 11:00 e 14:00 não trabalhamos.\n\nCaso não há histórico de mensagens, informe ao cliente que ele está conversando com um assistente virtual da clínica odontológica (Clínica Arcaro) e seja nesse formato 'Realizamos serviços de ortodontia (aparelhos), clínica geral (restaurações), harmonização facial (botox). Qual desses serviços você gostaria de agendar?'\n\nVocê deve esclarecer as dúvidas do cliente com a possibilidade de marcar um agendamento presencial.\n\nSua primeira etapa na conversa é verificar se o cliente já é paciente da clínica ou não. Caso o cliente não seja paciente, você deve marcar consultas para orçamentos. Se já é paciente, você deve agendar consultas de retorno para a continuidade do serviço que está sendo prestado ao cliente.\n\nPara consultas de orçamento, seja para qualquer tipo de serviço, duram 30 minutos. Já consultas para prestar o serviço duram 1 hora.\n\nPara agendamentos, todas as seguintes condições devem ser verdadeiras: intenção por parte do cliente; data; horário; nome completo do cliente. Ao conseguir obter essas informações ou o cliente pedir pela disponibilidade de horários, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para o tipo de consulta na data e horário em que o cliente deseja, execute a ferramenta 'criar_evento' para criar evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após criar o evento no Google Calendar, confirme ao cliente que sua consulta foi marcada com sucesso na data e horário agendadas.\n\nO cliente também pode querer reagendar ou desmarcar suas consultas. Para estes casos, você deve informar ao cliente quais são as datas que ele agendou e então prosseguir para os passos de reagendamento ou cancelamento de consulta. A seguir estão as datas agendadas e seus respectivos ID do evento no Google Calendar para este cliente (se vazio, informe ao cliente que não há nenhuma data agendada):\n{{ $('Junta td').isExecuted ? $('Junta td').first().json.datas_agendadas : '' }}\n\nPara o caso de o cliente querer remarcar/reagendar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente reagendar seu horário; a data de sua consulta que deseja reagendar; nova data para agendar; novo horário para agendar. Ao conseguir obter essas informações, execute a ferramenta 'consultar_eventos' para obter a disponibilidade de horários. Caso haja disponibilidade para o tipo de consulta na nova data e horário em que o cliente deseja, execute a ferramenta 'atualizar_evento' para atualizar o evento no Google Calendar. Se não há disponibilidade, ofereça horários ou dias alternativos conforme o cliente também fornece sua disponibilidade. Não indique dias e horários no passado, fora do dia da semana e horários em que trabalhos ou feriados. Ao indicar horários, sempre deixe claro todas as datas e horários livres, dentro do contexto da conversa. Após atualizar o evento no Google Calendar, confirme ao cliente que a consulta foi remarcada com sucesso para a nova data e horário.\n\nPara o caso de o cliente querer cancelar sua consulta, todas as seguintes condições devem ser verdadeiras: intenção do cliente cancelar sua consulta; a data de sua consulta para cancelar. Ao confirmar essas condições, execute a ferramenta 'deletar_evento' para deletar o evento no Google Calendar. Após deletar o evento no Google Calendar, confirme ao cliente que sua consulta foi cancelada com sucesso.\n\nMensagens anteriores:\n{{ $('Junta as msgs').first().json.historico }}\n\nÚltima mensagem do cliente:\n{{ $('Extrair Dados WhatsApp').first().json.mensagem }}",
         "hasOutputParser": true,
         "options": {
           "returnIntermediateSteps": true
@@ -223,7 +223,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        -288,
+        -80,
         -1408
       ],
       "id": "333fc69f-18c3-4840-9a17-f37afe7662e7",
@@ -239,7 +239,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -608,
+        -400,
         -1056
       ],
       "id": "fb4215bb-83f0-4e85-b266-c13c5ebb7a79",
@@ -307,7 +307,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        320,
+        528,
         -1408
       ],
       "id": "0587581a-3c1d-4fde-b09e-931834f13db8",
@@ -350,13 +350,13 @@
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n      \"nome\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"Nome do cliente se explícito na conversa\"\n      },\n      \"mensagem\": {\n          \"type\": \"string\",\n          \"description\": \"Mensagem a ser enviada ao cliente, não sendo necessário informar ID de eventos do Google Calendar\"\n      },\n      \"eventoId\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"ID do evento criado, atualizado ou deletado no Google Calendar\"\n      }\n  }\n}",
+        "inputSchema": "={\n  \"type\": \"object\",\n  \"properties\": {\n      \"nome\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"Nome completo do cliente, com as iniciais em letra maiúscula. Caso não consiga extrair, preencha com o nome {{ $('Select nome').isExecuted ? $('Select nome').first().json.nome : '' }}\"\n      },\n      \"mensagem\": {\n          \"type\": \"string\",\n          \"description\": \"Mensagem a ser enviada ao cliente, não sendo necessário informar ID de eventos do Google Calendar\"\n      },\n      \"eventoId\": {\n          \"type\": [\"string\", \"null\", \"undefined\"],\n          \"description\": \"ID do evento criado, atualizado ou deletado no Google Calendar\"\n      }\n  }\n}",
         "autoFix": true
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        80,
+        288,
         -1056
       ],
       "id": "e80ea168-dfb9-4891-856d-9799fd8df783",
@@ -365,7 +365,7 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Use essa ferramenta para criar eventos no Google Calendar, para agendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"nome\": \"Nome do cliente\"}\n\nSaída esperada: lista contendo os dados do evento criado.",
+        "toolDescription": "Use essa ferramenta para criar eventos no Google Calendar, para agendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido do tempo que o tipo de consulta e serviço consomem. 30 minutos para orçamentos e 1 hora para retornos\", \"nome\": \"Nome completo do cliente\"}\n\nSaída esperada: lista contendo os dados do evento criado.",
         "calendar": {
           "__rl": true,
           "value": "mateussmesquita@gmail.com",
@@ -373,15 +373,15 @@
           "cachedResultName": "mateussmesquita@gmail.com"
         },
         "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', `Data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'`, 'string') }}",
-        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `A data e horário na qual o cliente deseja agendar, adicionado de 1 hora.`, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `A data e horário na qual o cliente deseja agendar, adicionado do tempo que o tipo de consulta e serviço consomem. 30 minutos para orçamentos e 1 hora para retornos`, 'string') }}",
         "additionalFields": {
-          "summary": "=Consulta {{ $fromAI('tipoConsulta', 'Retorno ou orçamento') }} {{ $fromAI('tipoServico', 'Clínica geral, ortodontia ou harmonização facial') }} {{ $fromAI('nome', 'Nome do cliente', 'string', '') }} {{ $('Extrair Dados WhatsApp').first().json.telefone }}"
+          "summary": "=Consulta {{ $fromAI('tipoConsulta', 'Retorno ou orçamento') }} {{ $fromAI('tipoServico', 'Clínica geral, ortodontia ou harmonização facial') }} {{ $fromAI('nome', 'Nome completo do cliente', 'string', '') }} {{ $('Extrair Dados WhatsApp').first().json.telefone }}"
         }
       },
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        -464,
+        -256,
         -1056
       ],
       "id": "64259528-d025-4ba6-bd77-33df0dec8bee",
@@ -402,7 +402,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        80,
+        288,
         -1408
       ],
       "id": "f5a72177-1edb-47e2-a9b7-5f74add2537c",
@@ -433,7 +433,7 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        -336,
+        -128,
         -1056
       ],
       "id": "82e96575-fe9f-4216-8b1b-623288aea5a1",
@@ -453,7 +453,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        80,
+        288,
         -896
       ],
       "id": "2c207e7d-d368-46dc-88e5-4ce016aa8227",
@@ -693,7 +693,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -688,
+        -672,
         -1408
       ],
       "id": "3c2cb9c3-6f03-40f2-8a55-10cedb19f9f0",
@@ -713,7 +713,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -512,
+        -496,
         -1408
       ],
       "id": "68211dd5-14dc-49a8-ac10-5f126b498041",
@@ -736,7 +736,7 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        -192,
+        16,
         -1056
       ],
       "id": "3b9bed50-a1b3-4dd8-866e-cd38ca6d06e6",
@@ -755,7 +755,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        64,
+        272,
         -1824
       ],
       "id": "1aed1cf7-b312-4a35-8a07-93804dd17e84",
@@ -847,7 +847,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        272,
+        480,
         -1840
       ],
       "id": "2add8f8f-424f-40e9-a1f1-8f8fb2d36496",
@@ -860,7 +860,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        544,
+        752,
         -2048
       ],
       "id": "7d856cf9-a3f7-4f87-a8ca-1347d31cf609",
@@ -875,7 +875,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        752,
+        960,
         -2048
       ],
       "id": "eac6324a-f599-452c-840d-f7379e80a761",
@@ -896,7 +896,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        544,
+        752,
         -1632
       ],
       "id": "c09dba09-69b4-48e4-9524-8e89634dcbf1",
@@ -915,7 +915,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        544,
+        752,
         -1824
       ],
       "id": "a9950f5a-ecf7-4f2b-9a37-be5308fb0395",
@@ -930,7 +930,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        912,
+        1120,
         -1824
       ],
       "id": "0dec6189-f4c0-4155-a8ce-8d48ec5735d3",
@@ -951,7 +951,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        736,
+        944,
         -1824
       ],
       "id": "10b98571-b379-4f4f-ad1c-bcab3376134d",
@@ -966,7 +966,7 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Use essa ferramenta para atualizar eventos no Google Calendar, para reagendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Nova data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido de 1 hora\", \"eventoId\": \"ID do evento no Google Calendar que o cliente deseja reagendar\"}\n\nSaída esperada: lista contendo os dados do evento atualizado.",
+        "toolDescription": "Use essa ferramenta para atualizar eventos no Google Calendar, para reagendamento de consultas, quando apropriado.\n\nEntrada esperada: {\"dataHoraInicial\": \"Nova data e horário na qual o cliente deseja agendar, convertendo para o formato 'YYYY-MM-DDTHH:mm:ss-03:00'\", \"dataHoraFinal\": \"Valor de 'dataHoraInicial' acrescido do tempo que o tipo de consulta e serviço consomem. 30 minutos para orçamentos e 1 hora para retornos\", \"eventoId\": \"ID do evento no Google Calendar que o cliente deseja reagendar\"}\n\nSaída esperada: lista contendo os dados do evento atualizado.",
         "operation": "update",
         "calendar": {
           "__rl": true,
@@ -976,14 +976,14 @@
         },
         "eventId": "={{ $fromAI('eventoId', 'ID do evento no Google Calendar no qual o cliente quer reagendar', 'string') }}",
         "updateFields": {
-          "end": "={{ $fromAI('dataHoraFinal', 'Nova data e horário na qual o cliente deseja agendar, no formato YYYY-MM-DDTHH:mm:ss-03:00, acrescido de 1 hora', 'string') }}",
+          "end": "={{ $fromAI('dataHoraFinal', 'Nova data e horário na qual o cliente deseja agendar, no formato YYYY-MM-DDTHH:mm:ss-03:00, acrescido do tempo que o tipo de consulta e serviço consomem. 30 minutos para orçamentos e 1 hora para retornos', 'string') }}",
           "start": "={{ $fromAI('dataHoraInicial', 'Nova data e horário na qual o cliente deseja agendar, convertendo para o formato YYYY-MM-DDTHH:mm:ss-03:00', 'string') }}"
         }
       },
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        -48,
+        160,
         -1056
       ],
       "id": "45a2a9f5-a0e1-42b5-9a95-be754c609630",
@@ -992,6 +992,28 @@
         "googleCalendarOAuth2Api": {
           "id": "OW5Fz1MJL38TiSw3",
           "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select nome\nfrom conversas\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -320,
+        -1408
+      ],
+      "id": "fb78161c-61fa-4139-953c-082ab249f716",
+      "name": "Select nome",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Op5rAe6z6A07TgjU",
+          "name": "MySQL account 3"
         }
       }
     }
@@ -1348,7 +1370,7 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Select nome",
             "type": "main",
             "index": 0
           }
@@ -1445,14 +1467,26 @@
           }
         ]
       ]
+    },
+    "Select nome": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "eb98baef-fa35-4452-a933-ff5aae3fd5a4",
+  "versionId": "616cea4d-081a-4139-aabe-bdcdcf5db8c0",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"
   },
   "id": "7irPfQL9YO7j154H",

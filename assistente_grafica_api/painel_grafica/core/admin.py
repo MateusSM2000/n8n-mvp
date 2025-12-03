@@ -9,7 +9,7 @@ from django.utils.html import format_html
 # -----------------------------------
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ("id", "nome", "criado_em", "atualizado_em")
+    list_display = ("id", "nome",)
     search_fields = ("nome",)
     ordering = ("nome",)
 

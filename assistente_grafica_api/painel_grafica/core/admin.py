@@ -22,23 +22,45 @@ class ProdutoImagemInline(admin.TabularInline):
     extra = 1
     readonly_fields = ("preview",)
 
+    class Media:
+        js = ("core/admin_preview.js",)
+
     def preview(self, obj):
-        if not obj or not obj.imagem:
-            return "(sem imagem)"
-        return format_html(
-            '<img src="{}" width="80" style="border-radius:6px;border:1px solid #ccc;"/>',
-            obj.imagem.url
-        )
+        if obj and obj.imagem:
+            return format_html(
+                '<img src="{}" width="80" style="border-radius:6px;">',
+                obj.imagem.url
+            )
+        return "(sem imagem)"
     preview.short_description = "Preview"
 
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ("id", "nome", "categoria", "ativo")
+    list_display = ("id", "nome", "categoria", "ativo",)
     list_filter = ("categoria", "ativo")
     search_fields = ("nome", "descricao")
     ordering = ("nome",)
     inlines = [ProdutoImagemInline]
+    readonly_fields = ("preview",)
+
+    class Media:
+        js = ("core/admin_preview.js",)
+
+    def preview(self, obj):
+        imagens = obj.imagens.all()
+
+        if not imagens:
+            return "(sem imagens)"
+
+        html = ""
+        for img in imagens:
+            if img.imagem:
+                html += f'<img src="{img.imagem.url}" width="120" style="border-radius:6px; margin:5px;">'
+
+        return format_html(html)
+
+    preview.short_description = "Preview"
 
 
 # -----------------------------------

@@ -1,0 +1,9 @@
+{% for m in mensagens %}
+<div class="mb-2">
+    {% if m.tipo == 'cliente' %}
+        <div class="bg-gray-200 p-2 rounded max-w-md">{{ m.conteudo }}</div>
+    {% else %}
+        <div class="bg-blue-600 text-white p-2 rounded max-w-md ml-auto">{{ m.conteudo }}</div>
+    {% endif %}
+</div>
+{% endfor %}

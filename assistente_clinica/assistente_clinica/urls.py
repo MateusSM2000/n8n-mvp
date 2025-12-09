@@ -16,8 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from assistente_clinica.apps.conversas import views as conv
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("messages/", conv.messages_home),
+    path("messages/list/", conv.list_conversations),
+    path("messages/<int:conversa_id>/", conv.load_chat),
+    path("messages/send/", conv.send_message),
 ]

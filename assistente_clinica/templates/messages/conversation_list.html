@@ -1,0 +1,9 @@
+{% for c in conversas %}
+<div class="p-4 border-b hover:bg-gray-200 cursor-pointer"
+     hx-get="/messages/{{ c.id }}/"
+     hx-target="#messages-container"
+     hx-swap="innerHTML">
+    <div class="font-bold">{{ c.nome|default:c.telefone }}</div>
+    <div class="text-gray-500 text-sm">{{ c.last_message }}</div>
+</div>
+{% endfor %}

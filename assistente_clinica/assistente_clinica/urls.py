@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from assistente_clinica.apps.conversas import views as conv
+from apps.conversas import views as conv
 
 
 urlpatterns = [

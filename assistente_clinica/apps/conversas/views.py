@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from assistente_clinica.apps.conversas.models import Conversa, Mensagem
+from apps.conversas.models import Conversa, Mensagem
 import requests
 from django.http import HttpResponse
 from pathlib import Path

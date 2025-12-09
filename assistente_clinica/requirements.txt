@@ -1,0 +1,22 @@
+Django
+djangorestframework
+django-htmx
+
+# Tailwind para Django
+django-tailwind
+
+# Banco de dados MySQL
+pymysql
+
+# Para usar arquivos .env
+python-dotenv
+
+# (Opcional mas recomendado)
+django-widget-tweaks
+django-environ
+
+# Para requisições HTTP (caso precise integrar algo no backend)
+requests
+
+# Segurança / deploy
+gunicorn

@@ -307,7 +307,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        528,
+        496,
         -1408
       ],
       "id": "0587581a-3c1d-4fde-b09e-931834f13db8",
@@ -1016,6 +1016,58 @@
           "name": "MySQL account 3"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8000/messages/notify/",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"X-API-TOKEN\": \"SsdkO34Jrm323o2IJ23fFKFO3fSj43kOK0543Lks235wkAMmrkmyi324MeMmMTte2523\"\n}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "conversa_id",
+              "value": "={{ $('Select id from conversas').first().json.id }}"
+            },
+            {
+              "name": "mensagem",
+              "value": "={{ $('Extrair Dados WhatsApp').first().json.mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        912,
+        -1408
+      ],
+      "id": "efd07294-b807-42c7-8a63-ee3612a30608",
+      "name": "Atualiza django chat"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select id\nfrom conversas\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        704,
+        -1408
+      ],
+      "id": "91b95ed4-0032-4540-b190-92372bf4e9e7",
+      "name": "Select id from conversas",
+      "credentials": {
+        "mySql": {
+          "id": "Op5rAe6z6A07TgjU",
+          "name": "MySQL account 3"
+        }
+      }
     }
   ],
   "pinData": {
@@ -1478,13 +1530,35 @@
           }
         ]
       ]
+    },
+    "Enviar msg da IA": {
+      "main": [
+        [
+          {
+            "node": "Select id from conversas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select id from conversas": {
+      "main": [
+        [
+          {
+            "node": "Atualiza django chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "66af805f-500b-411a-9893-cc8883fa58db",
+  "versionId": "96c60f8a-5ff9-4ef9-bc8e-79dcc48d00a3",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

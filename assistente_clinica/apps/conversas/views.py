@@ -5,6 +5,8 @@ from django.http import HttpResponse
 from pathlib import Path
 import environ
 import os
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env(
@@ -46,6 +48,16 @@ def send_message(request):
         conteudo=msg
     )
 
+    layer = get_channel_layer()
+    async_to_sync(layer.group_send)(
+        f"chat_{conversa_id}",
+        {
+            "type": "chat_message",
+            "mensagem": msg,
+            "tipo": "agente"
+        }
+    )
+
     # 2. Chama API do WhatsApp
     payload = {
         "messaging_product": "whatsapp",
@@ -59,7 +71,10 @@ def send_message(request):
         "Content-Type": "application/json"
     }
 
-    requests.post(WHATSAPP_API_URL, json=payload, headers=headers)
+    try:
+        requests.post(WHATSAPP_API_URL, json=payload, headers=headers, timeout=5)
+    except Exception as e:
+        print("Erro ao enviar WhatsApp:", e)
 
     # 3. Retorna apenas o HTML da bolha da mensagem
     return render(request, "messages/partials/message_agent.html", {

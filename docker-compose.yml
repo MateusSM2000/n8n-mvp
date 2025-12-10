@@ -36,3 +36,10 @@ services:
       - mysql
     volumes:
       - ./n8n_data:/home/node/.n8n
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    restart: always
+    ports:
+      - "6379:6379"

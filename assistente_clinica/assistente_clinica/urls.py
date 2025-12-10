@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from apps.conversas import views as conv
+from apps.conversas.views_webhook import notify_message
 
 
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path("messages/list/", conv.list_conversations),
     path("messages/<int:conversa_id>/", conv.load_chat),
     path("messages/send/", conv.send_message),
+    path("messages/notify/", notify_message),
 ]

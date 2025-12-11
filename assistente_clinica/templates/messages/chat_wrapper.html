@@ -1,0 +1,96 @@
+<div class="flex flex-col h-full">
+
+    <div class="h-16 bg-gray-100 border-b border-gray-200 flex items-center px-4 justify-between shrink-0">
+        <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold shrink-0 mr-3">
+                {{ conversa.nome|slice:":1"|default:"C" }}
+            </div>
+            <div>
+                <div class="font-bold text-gray-800">{{ conversa.nome|default:conversa.telefone }}</div>
+                <div class="text-xs text-gray-500">{{ conversa.telefone }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-4 bg-[#efeae2] scroll-smooth">
+        {% include "messages/chat.html" %}
+    </div>
+
+    <div class="bg-gray-100 px-4 py-3 shrink-0">
+        {% include "messages/chat_form.html" %}
+    </div>
+
+</div>
+
+<script>
+(function(){
+    // Fecha conexões antigas se houver (para evitar duplicidade ao trocar de chat via HTMX)
+    if (window.currentSocket) {
+        window.currentSocket.close();
+    }
+
+    const room = "{{ conversa.id }}";
+    const container = document.getElementById("messages-container");
+
+    // Scroll para o final ao carregar
+    container.scrollTop = container.scrollHeight;
+
+    function connect() {
+        const proto = (window.location.protocol === "https:") ? "wss" : "ws";
+        const socket = new WebSocket(proto + "://" + window.location.host + "/ws/chat/" + room + "/");
+        window.currentSocket = socket; // Salva referencia global
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const msg = data.mensagem;
+            const tipo = data.tipo; // 'cliente' ou 'agente'
+
+            // HTML deve bater com o CSS do chat.html
+            let bubbleHtml = "";
+
+            if (tipo === 'agente') {
+                // Mensagem enviada (Direita/Verde)
+                bubbleHtml = `
+                <div class="flex justify-end">
+                    <div class="bg-[#d9fdd3] text-gray-800 p-2 rounded-lg rounded-tr-none shadow-sm max-w-[70%] text-sm">
+                        ${msg}
+                    </div>
+                </div>`;
+            } else {
+                // Mensagem recebida (Esquerda/Branca)
+                bubbleHtml = `
+                <div class="flex justify-start">
+                    <div class="bg-white text-gray-800 p-2 rounded-lg rounded-tl-none shadow-sm max-w-[70%] text-sm">
+                        ${msg}
+                    </div>
+                </div>`;
+            }
+
+            // IMPORTANTE: Evitar duplicidade
+            // O seu chat_form.html já insere a mensagem via HTMX (hx-swap="beforeend").
+            // Se a mensagem vier do 'agente' (nós mesmos) via socket, não precisamos adicionar de novo se o HTMX já fez.
+            // Mas, como o n8n ou outros agentes podem mandar msg, vamos garantir apenas scroll.
+
+            // Para simplificar: se o HTMX já insere, o socket pode duplicar.
+            // Sugestão: Vamos inserir tudo via socket OU tudo via HTMX.
+            // Como seu setup atual usa os dois, vou inserir apenas se for 'cliente',
+            // OU se você remover o hx-swap do form.
+
+            // Assumindo que o HTMX insere o visual "otimista" do agente:
+            if (tipo === 'cliente') {
+                container.insertAdjacentHTML("beforeend", bubbleHtml);
+                container.scrollTop = container.scrollHeight;
+            }
+            // Se quiser ver msg do agente vinda do socket (ex: enviada por outra pessoa no painel),
+            // precisaria de logica para não duplicar com o HTMX.
+        };
+
+        socket.onclose = () => {
+           // Lógica de reconexão simples
+           console.log("Socket closed");
+        };
+    }
+
+    connect();
+})();
+</script>

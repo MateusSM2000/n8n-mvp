@@ -30,7 +30,7 @@ def list_conversations(request):
 def load_chat(request, conversa_id):
     conversa = Conversa.objects.get(id=conversa_id)
     mensagens = Mensagem.objects.filter(conversas_id=conversa_id).order_by("criado_em")
-    return render(request, "messages/chat.html", {
+    return render(request, "messages/chat_wrapper.html", {
         "conversa": conversa,
         "mensagens": mensagens
     })

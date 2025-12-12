@@ -45,44 +45,51 @@
             const msg = data.mensagem;
             const tipo = data.tipo; // 'cliente' ou 'agente'
 
-            // HTML deve bater com o CSS do chat.html
+            // Monta o HTML da bolha
             let bubbleHtml = "";
 
             if (tipo === 'agente') {
-                // Mensagem enviada (Direita/Verde)
+                // Mensagem da Clínica/IA (Direita/Verde)
                 bubbleHtml = `
-                <div class="flex justify-end">
+                <div class="flex justify-end fade-in">
                     <div class="bg-[#d9fdd3] text-gray-800 p-2 rounded-lg rounded-tr-none shadow-sm max-w-[70%] text-sm">
                         ${msg}
                     </div>
                 </div>`;
             } else {
-                // Mensagem recebida (Esquerda/Branca)
+                // Mensagem do Paciente (Esquerda/Branca)
                 bubbleHtml = `
-                <div class="flex justify-start">
+                <div class="flex justify-start fade-in">
                     <div class="bg-white text-gray-800 p-2 rounded-lg rounded-tl-none shadow-sm max-w-[70%] text-sm">
                         ${msg}
                     </div>
                 </div>`;
             }
 
-            // IMPORTANTE: Evitar duplicidade
-            // O seu chat_form.html já insere a mensagem via HTMX (hx-swap="beforeend").
-            // Se a mensagem vier do 'agente' (nós mesmos) via socket, não precisamos adicionar de novo se o HTMX já fez.
-            // Mas, como o n8n ou outros agentes podem mandar msg, vamos garantir apenas scroll.
+            // --- LÓGICA DE INSERÇÃO CORRIGIDA ---
 
-            // Para simplificar: se o HTMX já insere, o socket pode duplicar.
-            // Sugestão: Vamos inserir tudo via socket OU tudo via HTMX.
-            // Como seu setup atual usa os dois, vou inserir apenas se for 'cliente',
-            // OU se você remover o hx-swap do form.
-
-            // Assumindo que o HTMX insere o visual "otimista" do agente:
+            // 1. Se for mensagem do CLIENTE, sempre insere (o HTMX não mexe nisso)
             if (tipo === 'cliente') {
                 container.insertAdjacentHTML("beforeend", bubbleHtml);
                 container.scrollTop = container.scrollHeight;
             }
-            // Se quiser ver msg do agente vinda do socket (ex: enviada por outra pessoa no painel),
-            // precisaria de logica para não duplicar com o HTMX.
+
+            // 2. Se for mensagem do AGENTE (Você ou IA)
+            else if (tipo === 'agente') {
+                // Truque anti-duplicação:
+                // Verifica se a última mensagem na tela já é idêntica a que acabou de chegar.
+                // Isso acontece quando VC digita e o HTMX insere antes do Socket chegar.
+                // Mas se for a IA (n8n), o HTMX não inseriu nada, então isso aqui vai ser false e a msg vai aparecer!
+
+                const lastMessage = container.lastElementChild ? container.lastElementChild.innerText.trim() : "";
+
+                if (lastMessage !== msg.trim()) {
+                    container.insertAdjacentHTML("beforeend", bubbleHtml);
+                    container.scrollTop = container.scrollHeight;
+                } else {
+                    console.log("Ignorando mensagem duplicada do socket (HTMX já renderizou)");
+                }
+            }
         };
 
         socket.onclose = () => {

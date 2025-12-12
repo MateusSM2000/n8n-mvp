@@ -57,12 +57,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "daphne",
     'django.contrib.staticfiles',
 
     # Terceiros
     "rest_framework",
     "django_htmx",
     "tailwind",
+    'channels',
 
     # App do tailwind
     "theme",
@@ -103,6 +105,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'assistente_clinica.wsgi.application'
+
+ASGI_APPLICATION = 'assistente_clinica.asgi.application'
 
 
 # Database
@@ -173,7 +177,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [("redis-cache", 6379)],
         },
     },
 }

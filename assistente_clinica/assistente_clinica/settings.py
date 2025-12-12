@@ -177,7 +177,11 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis-cache", 6379)],
+            # Se você estiver rodando o Django pelo PyCharm/Windows:
+            "hosts": [("127.0.0.1", 6379)],
+
+            # OBS: Se um dia for subir isso para produção ou rodar o Django DENTRO do Docker,
+            # aí sim você volta para o nome do container redis ou usa uma variável de ambiente.
         },
     },
 }

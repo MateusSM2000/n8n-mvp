@@ -11,7 +11,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -2368,
+        -2208,
         -1392
       ],
       "webhookId": "whatsapp-webhook",
@@ -25,7 +25,7 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -1424,
+        -1264,
         -1408
       ],
       "id": "21e7f824-05bd-49c0-9824-30a115d24f7b"
@@ -39,7 +39,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -512,
+        -288,
         -1616
       ],
       "id": "8406ba98-1358-419b-8104-625aa11dd874",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -2192,
+        -2032,
         -1392
       ],
       "id": "7def04b1-0de8-4fe7-959d-01cb033ae021",
@@ -133,7 +133,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -2000,
+        -1840,
         -1296
       ],
       "id": "d07c38fe-ad63-4677-b491-ccaf85114746",
@@ -155,7 +155,7 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        -1632,
+        -1472,
         -1296
       ],
       "id": "8b3d6cd8-d345-484d-a8e7-a30f06af07a4",
@@ -184,7 +184,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1808,
+        -1648,
         -1296
       ],
       "id": "f020809f-c017-492d-8020-43da355d1eae",
@@ -199,7 +199,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        -1248,
+        -1024,
         -1408
       ],
       "id": "6c761824-688d-4e3b-a53a-7018d54093b7",
@@ -223,7 +223,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        -80,
+        336,
         -1408
       ],
       "id": "333fc69f-18c3-4840-9a17-f37afe7662e7",
@@ -239,7 +239,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -400,
+        16,
         -1056
       ],
       "id": "fb4215bb-83f0-4e85-b266-c13c5ebb7a79",
@@ -258,7 +258,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1056,
+        -832,
         -1408
       ],
       "id": "9f3b2d1f-4008-4a6c-9cf7-7aedda19ec19",
@@ -307,7 +307,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        496,
+        912,
         -1408
       ],
       "id": "0587581a-3c1d-4fde-b09e-931834f13db8",
@@ -341,7 +341,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -880,
+        -656,
         -1408
       ],
       "id": "c0ceedad-b5b6-4740-86b1-70d3a6a803fe",
@@ -356,7 +356,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        288,
+        704,
         -1056
       ],
       "id": "e80ea168-dfb9-4891-856d-9799fd8df783",
@@ -381,7 +381,7 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        -256,
+        160,
         -1056
       ],
       "id": "64259528-d025-4ba6-bd77-33df0dec8bee",
@@ -402,7 +402,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        288,
+        704,
         -1408
       ],
       "id": "f5a72177-1edb-47e2-a9b7-5f74add2537c",
@@ -433,7 +433,7 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        -128,
+        288,
         -1056
       ],
       "id": "82e96575-fe9f-4216-8b1b-623288aea5a1",
@@ -453,7 +453,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        288,
+        704,
         -896
       ],
       "id": "2c207e7d-d368-46dc-88e5-4ce016aa8227",
@@ -693,7 +693,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -672,
+        -448,
         -1408
       ],
       "id": "3c2cb9c3-6f03-40f2-8a55-10cedb19f9f0",
@@ -713,7 +713,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -496,
+        -272,
         -1408
       ],
       "id": "68211dd5-14dc-49a8-ac10-5f126b498041",
@@ -736,7 +736,7 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        16,
+        432,
         -1056
       ],
       "id": "3b9bed50-a1b3-4dd8-866e-cd38ca6d06e6",
@@ -755,7 +755,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
+        688,
         -1824
       ],
       "id": "1aed1cf7-b312-4a35-8a07-93804dd17e84",
@@ -847,7 +847,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        480,
+        896,
         -1840
       ],
       "id": "2add8f8f-424f-40e9-a1f1-8f8fb2d36496",
@@ -860,7 +860,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        752,
+        1168,
         -2048
       ],
       "id": "7d856cf9-a3f7-4f87-a8ca-1347d31cf609",
@@ -875,7 +875,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        960,
+        1376,
         -2048
       ],
       "id": "eac6324a-f599-452c-840d-f7379e80a761",
@@ -896,7 +896,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        752,
+        1168,
         -1632
       ],
       "id": "c09dba09-69b4-48e4-9524-8e89634dcbf1",
@@ -915,7 +915,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        752,
+        1168,
         -1824
       ],
       "id": "a9950f5a-ecf7-4f2b-9a37-be5308fb0395",
@@ -930,7 +930,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        1120,
+        1536,
         -1824
       ],
       "id": "0dec6189-f4c0-4155-a8ce-8d48ec5735d3",
@@ -951,7 +951,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        944,
+        1360,
         -1824
       ],
       "id": "10b98571-b379-4f4f-ad1c-bcab3376134d",
@@ -983,7 +983,7 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        160,
+        576,
         -1056
       ],
       "id": "45a2a9f5-a0e1-42b5-9a95-be754c609630",
@@ -1004,7 +1004,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -320,
+        -96,
         -1408
       ],
       "id": "fb78161c-61fa-4139-953c-082ab249f716",
@@ -1019,37 +1019,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "http://localhost:8000/messages/notify/",
-        "sendHeaders": true,
-        "specifyHeaders": "json",
-        "jsonHeaders": "{\n  \"X-API-TOKEN\": \"SsdkO34Jrm323o2IJ23fFKFO3fSj43kOK0543Lks235wkAMmrkmyi324MeMmMTte2523\"\n}",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "conversa_id",
-              "value": "={{ $('Select id from conversas').first().json.id }}"
-            },
-            {
-              "name": "mensagem",
-              "value": "={{ $('Extrair Dados WhatsApp').first().json.mensagem }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        912,
-        -1408
-      ],
-      "id": "efd07294-b807-42c7-8a63-ee3612a30608",
-      "name": "Atualiza django chat"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "select id\nfrom conversas\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
         "options": {}
@@ -1057,7 +1026,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        704,
+        1120,
         -1408
       ],
       "id": "91b95ed4-0032-4540-b190-92372bf4e9e7",
@@ -1068,6 +1037,147 @@
           "name": "MySQL account 3"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/messages/notify/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-TOKEN",
+              "value": "SsdkO34Jrm323o2IJ23fFKFO3fSj43kOK0543Lks235wkAMmrkmyi324MeMmMTte2523"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"conversa_id\": \"{{ $('Select id from conversas').first().json.id }}\",\n  \"mensagem\": \"{{ $('AI Agent').first().json.output.mensagem }}\",\n  \"tipo\": \"agente\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1328,
+        -1408
+      ],
+      "id": "efd07294-b807-42c7-8a63-ee3612a30608",
+      "name": "Atualiza django chat agente"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/messages/notify/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-TOKEN",
+              "value": "SsdkO34Jrm323o2IJ23fFKFO3fSj43kOK0543Lks235wkAMmrkmyi324MeMmMTte2523"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"conversa_id\": \"{{ $('Select id from conversas1').first().json.id }}\",\n  \"mensagem\": \"{{ $('Webhook IN').first().json.body.entry[0].changes[0].value.messages[0].text.body }}\",\n  \"tipo\": \"cliente\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        512,
+        -2176
+      ],
+      "id": "dcb6b03b-83d5-4fac-943a-3a6280083e03",
+      "name": "Atualiza django chat cliente"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select id\nfrom conversas\nwhere telefone = '{{ $('Extrair Dados WhatsApp').first().json.telefone }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        320,
+        -2176
+      ],
+      "id": "5873861f-2c73-4f72-bc1f-b3514b07e032",
+      "name": "Select id from conversas1",
+      "credentials": {
+        "mySql": {
+          "id": "Op5rAe6z6A07TgjU",
+          "name": "MySQL account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook IN').first().json.body.entry[0].changes[0].value.messages[0].type }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d1c7337d-2db4-40b7-af13-1afa7ba0ebb1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dfd01a53-6dfc-4bbe-97a1-fc5c56b059f8",
+                    "leftValue": "={{ $('Webhook IN').first().json.body.entry[0].changes[0].value.messages[0].type }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "áudio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        96,
+        -2160
+      ],
+      "id": "5968de2c-e08f-4a82-839e-02e40a186226",
+      "name": "Switch1"
     }
   ],
   "pinData": {
@@ -1224,6 +1334,11 @@
         [
           {
             "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch1",
             "type": "main",
             "index": 0
           }
@@ -1527,6 +1642,11 @@
             "node": "AI Agent",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -1546,7 +1666,29 @@
       "main": [
         [
           {
-            "node": "Atualiza django chat",
+            "node": "Atualiza django chat agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select id from conversas1": {
+      "main": [
+        [
+          {
+            "node": "Atualiza django chat cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Select id from conversas1",
             "type": "main",
             "index": 0
           }
@@ -1558,7 +1700,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "96c60f8a-5ff9-4ef9-bc8e-79dcc48d00a3",
+  "versionId": "37710614-cf6d-40c2-ae60-443dd5979848",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5858773c819eef5c772c511bb8bf6c8d350f72a6984a156e8f3d5f5f2f96f8"

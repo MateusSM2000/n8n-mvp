@@ -156,7 +156,8 @@ TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
-USE_TZ = True
+# USE_TZ = True diz: "Django, guarde em UTC no banco, mas converta para o fuso horario do TIME_ZONE quando mostrar pro usuário"
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

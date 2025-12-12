@@ -80,4 +80,4 @@ def send_message(request):
     except Exception as e:
         print("Erro ao enviar WhatsApp:", e)
 
-    return None
+    return HttpResponse(status=204)

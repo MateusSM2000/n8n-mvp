@@ -1,6 +1,18 @@
-<div id="messages-list-content"> {% for m in mensagens %}
+{% load chat_extras %}
+
+<div id="messages-list-content">
+    {% for m in mensagens %}
+
+        {% ifchanged m.criado_em.date %}
+        <div class="flex justify-center my-4 sticky top-2 z-10">
+            <span class="bg-gray-200 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm border border-gray-300 uppercase">
+                {{ m.criado_em|data_inteligente }}
+            </span>
+        </div>
+        {% endifchanged %}
+
         {% if m.tipo == 'cliente' %}
-            <div class="flex justify-start">
+            <div class="flex justify-start mb-2">
                 <div class="bg-white text-gray-800 p-2 rounded-lg rounded-tl-none shadow-sm max-w-[70%] text-sm relative group">
                     {{ m.conteudo }}
                     <div class="text-[10px] text-gray-400 text-right mt-1">
@@ -9,7 +21,7 @@
                 </div>
             </div>
         {% else %}
-            <div class="flex justify-end">
+            <div class="flex justify-end mb-2">
                 <div class="bg-[#d9fdd3] text-gray-800 p-2 rounded-lg rounded-tr-none shadow-sm max-w-[70%] text-sm relative group">
                     {{ m.conteudo }}
                     <div class="text-[10px] text-gray-500 text-right mt-1 opacity-70">

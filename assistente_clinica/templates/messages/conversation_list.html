@@ -1,6 +1,8 @@
 <div class="h-16 bg-gray-100 flex items-center px-4 border-b border-gray-200 justify-between shrink-0">
-    <div class="font-bold text-gray-700">Conversas</div>
+    <div class="font-bold text-gray-700">
+        Conversas
     </div>
+</div>
 
 <div class="overflow-y-auto flex-1">
     {% for c in conversas %}
@@ -13,8 +15,11 @@
             {{ c.nome|slice:":1"|default:c.telefone|slice:":1" }}
         </div>
 
-        <div class="flex-1 min-w-0"> <div class="flex justify-between items-baseline mb-1">
-                <span class="font-medium text-gray-800 truncate block">{{ c.nome|default:c.telefone }}</span>
+        <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-baseline mb-1">
+                <span class="font-medium text-gray-800 truncate block">
+                    {{ c.nome|default:c.telefone }}
+                </span>
                 <span class="text-xs text-gray-400 ml-2 whitespace-nowrap">
                     {{ c.ultima_interacao|date:"H:i" }}
                 </span>

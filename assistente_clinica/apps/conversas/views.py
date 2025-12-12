@@ -7,6 +7,7 @@ import environ
 import os
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from django.utils import timezone
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env(
@@ -40,6 +41,9 @@ def send_message(request):
     conversa_id = request.POST.get("conversa_id")
 
     conversa = Conversa.objects.get(id=conversa_id)
+
+    conversa.ultima_interacao = timezone.now()
+    conversa.save(update_fields=['ultima_interacao'])
 
     # 1. Salva no banco
     Mensagem.objects.create(
@@ -76,7 +80,4 @@ def send_message(request):
     except Exception as e:
         print("Erro ao enviar WhatsApp:", e)
 
-    # 3. Retorna apenas o HTML da bolha da mensagem
-    return render(request, "messages/partials/message_agent.html", {
-        "msg": msg
-    })
+    return None

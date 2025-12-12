@@ -1,6 +1,6 @@
 <form hx-post="/messages/send/"
       hx-target="#messages-container"
-      hx-swap="beforeend"
+      hx-swap="none"
       hx-on::after-request="this.reset();"
       class="flex items-center gap-2">
       {% csrf_token %}

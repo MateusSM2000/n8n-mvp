@@ -68,28 +68,8 @@
 
             // --- LÓGICA DE INSERÇÃO CORRIGIDA ---
 
-            // 1. Se for mensagem do CLIENTE, sempre insere (o HTMX não mexe nisso)
-            if (tipo === 'cliente') {
-                container.insertAdjacentHTML("beforeend", bubbleHtml);
-                container.scrollTop = container.scrollHeight;
-            }
-
-            // 2. Se for mensagem do AGENTE (Você ou IA)
-            else if (tipo === 'agente') {
-                // Truque anti-duplicação:
-                // Verifica se a última mensagem na tela já é idêntica a que acabou de chegar.
-                // Isso acontece quando VC digita e o HTMX insere antes do Socket chegar.
-                // Mas se for a IA (n8n), o HTMX não inseriu nada, então isso aqui vai ser false e a msg vai aparecer!
-
-                const lastMessage = container.lastElementChild ? container.lastElementChild.innerText.trim() : "";
-
-                if (lastMessage !== msg.trim()) {
-                    container.insertAdjacentHTML("beforeend", bubbleHtml);
-                    container.scrollTop = container.scrollHeight;
-                } else {
-                    console.log("Ignorando mensagem duplicada do socket (HTMX já renderizou)");
-                }
-            }
+            container.insertAdjacentHTML("beforeend", bubbleHtml);
+            container.scrollTop = container.scrollHeight;
         };
 
         socket.onclose = () => {

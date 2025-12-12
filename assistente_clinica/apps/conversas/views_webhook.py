@@ -21,8 +21,9 @@ def notify_message(request):
 
     conversa_id = data.get("conversa_id")
     mensagem = data.get("mensagem")
+    tipo = data.get("tipo")
 
-    if not conversa_id or not mensagem:
+    if not conversa_id or not mensagem or not tipo:
         return HttpResponse("Missing fields", status=400)
 
     # Envia via websocket
@@ -32,7 +33,7 @@ def notify_message(request):
         {
             "type": "chat_message",
             "mensagem": mensagem,
-            "tipo": "cliente"
+            "tipo": tipo
         }
     )
 

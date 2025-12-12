@@ -8,16 +8,25 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
-from channels.routing import ProtocolTypeRouter, URLRouter
+import django
 from django.core.asgi import get_asgi_application
-from django.urls import path
-from apps.conversas import consumers
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'assistente_clinica.settings')
+# Configura o Django antes de importar coisas do Channels
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'assistente_clinica.settings') # Verifique o nome do seu projeto aqui
+django.setup()
+
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+import apps.conversas.routing  # Importe o seu arquivo de rotas criado acima
 
 application = ProtocolTypeRouter({
+    # Requisições HTTP (padrão Django)
     "http": get_asgi_application(),
-    "websocket": URLRouter([
-        path("ws/chat/<int:conversa_id>/", consumers.ChatConsumer.as_asgi()),
-    ]),
+
+    # Requisições WebSocket (Channels)
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            apps.conversas.routing.websocket_urlpatterns
+        )
+    ),
 })

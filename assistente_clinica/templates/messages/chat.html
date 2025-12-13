@@ -18,7 +18,7 @@
 
                 {% if m.tipo == 'cliente' %}
                     <div class="flex justify-start">
-                        <div class="bg-white text-gray-800 p-2 rounded-lg rounded-tl-none shadow-sm max-w-[70%] text-sm relative group break-words whitespace-pre-wrap">
+                        <div class="bg-white text-gray-800 p-2 rounded-lg rounded-tl-none shadow-sm max-w-[70%] text-sm relative group break-all whitespace-pre-wrap">
                             {{ m.conteudo }}
                             <div class="text-[10px] text-gray-400 text-right mt-1">
                                 {{ m.criado_em|date:"H:i" }}
@@ -27,7 +27,7 @@
                     </div>
                 {% else %}
                     <div class="flex justify-end">
-                        <div class="bg-[#d9fdd3] text-gray-800 p-2 rounded-lg rounded-tr-none shadow-sm max-w-[70%] text-sm relative group break-words whitespace-pre-wrap">
+                        <div class="bg-[#d9fdd3] text-gray-800 p-2 rounded-lg rounded-tr-none shadow-sm max-w-[70%] text-sm relative group break-all whitespace-pre-wrap">
                             {{ m.conteudo }}
                             <div class="text-[10px] text-gray-500 text-right mt-1 opacity-70">
                                 {{ m.criado_em|date:"H:i" }}
